@@ -1,0 +1,16 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.toggle-checkbox:checked {
+  @apply right-0 border-blue-500;
+}
+.toggle-checkbox:checked + .toggle-label {
+  @apply bg-blue-500;
+}
+
+.bg-grid-pattern {
+  background-size: 20px 20px;
+  background-image: linear-gradient(to right, #e5e7eb 1px, transparent 1px),
+    linear-gradient(to bottom, #e5e7eb 1px, transparent 1px);
+}
