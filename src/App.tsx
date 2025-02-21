@@ -2,6 +2,7 @@ import React from 'react';
 import { Header } from './components/Header';
 import { useAppStore } from './store';
 import { DesignWindow } from './components/design/DesignWindow';
+import { BlocksWindow } from './components/blocks/BlocksWindow';
 import { DeleteScreenDialog } from './components/design/DeleteScreenDialog';
 
 function App() {
@@ -26,7 +27,7 @@ function App() {
         {activeTab === 'DESIGN' ? (
           <DesignWindow />
         ) : (
-          <div>Blocks Window (Coming soon)</div>
+          <BlocksWindow />
         )}
       </main>
       <DeleteScreenDialog />

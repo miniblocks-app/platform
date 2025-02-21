@@ -26,6 +26,7 @@ interface AppState {
   deleteComponent: (screenId: string, componentId: string) => void;
   undo: () => void;
   redo: () => void;
+  renameProject: (name: string) => void;
 }
 
 export const useAppStore = create<AppState>((set, get) => ({
@@ -194,4 +195,17 @@ export const useAppStore = create<AppState>((set, get) => ({
       },
     };
   }),
+
+  renameProject: (name) => set((state) => ({
+    currentProject: state.currentProject
+      ? {
+          ...state.currentProject,
+          name: name.trim() || 'My First Project',
+        }
+      : null,
+    history: {
+      past: [...state.history.past, state.currentProject],
+      future: [],
+    },
+  })),
 }));
