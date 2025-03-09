@@ -29,7 +29,7 @@ interface AppState {
   renameProject: (name: string) => void;
 }
 
-export const useAppStore = create<AppState>((set, get) => ({
+export const useAppStore = create<AppState>((set) => ({
   activeTab: 'DESIGN',
   currentProject: null,
   selectedScreen: null,
@@ -45,7 +45,7 @@ export const useAppStore = create<AppState>((set, get) => ({
   setCurrentProject: (project) => set((state) => ({
     currentProject: project,
     history: {
-      past: [...state.history.past, state.currentProject],
+      past: state.currentProject ? [...state.history.past, state.currentProject] : [...state.history.past],
       future: [],
     },
   })),
@@ -54,19 +54,23 @@ export const useAppStore = create<AppState>((set, get) => ({
   setSelectedComponent: (componentId) => set({ selectedComponent: componentId }),
   setShowDeleteDialog: (show) => set({ showDeleteDialog: show }),
   setScreenToDelete: (screenId) => set({ screenToDelete: screenId }),
-  
-  addScreen: (screen) => set((state) => ({
-    currentProject: state.currentProject
-      ? {
-          ...state.currentProject,
-          screens: [...state.currentProject.screens, screen],
-        }
-      : null,
-    history: {
-      past: [...state.history.past, state.currentProject],
-      future: [],
-    },
-  })),
+
+  addScreen: (screen) => set((state) => {
+    if (!state.currentProject) return state;
+
+    const updatedProject = {
+      ...state.currentProject,
+      screens: [...state.currentProject.screens, screen],
+    };
+
+    return {
+      currentProject: updatedProject,
+      history: {
+        past: [...state.history.past, state.currentProject],
+        future: [],
+      },
+    };
+  }),
 
   deleteScreen: (screenId) => set((state) => {
     if (!state.currentProject) return state;
@@ -90,122 +94,146 @@ export const useAppStore = create<AppState>((set, get) => ({
       },
     };
   }),
-  
-  updateScreen: (screenId, updates) => set((state) => ({
-    currentProject: state.currentProject
-      ? {
-          ...state.currentProject,
-          screens: state.currentProject.screens.map((screen) =>
-            screen.id === screenId ? { ...screen, ...updates } : screen
-          ),
-        }
-      : null,
-    history: {
-      past: [...state.history.past, state.currentProject],
-      future: [],
-    },
-  })),
-  
-  addComponent: (screenId, component) => set((state) => ({
-    currentProject: state.currentProject
-      ? {
-          ...state.currentProject,
-          screens: state.currentProject.screens.map((screen) =>
-            screen.id === screenId
-              ? { ...screen, components: [...screen.components, component] }
-              : screen
-          ),
-        }
-      : null,
-    history: {
-      past: [...state.history.past, state.currentProject],
-      future: [],
-    },
-  })),
-  
-  updateComponent: (screenId, componentId, updates) => set((state) => ({
-    currentProject: state.currentProject
-      ? {
-          ...state.currentProject,
-          screens: state.currentProject.screens.map((screen) =>
-            screen.id === screenId
-              ? {
-                  ...screen,
-                  components: screen.components.map((component) =>
-                    component.id === componentId
-                      ? { ...component, ...updates }
-                      : component
-                  ),
-                }
-              : screen
-          ),
-        }
-      : null,
-    history: {
-      past: [...state.history.past, state.currentProject],
-      future: [],
-    },
-  })),
 
-  deleteComponent: (screenId, componentId) => set((state) => ({
-    currentProject: state.currentProject
-      ? {
-          ...state.currentProject,
-          screens: state.currentProject.screens.map((screen) =>
-            screen.id === screenId
-              ? {
-                  ...screen,
-                  components: screen.components.filter((component) => component.id !== componentId),
-                }
-              : screen
-          ),
-        }
-      : null,
-    selectedComponent: null,
-    history: {
-      past: [...state.history.past, state.currentProject],
-      future: [],
-    },
-  })),
+  updateScreen: (screenId, updates) => set((state) => {
+    if (!state.currentProject) return state;
 
-  undo: () => set((state) => {
-    const previous = state.history.past[state.history.past.length - 1];
-    if (!previous) return state;
-
-    const newPast = state.history.past.slice(0, -1);
-    return {
-      currentProject: previous,
-      history: {
-        past: newPast,
-        future: [state.currentProject, ...state.history.future],
-      },
+    const updatedProject = {
+      ...state.currentProject,
+      screens: state.currentProject.screens.map((screen) =>
+          screen.id === screenId ? { ...screen, ...updates } : screen
+      ),
     };
-  }),
 
-  redo: () => set((state) => {
-    const next = state.history.future[0];
-    if (!next) return state;
-
-    const newFuture = state.history.future.slice(1);
     return {
-      currentProject: next,
+      currentProject: updatedProject,
       history: {
         past: [...state.history.past, state.currentProject],
-        future: newFuture,
+        future: [],
       },
     };
   }),
 
-  renameProject: (name) => set((state) => ({
-    currentProject: state.currentProject
-      ? {
+  addComponent: (screenId, component) => set((state) => {
+    if (!state.currentProject) return state;
+
+    const updatedProject = {
+      ...state.currentProject,
+      screens: state.currentProject.screens.map((screen) =>
+          screen.id === screenId
+              ? { ...screen, components: [...screen.components, component] }
+              : screen
+      ),
+    };
+
+    return {
+      currentProject: updatedProject,
+      history: {
+        past: [...state.history.past, state.currentProject],
+        future: [],
+      },
+    };
+  }),
+
+  updateComponent: (screenId, componentId, updates) => set((state) => {
+    if (!state.currentProject) return state;
+
+    const updatedProject = {
+      ...state.currentProject,
+      screens: state.currentProject.screens.map((screen) =>
+          screen.id === screenId
+              ? {
+                ...screen,
+                components: screen.components.map((component) =>
+                    component.id === componentId
+                        ? { ...component, ...updates }
+                        : component
+                ),
+              }
+              : screen
+      ),
+    };
+
+    return {
+      currentProject: updatedProject,
+      history: {
+        past: [...state.history.past, state.currentProject],
+        future: [],
+      },
+    };
+  }),
+
+  deleteComponent: (screenId, componentId) => set((state) => {
+    if (!state.currentProject) return state;
+
+    const updatedProject = {
+      ...state.currentProject,
+      screens: state.currentProject.screens.map((screen) =>
+          screen.id === screenId
+              ? {
+                ...screen,
+                components: screen.components.filter((component) => component.id !== componentId),
+              }
+              : screen
+      ),
+    };
+
+    return {
+      currentProject: updatedProject,
+      selectedComponent: null,
+      history: {
+        past: [...state.history.past, state.currentProject],
+        future: [],
+      },
+    };
+  }),
+
+      undo: () => set((state) => {
+        const previous = state.history.past[state.history.past.length - 1];
+        if (!previous) return state;
+
+        const newPast = state.history.past.slice(0, -1);
+        return {
+          currentProject: previous,
+          history: {
+            past: newPast,
+            future: state.currentProject
+                ? [state.currentProject, ...state.history.future]
+                : [...state.history.future],
+          },
+        };
+      }),
+
+      redo: () => set((state) => {
+        const next = state.history.future[0];
+        if (!next) return state;
+
+        const newFuture = state.history.future.slice(1);
+        return {
+          currentProject: next,
+          history: {
+            past: state.currentProject
+                ? [...state.history.past, state.currentProject]
+                : [...state.history.past],
+            future: newFuture,
+          },
+        };
+      }),
+
+      renameProject: (name) => set((state) => {
+        if (!state.currentProject) return state;
+
+        const updatedProject = {
           ...state.currentProject,
           name: name.trim() || 'My First Project',
-        }
-      : null,
-    history: {
-      past: [...state.history.past, state.currentProject],
-      future: [],
-    },
-  })),
+        };
+
+        return {
+          currentProject: updatedProject,
+          history: {
+            past: [...state.history.past, state.currentProject],
+            future: [],
+          },
+        };
+      }),
 }));
