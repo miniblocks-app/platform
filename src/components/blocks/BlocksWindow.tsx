@@ -1,11 +1,10 @@
-import React from 'react';
 import { DndContext, DragEndEvent } from '@dnd-kit/core';
 import { LogicBlocksPalette } from './LogicBlocksPalette';
 import { BlocksCanvas } from './BlocksCanvas';
 import { useAppStore } from '../../store';
 
 export const BlocksWindow = () => {
-  const { selectedScreen } = useAppStore();
+  useAppStore();
 
   const handleDragEnd = (event: DragEndEvent) => {
     const { over, active } = event;
