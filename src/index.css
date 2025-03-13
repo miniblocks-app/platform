@@ -14,3 +14,12 @@
   background-image: linear-gradient(to right, #e5e7eb 1px, transparent 1px),
     linear-gradient(to bottom, #e5e7eb 1px, transparent 1px);
 }
+.fill-height {
+  width: 100%;
+  height: calc(100vh - 100px); /* Adjust this value */
+  min-height: 500px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #ccc;
+}

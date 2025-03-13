@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useDroppable } from '@dnd-kit/core';
 import { useAppStore } from '../../store';
 import { Undo2, Redo2, ZoomIn, ZoomOut, Grid, Trash2 } from 'lucide-react';

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useDraggable } from '@dnd-kit/core';
-import { Search, Play, Pause, RotateCw, ArrowRight, Settings, Database } from 'lucide-react';
+import { Search, Play, Pause, RotateCw, ArrowRight,  Database } from 'lucide-react';
 import clsx from 'clsx';
 
 interface BlockType {

@@ -1,4 +1,5 @@
 import React from 'react';
+import "./App.css";
 import { Header } from './components/Header';
 import { useAppStore } from './store';
 import { DesignWindow } from './components/design/DesignWindow';
@@ -32,6 +33,7 @@ function App() {
       </main>
       <DeleteScreenDialog />
     </div>
+    //   <BlocksWindow />
   );
 }
 
