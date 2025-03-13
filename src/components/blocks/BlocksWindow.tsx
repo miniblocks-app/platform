@@ -1,17 +1,14 @@
-import {BlocklyWorkspace} from "react-blockly";
+import {BlocklyWorkspace, WorkspaceSvg} from "react-blockly";
 import { useAppStore } from '../../store';
-import { javascriptGenerator } from 'blockly/javascript';
 import { useState } from "react";
 import "./customBlocks/custom_Blocks";
 import {flutterCategory} from "../../categories/flutter.ts";
+import {dartGenerator} from "blockly/dart";
 
 export const BlocksWindow = () => {
   useAppStore();
-  const [xml, ] = useState("");
-  const [javascriptCode, setJavascriptCode] = useState("");
+  const [dartCode, setDartCode] = useState("");
 
-  const initialXml =
-      '<xml xmlns="http://www.w3.org/1999/xhtml"><block type="text" x="70" y="30"><field name="TEXT"></field></block></xml>';
   const toolboxCategories = {
     kind: "categoryToolbox",
     contents: [
@@ -30,51 +27,49 @@ export const BlocksWindow = () => {
       //     },
       //   ],
       // },
-      // {
-      //   kind: "category",
-      //   name: "Math",
-      //   colour: "#5CA65C",
-      //   contents: [
-      //     {
-      //       kind: "block",
-      //       type: "math_round",
-      //     },
-      //     {
-      //       kind: "block",
-      //       type: "math_number",
-      //     },
-      //   ],
-      // },
-      // {
-      //   kind: "category",
-      //   name: "Custom",
-      //   colour: "#5CA699",
-      //   contents: [
-      //     {
-      //       kind: "block",
-      //       type: "new_boundary_function",
-      //     },
-      //     {
-      //       kind: "block",
-      //       type: "return",
-      //     },
-      //   ],
-      // },
+      {
+        kind: "category",
+        name: "Math",
+        colour: "#5CA65C",
+        contents: [
+          {
+            kind: "block",
+            type: "math_round",
+          },
+          {
+            kind: "block",
+            type: "math_number",
+          },
+        ],
+      },
+      {
+        kind: "category",
+        name: "Custom",
+        colour: "#5CA699",
+        contents: [
+          {
+            kind: "block",
+            type: "new_boundary_function",
+          },
+          {
+            kind: "block",
+            type: "return",
+          },
+        ],
+      },
       flutterCategory,
     ],
   };
 
-  function workspaceDidChange(workspace) {
-    const code = javascriptGenerator.workspaceToCode(workspace);
-    setJavascriptCode(code);
+  function workspaceDidChange(workspace: WorkspaceSvg) {
+    const code = dartGenerator.workspaceToCode(workspace);
+    setDartCode(code);
   }
-
 
   return (
       <>
         <BlocklyWorkspace
             toolboxConfiguration={toolboxCategories}
-            initialXml={initialXml}
             className="[h-screen-100px] w-screen"
             workspaceConfiguration={{
               grid: {
@@ -85,13 +80,11 @@ export const BlocksWindow = () => {
               },
             }}
             onWorkspaceChange={workspaceDidChange}
-            // onXmlChange={setXml}
         />
-        <pre id="generated-xml">{xml}</pre>
         <textarea
             id="code"
             style={{ height: "200px", width: "400px" }}
-            value={javascriptCode}
+            value={dartCode}
             readOnly
         ></textarea>
       </>

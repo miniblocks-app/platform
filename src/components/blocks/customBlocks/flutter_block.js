@@ -92,7 +92,6 @@ Blockly.Blocks['flutter_placeholder'] = {
         .appendField("Placeholder");
     this.appendDummyInput()
         .appendField("color")
-        .appendField(new Blockly.FieldColour("#c0c0c0"), "color");
     this.appendDummyInput()
         .appendField("strokeWidth")
         .appendField(new Blockly.FieldNumber(2.0), "strokeWidth");
