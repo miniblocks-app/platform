@@ -1,32 +1,19 @@
 import {BlocklyWorkspace, WorkspaceSvg} from "react-blockly";
 import { useAppStore } from '../../store';
-import { useState } from "react";
+import  { useState } from "react";
 import "./customBlocks/custom_Blocks";
 import {flutterCategory} from "../../categories/flutter.ts";
 import {dartGenerator} from "blockly/dart";
+import {ComponentTree} from "../design/ComponentTree.tsx";
+
 
 export const BlocksWindow = () => {
-  useAppStore();
+  const { debugMode} = useAppStore();
   const [dartCode, setDartCode] = useState("");
 
   const toolboxCategories = {
     kind: "categoryToolbox",
     contents: [
-      // {
-      //   kind: "category",
-      //   name: "Logic",
-      //   colour: "#5C81A6",
-      //   contents: [
-      //     {
-      //       kind: "block",
-      //       type: "controls_if",
-      //     },
-      //     {
-      //       kind: "block",
-      //       type: "logic_compare",
-      //     },
-      //   ],
-      // },
       {
         kind: "category",
         name: "Math",
@@ -68,6 +55,11 @@ export const BlocksWindow = () => {
 
   return (
       <>
+          <div className="flex-1 flex">
+            <div className="w-64 bg-white border-r flex flex-col">
+              <ComponentTree />
+            </div>
+          </div>
         <BlocklyWorkspace
             toolboxConfiguration={toolboxCategories}
             className="[h-screen-100px] w-screen"
@@ -81,12 +73,14 @@ export const BlocksWindow = () => {
             }}
             onWorkspaceChange={workspaceDidChange}
         />
-        <textarea
-            id="code"
-            style={{ height: "200px", width: "400px" }}
-            value={dartCode}
-            readOnly
-        ></textarea>
+        {debugMode && (
+            <textarea
+                id="code"
+                style={{ height: "[h-screen-200px]", width: "400px" }}
+                value={dartCode}
+                readOnly
+            ></textarea>
+        )}
       </>
   );
 };

@@ -41,7 +41,7 @@ export const flutterCategory = {
         },
         {
             kind: "block",
-            type: "runapp",
+            type: "runApp",
         },
         {
             kind: "block",

@@ -161,9 +161,9 @@ Blockly.Blocks['flutter_stateful_widget'] = {
     this.appendDummyInput()
         .appendField(new Blockly.FieldTextInput("MyWidget"), "classname")
         .appendField("StatefulWidget");
-    this.appendStatementInput("vars")
+    this.appendStatementInput("lets")
         .setCheck(null)
-        .appendField("vars");
+        .appendField("lets");
     this.appendValueInput("content")
         .setCheck("Widget")
         .appendField("build(BuildContext context)");
