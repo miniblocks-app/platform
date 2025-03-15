@@ -1,6 +1,6 @@
 import * as Blockly from "blockly";
 
-Blockly.Blocks['runapp'] = {
+Blockly.Blocks['runApp'] = {
     init: function() {
       this.appendValueInput("NAME")
           .setCheck("Widget")

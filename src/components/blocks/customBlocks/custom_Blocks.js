@@ -15,10 +15,10 @@ Blockly.Blocks['new_boundary_function'] = {
 };
 
 pythonGenerator['new_boundary_function'] = function (block) {
-    var text_name = block.getFieldValue('Name');
-    var statements_content = pythonGenerator.statementToCode(block, 'Content');
+    let text_name = block.getFieldValue('Name');
+    let statements_content = pythonGenerator.statementToCode(block, 'Content');
     // TODO: Assemble Python into code variable.
-    var code = 'def ' + text_name + '(_object,**kwargs):\n' + statements_content + '\n';
+    let code = 'def ' + text_name + '(_object,**kwargs):\n' + statements_content + '\n';
     return code;
 };
 

@@ -4,7 +4,7 @@ import "../components/blocks/customBlocks/flutter_scaffolding.js";
 
 export const flutterCategory = {
     kind: "category",
-    name: "Flutter",
+    name: "Flutter-Blocks",
     colour: "#ffb5eb",
     contents: [
         {
@@ -41,7 +41,7 @@ export const flutterCategory = {
         },
         {
             kind: "block",
-            type: "runapp",
+            type: "runApp",
         },
         {
             kind: "block",

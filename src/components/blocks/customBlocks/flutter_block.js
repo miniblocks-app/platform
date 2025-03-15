@@ -92,7 +92,6 @@ Blockly.Blocks['flutter_placeholder'] = {
         .appendField("Placeholder");
     this.appendDummyInput()
         .appendField("color")
-        .appendField(new Blockly.FieldColour("#c0c0c0"), "color");
     this.appendDummyInput()
         .appendField("strokeWidth")
         .appendField(new Blockly.FieldNumber(2.0), "strokeWidth");
@@ -162,9 +161,9 @@ Blockly.Blocks['flutter_stateful_widget'] = {
     this.appendDummyInput()
         .appendField(new Blockly.FieldTextInput("MyWidget"), "classname")
         .appendField("StatefulWidget");
-    this.appendStatementInput("vars")
+    this.appendStatementInput("lets")
         .setCheck(null)
-        .appendField("vars");
+        .appendField("lets");
     this.appendValueInput("content")
         .setCheck("Widget")
         .appendField("build(BuildContext context)");
