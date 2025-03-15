@@ -1,9 +1,9 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useAppStore } from '../store';
-import {ComputerIcon, Hammer, Play, Share2, User} from 'lucide-react';
+import { Play, Share2, User } from 'lucide-react';
 
 export const Header = () => {
-  const { activeTab, setActiveTab, currentProject, renameProject,debugMode, setDebugMode } = useAppStore();
+  const { activeTab, setActiveTab, currentProject, selectedScreen, renameProject } = useAppStore();
   const [isEditing, setIsEditing] = useState(false);
   const [projectName, setProjectName] = useState(currentProject?.name || 'My First Project');
   const inputRef = useRef<HTMLInputElement>(null);
@@ -31,6 +31,12 @@ export const Header = () => {
 
   const handleBlur = () => {
     handleNameSubmit();
+  };
+
+  const handlePreview = () => {
+    if (selectedScreen) {
+      window.open(`/preview/${selectedScreen}`, '_blank');
+    }
   };
   
   return (
@@ -88,20 +94,14 @@ export const Header = () => {
           </button>
         </div>
         <div className="flex items-center space-x-2">
-          <button className="p-2 bg-blue-500 text-white rounded-md flex items-center space-x-2">
-            <Hammer className="w-4 h-4" />
-            <span>Build</span>
-          </button>
-          <button className="p-2 bg-blue-500 text-white rounded-md flex items-center space-x-2">
+          <button 
+            className={`p-2 ${selectedScreen ? 'bg-blue-500 hover:bg-blue-600' : 'bg-gray-300 cursor-not-allowed'} text-white rounded-md flex items-center space-x-2 transition-colors`}
+            onClick={handlePreview}
+            disabled={!selectedScreen}
+            title={selectedScreen ? 'Open preview in new tab' : 'Select a screen to preview'}
+          >
             <Play className="w-4 h-4" />
             <span>Preview</span>
-          </button>
-          <button
-              className={`p-2 ${debugMode ? 'bg-blue-500 text-white' : 'bg-white text-blue-500'} rounded-md flex items-center space-x-2`}
-              onClick={() => setDebugMode((debugMode) => !debugMode)}
-          >
-            <ComputerIcon className="w-4 h-4" />
-            <span>Debug</span>
           </button>
           <button className="p-2 hover:bg-gray-100 rounded-full">
             <User className="w-5 h-5 text-gray-600" />
