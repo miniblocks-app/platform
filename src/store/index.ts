@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { Project, Screen, ComponentData } from '../types';
+import { WorkspaceSvg } from "react-blockly";
 
 interface AppState {
   activeTab: 'DESIGN' | 'BLOCKS';
@@ -13,6 +14,9 @@ interface AppState {
     past: Project[];
     future: Project[];
   };
+  blocklyXml: string | null;      // Holds the raw XML describing the workspace
+  dartCode: string; 
+  workspace: WorkspaceSvg | null;
   setActiveTab: (tab: 'DESIGN' | 'BLOCKS') => void;
   setDebugMode: (mode: (debugMode: boolean) => boolean) => void;
   setCurrentProject: (project: Project) => void;
@@ -20,6 +24,9 @@ interface AppState {
   setSelectedComponent: (componentId: string | null) => void;
   setShowDeleteDialog: (show: boolean) => void;
   setScreenToDelete: (screenId: string | null) => void;
+  setBlocklyXml: (xml: string) => void;
+  setDartCode: (code: string) => void;
+  setWorkspace: (workspace: WorkspaceSvg | null) => void;
   addScreen: (screen: Screen) => void;
   deleteScreen: (screenId: string) => void;
   updateScreen: (screenId: string, updates: Partial<Screen>) => void;
@@ -43,6 +50,9 @@ export const useAppStore = create<AppState>((set) => ({
     past: [],
     future: [],
   },
+  blocklyXml: null,
+  dartCode: "",
+  workspace: null,
   
   setActiveTab: (tab) => set({ activeTab: tab }),
   setDebugMode: (mode) => set((state) => ({ debugMode: mode(state.debugMode) })),
@@ -58,7 +68,10 @@ export const useAppStore = create<AppState>((set) => ({
   setSelectedComponent: (componentId) => set({ selectedComponent: componentId }),
   setShowDeleteDialog: (show) => set({ showDeleteDialog: show }),
   setScreenToDelete: (screenId) => set({ screenToDelete: screenId }),
-
+  
+  setWorkspace: (workspace) => set({ workspace }),
+  setBlocklyXml: (xml) => set({ blocklyXml: xml }),
+  setDartCode: (code) => set({ dartCode: code }),
   addScreen: (screen) => set((state) => {
     if (!state.currentProject) return state;
 
