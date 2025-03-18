@@ -1,9 +1,9 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useAppStore } from '../store';
-import {ComputerIcon, Hammer, Play, Share2, User} from 'lucide-react';
+import { ComputerIcon, Hammer, Play, Share2, User } from 'lucide-react';
 
 export const Header = () => {
-  const { activeTab, setActiveTab, currentProject, renameProject,debugMode, setDebugMode } = useAppStore();
+  const { activeTab, setActiveTab, currentProject, selectedScreen, renameProject, debugMode, setDebugMode } = useAppStore();
   const [isEditing, setIsEditing] = useState(false);
   const [projectName, setProjectName] = useState(currentProject?.name || 'My First Project');
   const inputRef = useRef<HTMLInputElement>(null);
@@ -31,6 +31,12 @@ export const Header = () => {
 
   const handleBlur = () => {
     handleNameSubmit();
+  };
+
+  const handlePreview = () => {
+    if (selectedScreen) {
+      window.open(`/preview/${selectedScreen}`, '_blank');
+    }
   };
   
   return (
@@ -92,7 +98,12 @@ export const Header = () => {
             <Hammer className="w-4 h-4" />
             <span>Build</span>
           </button>
-          <button className="p-2 bg-blue-500 text-white rounded-md flex items-center space-x-2">
+          <button 
+            className={`p-2 ${selectedScreen ? 'bg-blue-500 hover:bg-blue-600' : 'bg-gray-300 cursor-not-allowed'} text-white rounded-md flex items-center space-x-2 transition-colors`}
+            onClick={handlePreview}
+            disabled={!selectedScreen}
+            title={selectedScreen ? 'Open preview in new tab' : 'Select a screen to preview'}
+          >
             <Play className="w-4 h-4" />
             <span>Preview</span>
           </button>
