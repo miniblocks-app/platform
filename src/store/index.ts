@@ -69,7 +69,7 @@ export const useAppStore = create<AppState>((set) => ({
   setShowDeleteDialog: (show) => set({ showDeleteDialog: show }),
   setScreenToDelete: (screenId) => set({ screenToDelete: screenId }),
   
-  setWorkspace: (workspace) => set({ workspace }),
+  setWorkspace: (workspace) => set({ workspace: workspace }),
   setBlocklyXml: (xml) => set({ blocklyXml: xml }),
   setDartCode: (code) => set({ dartCode: code }),
   addScreen: (screen) => set((state) => {
