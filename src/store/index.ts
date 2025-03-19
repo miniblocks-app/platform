@@ -71,10 +71,11 @@ type AppPersist = Omit<AppState, 'workspace'>;
 
 // Create persistence configuration
 const persistOptions: PersistOptions<AppState, AppPersist> = {
-  name: 'app-store',
-  // Only persist the serializable parts of the state
-  // partialize: (state: AppState) => ({
-  // }),
+    name: 'app-store',
+    partialize: (state: AppState) => {
+        const { workspace, ...persistedState } = state;
+        return persistedState;
+    },
 };
 
 /**
