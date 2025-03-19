@@ -22,6 +22,7 @@ interface ComponentData {
 interface AppState {
   activeTab: 'DESIGN' | 'BLOCKS';
   debugMode: boolean;
+  advanceMode: boolean;
   currentProject: Project | null;
   selectedScreen: string | null;
   selectedComponent: string | null;
@@ -40,6 +41,7 @@ interface AppState {
   
   setActiveTab: (tab: 'DESIGN' | 'BLOCKS') => void;
   setDebugMode: (mode: (debugMode: boolean) => boolean) => void;
+  setAdvanceMode: (mode: (advanceMode: boolean) => boolean) => void;
   setCurrentProject: (project: Project) => void;
   setSelectedScreen: (screenId: string | null) => void;
   setSelectedComponent: (componentId: string | null) => void;
@@ -81,6 +83,7 @@ const persistOptions: PersistOptions<AppState, AppPersist> = {
 const baseStore: StateCreator<AppState> = (set, get) => ({
   activeTab: 'DESIGN',
   debugMode: false,
+  advanceMode: false,
   currentProject: null,
   selectedScreen: null,
   selectedComponent: null,
@@ -96,16 +99,17 @@ const baseStore: StateCreator<AppState> = (set, get) => ({
   workspace: null,
   
   setActiveTab: (tab) => set({ activeTab: tab }),
-  setDebugMode: (mode) =>
-    set((state) => ({ debugMode: mode(state.debugMode) })),
-  setCurrentProject: (project) =>
-    set((state) => ({
-      currentProject: project,
-      history: {
-        past: [...state.history.past, state.currentProject],
-        future: [],
-      },
-    })),
+
+  setDebugMode: (mode) => set((state) => ({ debugMode: mode(state.debugMode) })),
+  setAdvanceMode: (mode) => set((state) => ({ advanceMode: mode(state.advanceMode) })),
+  setCurrentProject: (project) => set((state) => ({
+    currentProject: project,
+    history: {
+      past: state.currentProject ? [...state.history.past, state.currentProject] : [...state.history.past],
+      future: [],
+    },
+  })),
+  
   setSelectedScreen: (screenId) => set({ selectedScreen: screenId }),
   setSelectedComponent: (componentId) => set({ selectedComponent: componentId }),
   setShowDeleteDialog: (show) => set({ showDeleteDialog: show }),
