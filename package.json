@@ -10,6 +10,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@blockly/plugin-workspace-search": "^9.1.6",
+    "@blockly/toolbox-search": "^2.0.12",
     "@blockly/workspace-backpack": "^6.0.12",
     "@blockly/workspace-minimap": "^0.2.12",
     "@dnd-kit/core": "^6.1.0",

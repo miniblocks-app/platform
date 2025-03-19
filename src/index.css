@@ -32,3 +32,8 @@
   top: 100px;
   left: 79vw;
 }
+
+/*To make sure the scrollbar remains hidden when the blockly toolbox is closed*/
+svg[display='none'] {
+  display: none;
+}
