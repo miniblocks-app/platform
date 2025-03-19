@@ -14,6 +14,7 @@
   background-image: linear-gradient(to right, #e5e7eb 1px, transparent 1px),
     linear-gradient(to bottom, #e5e7eb 1px, transparent 1px);
 }
+
 .fill-height {
   width: 100%;
   height: calc(100vh - 100px); /* Adjust this value */
@@ -29,8 +30,9 @@
   box-shadow: none;
   width: 200px;
   height: 150px;
-  top: 100px;
-  left: 79vw;
+  top: 16px !important;
+  left: unset !important;
+  right: 100px
 }
 
 /*To make sure the scrollbar remains hidden when the blockly toolbox is closed*/

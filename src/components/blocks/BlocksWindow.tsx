@@ -5,9 +5,9 @@ import "./customBlocks/custom_Blocks";
 import {flutterCategory, ToolboxCategory} from "../../categories/flutter.ts";
 import {dartGenerator} from "blockly/dart";
 import {ComponentTree} from "../design/ComponentTree.tsx";
-import {Minimap} from '@blockly/workspace-minimap';
 import {Backpack} from '@blockly/workspace-backpack';
 import {WorkspaceSearch} from '@blockly/plugin-workspace-search';
+import {PositionedMinimap} from '@blockly/workspace-minimap';
 import "@blockly/toolbox-search";
 import CustomCategory from "../../themes/toolbox/customCats.tsx";
 import {LogicTheme} from "../../themes/logicTheme.tsx";
@@ -39,7 +39,7 @@ export const BlocksWindow = () => {
         contents: baseContents,
     };
 
-     const workspaceConfiguration = {
+    const workspaceConfiguration = {
         theme: LogicTheme,
         // renderer: "custom_renderer",
         toolbar: CustomCategory,
@@ -78,20 +78,19 @@ export const BlocksWindow = () => {
 
 
     function handleWorkspaceInjected(workspace: WorkspaceSvg) {
-        const minimap = new Minimap(workspace);
+        const minimap = new PositionedMinimap(workspace);
         minimap.init();
 
         const backpack = new Backpack(workspace);
         backpack.init();
 
         const workspaceSearch = new WorkspaceSearch(workspace);
-
         workspaceSearch.init();
     }
 
     return (
         <>
-            <div className="flex-1 flex">
+            <div className="flex w-[200px]">
                 <div className="w-64 bg-white border-r flex flex-col">
                     <ComponentTree workspace={workspace} currentProject={currentProject}/>
                 </div>
@@ -99,7 +98,7 @@ export const BlocksWindow = () => {
             <BlocklyWorkspace
                 initialXml={blocklyXml ?? undefined}
                 toolboxConfiguration={toolboxCategories}
-                className="[h-screen-100px] w-screen"
+                className="[h-screen-100px] relative grow"
                 workspaceConfiguration={workspaceConfiguration}
                 onXmlChange={handleXmlChange}
                 onWorkspaceChange={workspaceDidChange}

@@ -73,14 +73,14 @@ type AppPersist = Omit<AppState, 'workspace'>;
 const persistOptions: PersistOptions<AppState, AppPersist> = {
   name: 'app-store',
   // Only persist the serializable parts of the state
-  partialize: (state: AppState) => ({
-  }),
+  // partialize: (state: AppState) => ({
+  // }),
 };
 
 /**
  * (1) Define the base store logic (without 'persist').
  */
-const baseStore: StateCreator<AppState> = (set, get) => ({
+const baseStore: StateCreator<AppState> = (set) => ({
   activeTab: 'DESIGN',
   debugMode: false,
   advanceMode: false,

@@ -3,7 +3,7 @@ import { useAppStore } from '../store';
 import {CogIcon, ComputerIcon, Hammer, Play, Share2, User} from 'lucide-react';
 
 export const Header = () => {
-  const { activeTab, setActiveTab, currentProject, renameProject,debugMode, setDebugMode, advanceMode, setAdvanceMode } = useAppStore();
+  const { activeTab, setActiveTab, currentProject, renameProject,debugMode, setDebugMode, advanceMode, setAdvanceMode, selectedScreen } = useAppStore();
   const [isEditing, setIsEditing] = useState(false);
   const [projectName, setProjectName] = useState(currentProject?.name || 'My First Project');
   const inputRef = useRef<HTMLInputElement>(null);
