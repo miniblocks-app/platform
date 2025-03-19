@@ -32,13 +32,17 @@ export const Header = () => {
   const handleBlur = () => {
     handleNameSubmit();
   };
+
+  const handlePreview = () => {
+    if (selectedScreen) {
+      window.open(`/preview/${selectedScreen}`, '_blank');
+    }
+  };
   
   return (
     <header className="flex items-center justify-between px-4 py-2 border-b bg-white">
       <div className="flex items-center space-x-8">
-        <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent">
-          miniblocks
-        </h1>
+        <img src="/miniblocks-colored.png" alt="Miniblocks Logo" className="h-8" />
         <div className="flex space-x-2">
           <button
             className={`px-4 py-1 rounded-md ${
@@ -98,7 +102,12 @@ export const Header = () => {
             <Hammer className="w-4 h-4" />
             <span>Build</span>
           </button>
-          <button className="p-2 bg-blue-500 text-white rounded-md flex items-center space-x-2">
+          <button 
+            className={`p-2 ${selectedScreen ? 'bg-blue-500 hover:bg-blue-600' : 'bg-gray-300 cursor-not-allowed'} text-white rounded-md flex items-center space-x-2 transition-colors`}
+            onClick={handlePreview}
+            disabled={!selectedScreen}
+            title={selectedScreen ? 'Open preview in new tab' : 'Select a screen to preview'}
+          >
             <Play className="w-4 h-4" />
             <span>Preview</span>
           </button>
