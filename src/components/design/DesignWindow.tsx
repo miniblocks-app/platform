@@ -6,16 +6,22 @@ import { DesignCanvas } from './DesignCanvas';
 import { PropertiesPanel } from './PropertiesPanel';
 import { useAppStore } from '../../store';
 import { ComponentPreview } from './ComponentPreview';
+import { BlocklyWorkspace } from 'react-blockly';
 
 export const DesignWindow = () => {
   const { selectedScreen, addComponent } = useAppStore();
   const [activeId, setActiveId] = React.useState<string | null>(null);
   const [activeDragType, setActiveDragType] = React.useState<string | null>(null);
+  const { currentProject, workspace } = useAppStore();
 
   const handleDragStart = (event: any) => {
     setActiveId(event.active.id);
     setActiveDragType(event.active.data.current?.type);
   };
+
+  React.useEffect(() => {
+    console.log("Workspace changed:", workspace);
+  }, [workspace]);
 
   const handleDragEnd = (event: DragEndEvent) => {
     const { over, active } = event;
@@ -49,10 +55,11 @@ export const DesignWindow = () => {
     <DndContext onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
       <div className="flex-1 flex">
         <div className="w-64 bg-white border-r flex flex-col">
-          <ComponentTree />
-          <div className="border-t">
-            <ComponentPalette />
-          </div>
+        <ComponentTree
+          workspace={workspace}
+          currentProject={currentProject}
+        />
+            <ComponentPalette />   
         </div>
         <DesignCanvas />
         <PropertiesPanel />
