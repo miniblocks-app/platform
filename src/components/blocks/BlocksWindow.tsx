@@ -13,8 +13,8 @@ import CustomCategory from "../../themes/toolbox/customCats.tsx";
 import {LogicTheme} from "../../themes/logicTheme.tsx";
 
 export const BlocksWindow = () => {
-  const {debugMode, advanceMode, blocklyXml, setBlocklyXml, currentProject, workspace, setWorkspace } = useAppStore();
-  const [dartCode, setDartCode] = useState("");
+  const {debugMode, advanceMode, blocklyXml, setBlocklyXml, currentProject, workspace, setWorkspace, setDartCode } = useAppStore();
+  const [dartCode, setLocalDartCode] = useState("");
 
     const baseContents: ToolboxCategory[] = [
         {
@@ -73,8 +73,9 @@ export const BlocksWindow = () => {
     setWorkspace(ws);
 
     const code = dartGenerator.workspaceToCode(ws);
+    setLocalDartCode(code);
     setDartCode(code);
-  }, []);
+  }, [setWorkspace, setDartCode]);
 
 
     function handleWorkspaceInjected(workspace: WorkspaceSvg) {

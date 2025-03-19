@@ -3,7 +3,7 @@ import { useAppStore } from '../store';
 import {CogIcon, ComputerIcon, Hammer, Play, Share2, User} from 'lucide-react';
 
 export const Header = () => {
-  const { activeTab, setActiveTab, currentProject, renameProject,debugMode, setDebugMode, advanceMode, setAdvanceMode, selectedScreen } = useAppStore();
+  const { activeTab, setActiveTab, currentProject, renameProject,debugMode, setDebugMode, advanceMode, setAdvanceMode, selectedScreen, dartCode } = useAppStore();
   const [isEditing, setIsEditing] = useState(false);
   const [projectName, setProjectName] = useState(currentProject?.name || 'My First Project');
   const inputRef = useRef<HTMLInputElement>(null);
@@ -14,6 +14,22 @@ export const Header = () => {
       inputRef.current.select();
     }
   }, [isEditing]);
+
+  const handleBuildClick = async () => {
+    const response = await fetch('https://miniblocks-core-639528289562.us-central1.run.app/upload', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ code: dartCode }),
+    });
+
+    if (response.ok) {
+      console.log('Build request sent successfully');
+    } else {
+      console.error('Failed to send build request');
+    }
+  };
 
   const handleNameSubmit = () => {
     setIsEditing(false);
@@ -98,7 +114,8 @@ export const Header = () => {
           >            <CogIcon className="w-4 h-4" />
             <span>Advance Mode</span>
           </button>
-          <button className="p-2 bg-blue-500 text-white rounded-md flex items-center space-x-2">
+          <button className="p-2 bg-blue-500 text-white rounded-md flex items-center space-x-2"
+          onClick={handleBuildClick}>
             <Hammer className="w-4 h-4" />
             <span>Build</span>
           </button>
