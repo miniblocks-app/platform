@@ -81,7 +81,7 @@ export const ComponentTree: React.FC<ComponentTreeProps> = ({
     if (workspace) {
       // 1. Create the parent block
       const parentBlock = workspace.newBlock("flutter_stateless_widget");
-      parentBlock.setFieldValue("screen1", "classname");  // e.g. "screen1"
+      parentBlock.setFieldValue(`screen${screenCount+1}`, "classname");  // e.g. "screen1"
 
       // 2. Create the child block
       const childBlock = workspace.newBlock("flutter_create_instance");

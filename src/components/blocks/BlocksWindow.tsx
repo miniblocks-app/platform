@@ -1,6 +1,6 @@
 import {BlocklyWorkspace, WorkspaceSvg} from "react-blockly";
 import {useAppStore} from '../../store';
-import {useState} from "react";
+import {useCallback, useState} from "react";
 import "./customBlocks/custom_Blocks";
 import {flutterCategory, ToolboxCategory} from "../../categories/flutter.ts";
 import {dartGenerator} from "blockly/dart";
@@ -13,8 +13,8 @@ import CustomCategory from "../../themes/toolbox/customCats.tsx";
 import {LogicTheme} from "../../themes/logicTheme.tsx";
 
 export const BlocksWindow = () => {
-    const {debugMode, advanceMode} = useAppStore();
-    const [dartCode, setDartCode] = useState("");
+  const {debugMode, advanceMode, blocklyXml, setBlocklyXml, currentProject, workspace, setWorkspace } = useAppStore();
+  const [dartCode, setDartCode] = useState("");
 
     const baseContents: ToolboxCategory[] = [
         {
@@ -64,10 +64,18 @@ export const BlocksWindow = () => {
         },
     };
 
-    function workspaceDidChange(workspace: WorkspaceSvg) {
-        const code = dartGenerator.workspaceToCode(workspace);
-        setDartCode(code);
-    }
+    // Whenever the XML changes (user drags blocks, etc.)
+  const handleXmlChange = (newXml: string) => {
+    setBlocklyXml(newXml);
+  };
+
+  const workspaceDidChange = useCallback((ws: WorkspaceSvg) => {
+    setWorkspace(ws);
+
+    const code = dartGenerator.workspaceToCode(ws);
+    setDartCode(code);
+  }, []);
+
 
     function handleWorkspaceInjected(workspace: WorkspaceSvg) {
         const minimap = new Minimap(workspace);
@@ -85,13 +93,15 @@ export const BlocksWindow = () => {
         <>
             <div className="flex-1 flex">
                 <div className="w-64 bg-white border-r flex flex-col">
-                    <ComponentTree/>
+                    <ComponentTree workspace={workspace} currentProject={currentProject}/>
                 </div>
             </div>
             <BlocklyWorkspace
+                initialXml={blocklyXml ?? undefined}
                 toolboxConfiguration={toolboxCategories}
                 className="[h-screen-100px] w-screen"
                 workspaceConfiguration={workspaceConfiguration}
+                onXmlChange={handleXmlChange}
                 onWorkspaceChange={workspaceDidChange}
                 onInject={handleWorkspaceInjected}
             />
