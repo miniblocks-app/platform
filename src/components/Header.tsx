@@ -1,9 +1,9 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useAppStore } from '../store';
-import { ComputerIcon, Hammer, Play, Share2, User } from 'lucide-react';
+import {CogIcon, ComputerIcon, Hammer, Play, Share2, User} from 'lucide-react';
 
 export const Header = () => {
-  const { activeTab, setActiveTab, currentProject, selectedScreen, renameProject, debugMode, setDebugMode } = useAppStore();
+  const { activeTab, setActiveTab, currentProject, renameProject,debugMode, setDebugMode, advanceMode, setAdvanceMode } = useAppStore();
   const [isEditing, setIsEditing] = useState(false);
   const [projectName, setProjectName] = useState(currentProject?.name || 'My First Project');
   const inputRef = useRef<HTMLInputElement>(null);
@@ -92,6 +92,12 @@ export const Header = () => {
           </button>
         </div>
         <div className="flex items-center space-x-2">
+          <button
+              className={`p-2 ${advanceMode ? 'bg-blue-500 text-white' : 'bg-white text-blue-500'} rounded-md flex items-center space-x-2`}
+              onClick={() => setAdvanceMode((advanceMode) => !advanceMode)}
+          >            <CogIcon className="w-4 h-4" />
+            <span>Advance Mode</span>
+          </button>
           <button className="p-2 bg-blue-500 text-white rounded-md flex items-center space-x-2">
             <Hammer className="w-4 h-4" />
             <span>Build</span>
