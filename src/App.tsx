@@ -1,10 +1,10 @@
-import React from 'react';
+import React from "react";
 import "./App.css";
-import { Header } from './components/Header';
-import { useAppStore } from './store';
-import { DesignWindow } from './components/design/DesignWindow';
-import { BlocksWindow } from './components/blocks/BlocksWindow';
-import { DeleteScreenDialog } from './components/design/DeleteScreenDialog';
+import { Header } from "./components/Header";
+import { useAppStore } from "./store";
+import { DesignWindow } from "./components/design/DesignWindow";
+import { BlocksWindow } from "./components/blocks/BlocksWindow";
+import { DeleteScreenDialog } from "./components/design/DeleteScreenDialog";
 
 function App() {
   const { activeTab } = useAppStore();
@@ -15,7 +15,7 @@ function App() {
     if (!currentProject) {
       setCurrentProject({
         id: crypto.randomUUID(),
-        name: 'My First Project',
+        name: "My First Project",
         screens: [],
       });
     }
@@ -25,15 +25,17 @@ function App() {
     <div className="h-screen flex flex-col bg-gray-50">
       <Header />
       <main className="flex-1 flex">
-        {activeTab === 'DESIGN' ? (
-          <DesignWindow />
-        ) : (
+        {activeTab === "DESIGN" && <DesignWindow />}
+        <div
+          className={`flex ${
+            activeTab === "DESIGN" ? "hidden" : "flex"
+          }`}
+        >
           <BlocksWindow />
-        )}
+        </div>
       </main>
       <DeleteScreenDialog />
     </div>
-    //   <BlocksWindow />
   );
 }
 

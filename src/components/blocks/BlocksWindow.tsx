@@ -1,15 +1,21 @@
 import { BlocklyWorkspace, WorkspaceSvg } from "react-blockly";
 import { useAppStore } from "../../store";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import "./customBlocks/custom_Blocks";
 import { flutterCategory } from "../../categories/flutter.ts";
 import { dartGenerator } from "blockly/dart";
 import { ComponentTree } from "../design/ComponentTree.tsx";
 
 export const BlocksWindow = () => {
-  const { debugMode, blocklyXml, setBlocklyXml, currentProject } = useAppStore();
+  const {
+    debugMode,
+    blocklyXml,
+    setBlocklyXml,
+    currentProject,
+    workspace,
+    setWorkspace,
+  } = useAppStore();
   const [dartCode, setDartCode] = useState("");
-  const [workspace, setWorkspace] = useState<WorkspaceSvg | null>(null);
 
   // Whenever the XML changes (user drags blocks, etc.)
   const handleXmlChange = (newXml: string) => {
@@ -22,16 +28,14 @@ export const BlocksWindow = () => {
     contents: [flutterCategory],
   };
   // Called on every workspace change
-  const workspaceDidChange = (ws: WorkspaceSvg) => {
+  const workspaceDidChange = useCallback((ws: WorkspaceSvg) => {
     setWorkspace(ws);
 
     const code = dartGenerator.workspaceToCode(ws);
     setDartCode(code);
-    // For debugging
     console.log("Dart Code:", code);
     console.log("Current XML:", blocklyXml);
-  };
-  
+  }, []);
 
   return (
     <>
@@ -51,7 +55,7 @@ export const BlocksWindow = () => {
         workspaceConfiguration={{
           grid: { spacing: 20, length: 3, colour: "#ccc", snap: true },
         }}
-        onWorkspaceChange={workspaceDidChange} 
+        onWorkspaceChange={workspaceDidChange}
       />
       {debugMode && (
         <textarea
