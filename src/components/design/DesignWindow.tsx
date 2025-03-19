@@ -35,8 +35,9 @@ export const DesignWindow = () => {
           x: over.rect.left - active.rect.left,
           y: over.rect.top - active.rect.top,
         };
-
-        addComponent(selectedScreen, {
+  
+        // Add the component to your store
+        const newComponent = {
           id: crypto.randomUUID(),
           type: componentType,
           props: {
@@ -44,9 +45,26 @@ export const DesignWindow = () => {
               position: 'absolute',
               left: `${position.x}px`,
               top: `${position.y}px`,
-            }
+            },
           },
-        });
+        };
+  
+        addComponent(selectedScreen, newComponent);
+  
+        // Create the corresponding Blockly block if the workspace is available
+        if (workspace) {
+          if (componentType === 'button') {
+            const buttonBlock = workspace.newBlock('flutter_raised_button');
+            buttonBlock.initSvg();
+            buttonBlock.render();
+          } else if (componentType === 'text') {
+            const textBlock = workspace.newBlock('flutter_text');
+            textBlock.initSvg();
+            textBlock.render();
+          }
+        } else {
+          console.warn("Blockly workspace is not available in DesignWindow.");
+        }
       }
     }
   };
