@@ -23,3 +23,12 @@
   justify-content: center;
   border: 1px solid #ccc;
 }
+
+.blockly-minimap {
+  position: absolute;
+  box-shadow: none;
+  width: 200px;
+  height: 150px;
+  top: 100px;
+  left: 79vw;
+}

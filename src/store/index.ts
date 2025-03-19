@@ -4,6 +4,7 @@ import { Project, Screen, ComponentData } from '../types';
 interface AppState {
   activeTab: 'DESIGN' | 'BLOCKS';
   debugMode: boolean;
+  advanceMode: boolean;
   currentProject: Project | null;
   selectedScreen: string | null;
   selectedComponent: string | null;
@@ -15,6 +16,7 @@ interface AppState {
   };
   setActiveTab: (tab: 'DESIGN' | 'BLOCKS') => void;
   setDebugMode: (mode: (debugMode: boolean) => boolean) => void;
+  setAdvanceMode: (mode: (advanceMode: boolean) => boolean) => void;
   setCurrentProject: (project: Project) => void;
   setSelectedScreen: (screenId: string | null) => void;
   setSelectedComponent: (componentId: string | null) => void;
@@ -34,6 +36,7 @@ interface AppState {
 export const useAppStore = create<AppState>((set) => ({
   activeTab: 'DESIGN',
   debugMode: false,
+  advanceMode: false,
   currentProject: null,
   selectedScreen: null,
   selectedComponent: null,
@@ -46,6 +49,7 @@ export const useAppStore = create<AppState>((set) => ({
   
   setActiveTab: (tab) => set({ activeTab: tab }),
   setDebugMode: (mode) => set((state) => ({ debugMode: mode(state.debugMode) })),
+  setAdvanceMode: (mode) => set((state) => ({ advanceMode: mode(state.advanceMode) })),
   setCurrentProject: (project) => set((state) => ({
     currentProject: project,
     history: {

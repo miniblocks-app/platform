@@ -1,27 +1,34 @@
 import {BlocklyWorkspace, WorkspaceSvg} from "react-blockly";
 import { useAppStore } from '../../store';
-import  { useState } from "react";
+import { useState} from "react";
 import "./customBlocks/custom_Blocks";
 import {flutterCategory} from "../../categories/flutter.ts";
 import {dartGenerator} from "blockly/dart";
 import {ComponentTree} from "../design/ComponentTree.tsx";
-
+import {Minimap} from '@blockly/workspace-minimap';
+import {Backpack} from '@blockly/workspace-backpack';
 
 export const BlocksWindow = () => {
-  const { debugMode} = useAppStore();
+  const { debugMode, advanceMode} = useAppStore();
   const [dartCode, setDartCode] = useState("");
 
-  const toolboxCategories = {
-    kind: "categoryToolbox",
-    contents: [
-      flutterCategory,
-    ],
-  };
+    const toolboxCategories = {
+        kind: "categoryToolbox",
+        contents: advanceMode ? [flutterCategory] : [],
+    };
 
   function workspaceDidChange(workspace: WorkspaceSvg) {
     const code = dartGenerator.workspaceToCode(workspace);
     setDartCode(code);
   }
+
+  function handleWorkspaceInjected(workspace: WorkspaceSvg) {
+      const minimap = new Minimap(workspace);
+        minimap.init();
+
+      const backpack = new Backpack(workspace);
+      backpack.init();
+    }
 
   return (
       <>
@@ -42,6 +49,7 @@ export const BlocksWindow = () => {
               },
             }}
             onWorkspaceChange={workspaceDidChange}
+            onInject={handleWorkspaceInjected}
         />
         {debugMode && (
             <textarea
