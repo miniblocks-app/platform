@@ -72,8 +72,6 @@ const persistOptions: PersistOptions<AppState, AppPersist> = {
   name: 'app-store',
   // Only persist the serializable parts of the state
   partialize: (state: AppState) => ({
-    ...state,
-    workspace: null,
   }),
 };
 
