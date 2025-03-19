@@ -1,32 +1,72 @@
 import React, { useState } from 'react';
-import { Type, Image, Donut, Search } from 'lucide-react';
+import { Type, Image, Search, Square, FileInput as InputIcon, Plus, Minus, List, CircleDot, CheckSquare, Donut } from 'lucide-react';
 import { useDraggable } from '@dnd-kit/core';
-import { ComponentType } from '../../types';
+import { ComponentType, ComponentSection } from '../../types';
 import clsx from 'clsx';
+
+const COMPONENT_SECTIONS: ComponentSection[] = [
+  {
+    title: 'General',
+    components: [
+      {
+        type: 'button',
+        label: 'Button',
+        icon: <Donut className="w-6 h-6 text-gray-600" />,
+      },
+      {
+        type: 'text',
+        label: 'Text',
+        icon: <Type className="w-6 h-6 text-gray-600" />,
+      },
+      {
+        type: 'image',
+        label: 'Image',
+        icon: <Image className="w-6 h-6 text-gray-600" />,
+      },
+      {
+        type: 'spacer',
+        label: 'Spacer',
+        icon: <Square className="w-6 h-6 text-gray-600" />,
+      },
+    ],
+  },
+  {
+    title: 'Form Elements',
+    components: [
+      {
+        type: 'input',
+        label: 'Input Field',
+        icon: <InputIcon className="w-6 h-6 text-gray-600" />,
+      },
+      {
+        type: 'counter',
+        label: 'Counter',
+        icon: <Plus className="w-6 h-6 text-gray-600" />,
+      },
+      {
+        type: 'dropdown',
+        label: 'Dropdown',
+        icon: <List className="w-6 h-6 text-gray-600" />,
+      },
+      {
+        type: 'radio',
+        label: 'Radio Button',
+        icon: <CircleDot className="w-6 h-6 text-gray-600" />,
+      },
+      {
+        type: 'checkbox',
+        label: 'Checkbox',
+        icon: <CheckSquare className="w-6 h-6 text-gray-600" />,
+      },
+    ],
+  },
+];
 
 interface ComponentItemProps {
   type: ComponentType;
   label: string;
   icon: React.ReactNode;
 }
-
-const COMPONENTS: ComponentItemProps[] = [
-  {
-    type: 'button',
-    label: 'Button',
-    icon: <Donut className="w-6 h-6 text-gray-600" />,
-  },
-  {
-    type: 'text',
-    label: 'Text',
-    icon: <Type className="w-6 h-6 text-gray-600" />,
-  },
-  {
-    type: 'image',
-    label: 'Image',
-    icon: <Image className="w-6 h-6 text-gray-600" />,
-  },
-];
 
 const ComponentItem = ({ type, label, icon }: ComponentItemProps) => {
   const { attributes, listeners, setNodeRef, isDragging } = useDraggable({
@@ -42,12 +82,14 @@ const ComponentItem = ({ type, label, icon }: ComponentItemProps) => {
       {...listeners}
       {...attributes}
       className={clsx(
-        'flex flex-col items-center p-4 border rounded-lg cursor-move hover:bg-gray-50',
+        'flex flex-col items-center justify-center p-3 rounded-lg cursor-move hover:bg-gray-50 border border-gray-200',
         isDragging && 'opacity-50'
       )}
     >
-      {icon}
-      <span className="mt-2 text-sm text-gray-600">{label}</span>
+      <div className="p-2 rounded-md mb-2 bg-gray-50">
+        {icon}
+      </div>
+      <span className="text-sm text-gray-700 text-center">{label}</span>
     </div>
   );
 };
@@ -55,14 +97,16 @@ const ComponentItem = ({ type, label, icon }: ComponentItemProps) => {
 export const ComponentPalette = () => {
   const [searchQuery, setSearchQuery] = useState('');
 
-  const filteredComponents = COMPONENTS.filter(component =>
-    component.label.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filteredSections = COMPONENT_SECTIONS.map(section => ({
+    ...section,
+    components: section.components.filter(component =>
+      component.label.toLowerCase().includes(searchQuery.toLowerCase())
+    ),
+  })).filter(section => section.components.length > 0);
 
   return (
     <div className="border-t">
       <div className="p-4 border-b">
-        <h2 className="font-semibold text-gray-700 mb-3">Add Components</h2>
         <div className="relative">
           <input
             type="text"
@@ -74,17 +118,26 @@ export const ComponentPalette = () => {
           <Search className="absolute left-3 top-2.5 w-4 h-4 text-gray-400" />
         </div>
       </div>
-      <div className="p-4 grid grid-cols-2 gap-4">
-        {filteredComponents.map((component) => (
-          <ComponentItem
-            key={component.type}
-            type={component.type}
-            label={component.label}
-            icon={component.icon}
-          />
+      <div className="overflow-y-auto">
+        {filteredSections.map((section, index) => (
+          <div key={section.title} className={clsx(index > 0 && 'border-t')}>
+            <div className="px-4 py-2 bg-gray-50">
+              <h3 className="text-sm font-medium text-gray-700">{section.title}</h3>
+            </div>
+            <div className="p-4 grid grid-cols-3 gap-2">
+              {section.components.map((component) => (
+                <ComponentItem
+                  key={component.type}
+                  type={component.type}
+                  label={component.label}
+                  icon={component.icon}
+                />
+              ))}
+            </div>
+          </div>
         ))}
-        {filteredComponents.length === 0 && (
-          <div className="col-span-2 text-center py-4 text-gray-500 text-sm">
+        {filteredSections.length === 0 && (
+          <div className="p-4 text-center text-sm text-gray-500">
             No components found
           </div>
         )}
