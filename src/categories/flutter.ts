@@ -18,6 +18,10 @@ export const flutterCategory: ToolboxCategory= {
     contents: [
         {
             kind: "block",
+            type: "flutter_import_material",
+        },
+        {
+            kind: "block",
             type: "flutter_stateless_widget",
         },
         {
