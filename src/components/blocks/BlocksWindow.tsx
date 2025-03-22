@@ -1,45 +1,46 @@
 import {BlocklyWorkspace, WorkspaceSvg} from "react-blockly";
 import {useAppStore} from '../../store';
-import {useState} from "react";
+import {useCallback, useState} from "react";
 import "./customBlocks/custom_Blocks";
 import {flutterCategory, ToolboxCategory} from "../../categories/flutter.ts";
 import {dartGenerator} from "blockly/dart";
 import {ComponentTree} from "../design/ComponentTree.tsx";
-import {Minimap} from '@blockly/workspace-minimap';
 import {Backpack} from '@blockly/workspace-backpack';
 import {WorkspaceSearch} from '@blockly/plugin-workspace-search';
+import {PositionedMinimap} from '@blockly/workspace-minimap';
 import "@blockly/toolbox-search";
 import CustomCategory from "../../themes/toolbox/customCats.tsx";
 import {LogicTheme} from "../../themes/logicTheme.tsx";
+import {commonCategory, variablesCategory, loopsCategory, functionCategory, listCategory} from "./categories/google_blocks.ts";
+import 'blockly/blocks';
 
 export const BlocksWindow = () => {
-    const {debugMode, advanceMode} = useAppStore();
-    const [dartCode, setDartCode] = useState("");
-
-    const baseContents: ToolboxCategory[] = [
+  const {debugMode, advanceMode, blocklyXml, setBlocklyXml, currentProject, workspace, setWorkspace, setDartCode } = useAppStore();
+  const [dartCode, setLocalDartCode] = useState("");
+  const baseContents: ToolboxCategory[] = [
         {
             kind: "search",
             name: "Search",
             contents: [],
         },
-        {
-            kind: "sep",
-            blockxml:
-                "<block type='math_arithmetic'><field name='OP'>ADD</field></block>",
-            gap: 10,
-        },
+        { kind: "sep" },
+        { kind: "sep" },
+        // colorCategory,
+        listCategory,
+        functionCategory,
+        commonCategory,
+        loopsCategory,
+        variablesCategory,
+        // textCategory,
     ];
-
-    if (advanceMode) {
+  if (advanceMode) {
         baseContents.push(flutterCategory);
     }
-
-    const toolboxCategories = {
+  const toolboxCategories = {
         kind: "categoryToolbox",
         contents: baseContents,
     };
-
-     const workspaceConfiguration = {
+  const workspaceConfiguration = {
         theme: LogicTheme,
         // renderer: "custom_renderer",
         toolbar: CustomCategory,
@@ -63,35 +64,42 @@ export const BlocksWindow = () => {
             hidden: true, // Hide the toolbox
         },
     };
+  // Whenever the XML changes (user drags blocks, etc.)
+  const handleXmlChange = (newXml: string) => {
+    setBlocklyXml(newXml);
+  };
+  const workspaceDidChange = useCallback((ws: WorkspaceSvg) => {
+    setWorkspace(ws);
+    const code = dartGenerator.workspaceToCode(ws);
+    setLocalDartCode(code);
+    setDartCode(code);
+  }, [setWorkspace, setDartCode]);
 
-    function workspaceDidChange(workspace: WorkspaceSvg) {
-        const code = dartGenerator.workspaceToCode(workspace);
-        setDartCode(code);
-    }
 
     function handleWorkspaceInjected(workspace: WorkspaceSvg) {
-        const minimap = new Minimap(workspace);
+        const minimap = new PositionedMinimap(workspace);
         minimap.init();
 
         const backpack = new Backpack(workspace);
         backpack.init();
 
         const workspaceSearch = new WorkspaceSearch(workspace);
-
         workspaceSearch.init();
     }
 
     return (
         <>
-            <div className="flex-1 flex">
+            <div className="flex w-[200px]">
                 <div className="w-64 bg-white border-r flex flex-col">
-                    <ComponentTree/>
+                    <ComponentTree workspace={workspace} currentProject={currentProject}/>
                 </div>
             </div>
             <BlocklyWorkspace
+                initialXml={blocklyXml ?? undefined}
                 toolboxConfiguration={toolboxCategories}
-                className="[h-screen-100px] w-screen"
+                className="[h-screen-100px] relative grow"
                 workspaceConfiguration={workspaceConfiguration}
+                onXmlChange={handleXmlChange}
                 onWorkspaceChange={workspaceDidChange}
                 onInject={handleWorkspaceInjected}
             />

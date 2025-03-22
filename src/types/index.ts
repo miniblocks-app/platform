@@ -1,9 +1,37 @@
-export type ComponentType = 'button' | 'label' | 'text' | 'image' | 'icon';
+export type ComponentType = 
+  // General components
+  | 'button' 
+  | 'text' 
+  | 'image' 
+  | 'spacer'
+  // Form components
+  | 'input'
+  | 'counter'
+  | 'dropdown'
+  | 'radio'
+  | 'checkbox';
 
 export interface ComponentData {
   id: string;
   type: ComponentType;
-  props: Record<string, any>;
+  props: {
+    style: {
+      position?: string;
+      left?: string;
+      top?: string;
+      color?: string;
+      backgroundColor?: string;
+      opacity?: number;
+      padding?: string;
+      fontSize?: string;
+      width?: string;
+      height?: string;
+    };
+    text?: string;
+    value?: string | number;
+    options?: string[];
+    checked?: boolean;
+  };
   children?: ComponentData[];
 }
 
@@ -27,4 +55,13 @@ export interface Project {
   id: string;
   name: string;
   screens: Screen[];
+}
+
+export interface ComponentSection {
+  title: string;
+  components: {
+    type: ComponentType;
+    label: string;
+    icon: React.ReactNode;
+  }[];
 }

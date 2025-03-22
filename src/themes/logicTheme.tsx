@@ -22,7 +22,7 @@ export const LogicTheme = Blockly.Theme.defineTheme("myCustomTheme", {
   componentStyles: {
     workspaceBackgroundColour: "#daebfbab",
     //  'toolboxBackgroundColour': '#36454ff0',
-    toolboxForegroundColour: "#e2e2e2",
+    toolboxForegroundColour: "#000000",
     flyoutBackgroundColour: "#dcdcdce9",
     flyoutForegroundColour: "#fff",
     flyoutOpacity: 1,
