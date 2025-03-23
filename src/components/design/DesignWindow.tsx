@@ -31,10 +31,24 @@ export const DesignWindow = () => {
     if (over && over.id === 'canvas' && selectedScreen) {
       const componentType = (active.data?.current as any)?.type;
       if (componentType) {
-        const position = {
-          x: over.rect.left - active.rect.left,
-          y: over.rect.top - active.rect.top,
-        };
+        // Get the canvas element
+        const canvas = document.querySelector('.mobile-canvas');
+        if (!canvas) return;
+
+        // Get canvas and pointer positions
+        const canvasRect = canvas.getBoundingClientRect();
+        const pointerX = event.activatorEvent.clientX;
+        const pointerY = event.activatorEvent.clientY;
+
+        // Calculate position relative to canvas
+        const x = Math.max(0, Math.min(
+          pointerX - canvasRect.left - 8, // Subtract padding
+          390 - 100 // Max width minus approximate component width
+        ));
+        const y = Math.max(0, Math.min(
+          pointerY - canvasRect.top - 8, // Subtract padding
+          844 - 100 // Max height minus approximate component height
+        ));
 
         addComponent(selectedScreen, {
           id: crypto.randomUUID(),
@@ -42,9 +56,10 @@ export const DesignWindow = () => {
           props: {
             style: {
               position: 'absolute',
-              left: `${position.x}px`,
-              top: `${position.y}px`,
-            }
+              left: `${x}px`,
+              top: `${y}px`,
+            },
+            text: componentType === 'text' ? 'Text' : undefined,
           },
         });
       }
@@ -55,11 +70,11 @@ export const DesignWindow = () => {
     <DndContext onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
       <div className="flex-1 flex">
         <div className="w-64 bg-white border-r flex flex-col">
-        <ComponentTree
-          workspace={workspace}
-          currentProject={currentProject}
-        />
-            <ComponentPalette />   
+          <ComponentTree
+            workspace={workspace}
+            currentProject={currentProject}
+          />
+          <ComponentPalette />   
         </div>
         <DesignCanvas />
         <PropertiesPanel />
