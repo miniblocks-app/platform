@@ -2,11 +2,24 @@ import "../components/blocks/customBlocks/flutter_block.js";
 import "../components/blocks/customBlocks/flutter_generator.js";
 import "../components/blocks/customBlocks/flutter_scaffolding.js";
 
-export const flutterCategory = {
+export interface ToolboxCategory {
+    kind: string;
+    name?: string;
+    colour?: string;
+    blockxml?: string;
+    gap?: number;
+    contents?: Array<{ kind: string; type: string }>;
+}
+
+export const flutterCategory: ToolboxCategory= {
     kind: "category",
     name: "Flutter-Blocks",
     colour: "#ffb5eb",
     contents: [
+        {
+            kind: "block",
+            type: "flutter_import_material",
+        },
         {
             kind: "block",
             type: "flutter_stateless_widget",
