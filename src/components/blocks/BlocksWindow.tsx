@@ -11,35 +11,36 @@ import {PositionedMinimap} from '@blockly/workspace-minimap';
 import "@blockly/toolbox-search";
 import CustomCategory from "../../themes/toolbox/customCats.tsx";
 import {LogicTheme} from "../../themes/logicTheme.tsx";
+import {commonCategory, variablesCategory, loopsCategory, functionCategory, listCategory} from "./categories/google_blocks.ts";
+import 'blockly/blocks';
 
 export const BlocksWindow = () => {
-  const {debugMode, advanceMode, blocklyXml, setBlocklyXml, currentProject, workspace, setWorkspace } = useAppStore();
-  const [dartCode, setDartCode] = useState("");
-
-    const baseContents: ToolboxCategory[] = [
+  const {debugMode, advanceMode, blocklyXml, setBlocklyXml, currentProject, workspace, setWorkspace, setDartCode } = useAppStore();
+  const [dartCode, setLocalDartCode] = useState("");
+  const baseContents: ToolboxCategory[] = [
         {
             kind: "search",
             name: "Search",
             contents: [],
         },
-        {
-            kind: "sep",
-            blockxml:
-                "<block type='math_arithmetic'><field name='OP'>ADD</field></block>",
-            gap: 10,
-        },
+        { kind: "sep" },
+        { kind: "sep" },
+        // colorCategory,
+        listCategory,
+        functionCategory,
+        commonCategory,
+        loopsCategory,
+        variablesCategory,
+        // textCategory,
     ];
-
-    if (advanceMode) {
+  if (advanceMode) {
         baseContents.push(flutterCategory);
     }
-
-    const toolboxCategories = {
+  const toolboxCategories = {
         kind: "categoryToolbox",
         contents: baseContents,
     };
-
-    const workspaceConfiguration = {
+  const workspaceConfiguration = {
         theme: LogicTheme,
         // renderer: "custom_renderer",
         toolbar: CustomCategory,
@@ -63,18 +64,16 @@ export const BlocksWindow = () => {
             hidden: true, // Hide the toolbox
         },
     };
-
-    // Whenever the XML changes (user drags blocks, etc.)
+  // Whenever the XML changes (user drags blocks, etc.)
   const handleXmlChange = (newXml: string) => {
     setBlocklyXml(newXml);
   };
-
   const workspaceDidChange = useCallback((ws: WorkspaceSvg) => {
     setWorkspace(ws);
-
     const code = dartGenerator.workspaceToCode(ws);
+    setLocalDartCode(code);
     setDartCode(code);
-  }, []);
+  }, [setWorkspace, setDartCode]);
 
 
     function handleWorkspaceInjected(workspace: WorkspaceSvg) {
