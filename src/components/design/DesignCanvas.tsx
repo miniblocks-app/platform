@@ -69,8 +69,8 @@ export const DesignCanvas = () => {
     const component = screen.components.find(c => c.id === componentId);
     if (!component) return;
 
-    const currentLeft = parseInt(component.props.style.left) || 0;
-    const currentTop = parseInt(component.props.style.top) || 0;
+    const currentLeft = parseInt(component.props.style.left || '0');
+    const currentTop = parseInt(component.props.style.top || '0');
 
     // Calculate new position
     const newLeft = Math.max(0, Math.min(currentLeft + deltaX, 390 - 100)); // 390 is screen width, 100 is approx component width
@@ -120,7 +120,10 @@ export const DesignCanvas = () => {
           useAppStore.getState().setSelectedComponent(component.id);
         }}
       >
-        <ComponentPreview type={component.type} />
+        <ComponentPreview 
+          type={component.type} 
+          props={component.props}
+        />
       </div>
     );
   };
@@ -140,7 +143,7 @@ export const DesignCanvas = () => {
       <div
         ref={setNodeRef}
         className={clsx(
-          'w-[390px] h-[844px] bg-white rounded-[50px] overflow-hidden relative p-8',
+          'mobile-canvas w-[390px] h-[844px] bg-white rounded-[50px] overflow-hidden relative p-8',
           isOver && 'ring-2 ring-blue-500',
           screen?.settings.orientation === 'landscape' && 'rotate-90',
           showGrid && 'bg-grid-pattern',
