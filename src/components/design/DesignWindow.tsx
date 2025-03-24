@@ -62,6 +62,20 @@ export const DesignWindow = () => {
             text: componentType === 'text' ? 'Text' : undefined,
           },
         });
+        // Create the corresponding Blockly block if the workspace is available
+        if (workspace) {
+          if (componentType === 'button') {
+            const buttonBlock = workspace.newBlock('flutter_raised_button');
+            buttonBlock.initSvg();
+            buttonBlock.render();
+          } else if (componentType === 'text') {
+            const textBlock = workspace.newBlock('flutter_text');
+            textBlock.initSvg();
+            textBlock.render();
+          }
+        } else {
+          console.warn("Blockly workspace is not available in DesignWindow.");
+        }
       }
     }
   };
