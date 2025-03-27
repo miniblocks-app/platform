@@ -6,7 +6,7 @@ import { ComponentPreview } from './ComponentPreview';
 import clsx from 'clsx';
 
 export const DesignCanvas = () => {
-  const { selectedScreen, selectedComponent, currentProject, updateComponent, deleteComponent, undo, redo } = useAppStore();
+  const { selectedScreen, selectedComponent, currentProject, updateComponent, deleteComponent, undo, redo, addComponent } = useAppStore();
   const screen = currentProject?.screens.find((s) => s.id === selectedScreen);
   const [zoom, setZoom] = useState(1);
   const [showGrid, setShowGrid] = useState(false);
@@ -23,42 +23,69 @@ export const DesignCanvas = () => {
     const handleKeyboard = (e: KeyboardEvent) => {
       if (!selectedScreen) return;
 
-      if (e.ctrlKey) {
+      // Check for both Ctrl and Command (Meta) key
+      const isModifierKey = e.ctrlKey || e.metaKey;
+
+      if (isModifierKey) {
         switch (e.key.toLowerCase()) {
           case 'z':
             e.preventDefault();
-            undo();
+            if (e.shiftKey) {
+              redo(); // Shift + Cmd/Ctrl + Z for Redo on Mac
+            } else {
+              undo();
+            }
             break;
           case 'y':
             e.preventDefault();
-            redo();
+            redo(); // For Windows Ctrl + Y
             break;
-          case 'c':
+          case 'c': {
             e.preventDefault();
-            const selectedComp = screen?.components.find(c => c.id === useAppStore.getState().selectedComponent);
-            if (selectedComp) {
-              setClipboard({ ...selectedComp, id: crypto.randomUUID() });
+            if (!selectedComponent || !screen) return;
+            
+            const componentToCopy = screen.components.find(c => c.id === selectedComponent);
+            if (componentToCopy) {
+              // Create a deep copy of the component
+              const copy = JSON.parse(JSON.stringify(componentToCopy));
+              setClipboard(copy);
             }
             break;
-          case 'v':
+          }
+          case 'v': {
             e.preventDefault();
-            if (clipboard) {
-              const newComponent = { ...clipboard, id: crypto.randomUUID() };
-              useAppStore.getState().addComponent(selectedScreen, newComponent);
-            }
+            if (!clipboard || !selectedScreen) return;
+            
+            // Create a new component with a new ID but same properties
+            const newComponent = {
+              ...clipboard,
+              id: crypto.randomUUID(),
+              props: {
+                ...clipboard.props,
+                style: {
+                  ...clipboard.props.style,
+                  // Offset the pasted component slightly to make it visible
+                  left: `${parseInt(clipboard.props.style.left || '0') + 20}px`,
+                  top: `${parseInt(clipboard.props.style.top || '0') + 20}px`,
+                }
+              }
+            };
+            
+            addComponent(selectedScreen, newComponent);
             break;
+          }
         }
-      } else if (e.key === 'Delete') {
-        const selectedComp = useAppStore.getState().selectedComponent;
-        if (selectedComp) {
-          deleteComponent(selectedScreen, selectedComp);
+      } else if (e.key === 'Delete' || e.key === 'Backspace') {
+        if (selectedComponent) {
+          e.preventDefault();
+          deleteComponent(selectedScreen, selectedComponent);
         }
       }
     };
 
     window.addEventListener('keydown', handleKeyboard);
     return () => window.removeEventListener('keydown', handleKeyboard);
-  }, [selectedScreen, clipboard]);
+  }, [selectedScreen, selectedComponent, clipboard, screen, undo, redo, deleteComponent, addComponent]);
 
   const handleZoomIn = () => setZoom(prev => Math.min(prev + 0.1, 2));
   const handleZoomOut = () => setZoom(prev => Math.max(prev - 0.1, 0.5));
@@ -73,8 +100,8 @@ export const DesignCanvas = () => {
     const currentTop = parseInt(component.props.style.top || '0');
 
     // Calculate new position
-    const newLeft = Math.max(0, Math.min(currentLeft + deltaX, 390 - 100)); // 390 is screen width, 100 is approx component width
-    const newTop = Math.max(0, Math.min(currentTop + deltaY, 844 - 100)); // 844 is screen height, 100 is approx component height
+    const newLeft = Math.max(0, Math.min(currentLeft + deltaX, 390 - 100));
+    const newTop = Math.max(0, Math.min(currentTop + deltaY, 844 - 100));
 
     updateComponent(screen.id, componentId, {
       props: {
@@ -181,14 +208,14 @@ export const DesignCanvas = () => {
         <div className="flex items-center space-x-2">
           <button 
             className="p-2 hover:bg-gray-100 rounded-md" 
-            title="Undo (Ctrl+Z)"
+            title="Undo (Ctrl/⌘ + Z)"
             onClick={undo}
           >
             <Undo2 className="w-5 h-5 text-gray-600" />
           </button>
           <button 
             className="p-2 hover:bg-gray-100 rounded-md" 
-            title="Redo (Ctrl+Y)"
+            title="Redo (Ctrl/⌘ + Y or Shift + ⌘ + Z)"
             onClick={redo}
           >
             <Redo2 className="w-5 h-5 text-gray-600" />
@@ -228,7 +255,7 @@ export const DesignCanvas = () => {
               ? "text-red-600 hover:bg-red-50" 
               : "text-gray-400 cursor-not-allowed"
           )}
-          title="Delete (Del)"
+          title="Delete (Delete or Backspace)"
           onClick={() => {
             if (selectedComponent && selectedScreen) {
               deleteComponent(selectedScreen, selectedComponent);
