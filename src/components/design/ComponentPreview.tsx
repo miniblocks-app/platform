@@ -10,6 +10,8 @@ interface ComponentPreviewProps {
     options?: string[];
     checked?: boolean;
     placeholder?: string;
+    min?: number;
+    max?: number;
   };
 }
 
@@ -176,6 +178,107 @@ export const ComponentPreview: React.FC<ComponentPreviewProps> = ({ type, props 
             {props.text || 'Checkbox Option'}
           </span>
         </label>
+      );
+      
+    case 'slider':
+      return (
+        <div 
+          className="flex flex-col space-y-2"
+          style={{
+            opacity: style.opacity,
+            padding: style.padding,
+          }}
+        >
+          <input
+            type="range"
+            min={props.min || 0}
+            max={props.max || 100}
+            value={props.value || 50}
+            className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+            style={{
+              accentColor: style.color || '#3B82F6',
+            }}
+            readOnly
+          />
+          <div className="flex justify-between text-xs text-gray-500">
+            <span>{props.min || 0}</span>
+            <span>{props.max || 100}</span>
+          </div>
+        </div>
+      );
+      
+    case 'circle':
+      return (
+        <div
+          className="rounded-full"
+          style={{
+            width: '50px',
+            height: '50px',
+            backgroundColor: style.backgroundColor || '#3B82F6',
+            border: `2px solid ${style.color || '#000000'}`,
+            opacity: style.opacity,
+          }}
+        />
+      );
+      
+    case 'line':
+      return (
+        <div
+          style={{
+            width: '100px',
+            height: '2px',
+            backgroundColor: style.color || '#000000',
+            opacity: style.opacity,
+          }}
+        />
+      );
+      
+    case 'rectangle':
+      return (
+        <div
+          style={{
+            width: '100px',
+            height: '50px',
+            backgroundColor: style.backgroundColor || '#3B82F6',
+            border: `2px solid ${style.color || '#000000'}`,
+            opacity: style.opacity,
+          }}
+        />
+      );
+      
+    case 'square':
+      return (
+        <div
+          style={{
+            width: '50px',
+            height: '50px',
+            backgroundColor: style.backgroundColor || '#3B82F6',
+            border: `2px solid ${style.color || '#000000'}`,
+            opacity: style.opacity,
+          }}
+        />
+      );
+      
+    case 'star':
+      return (
+        <div
+          style={{
+            width: '50px',
+            height: '50px',
+            position: 'relative',
+            opacity: style.opacity,
+          }}
+        >
+          <svg
+            viewBox="0 0 24 24"
+            fill={style.backgroundColor || '#3B82F6'}
+            stroke={style.color || '#000000'}
+            strokeWidth="2"
+            style={{ width: '100%', height: '100%' }}
+          >
+            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+          </svg>
+        </div>
       );
       
     default:

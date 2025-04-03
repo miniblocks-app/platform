@@ -6,7 +6,12 @@ import {
   Type, 
   Image, 
   Donut as Button, 
-  Trash2 
+  Trash2,
+  Circle,
+  Minus as LineIcon,
+  Box as RectangleIcon,
+  Square,
+  Star
 } from "lucide-react";
 import clsx from "clsx";
 import { useAppStore } from "../../store";
@@ -21,6 +26,16 @@ const ComponentIcon = ({ type }: { type: string }) => {
       return <Type className="w-4 h-4 text-gray-600" />;
     case "image":
       return <Image className="w-4 h-4 text-gray-600" />;
+    case "circle":
+      return <Circle className="w-4 h-4 text-gray-600" />;
+    case "line":
+      return <LineIcon className="w-4 h-4 text-gray-600" />;
+    case "rectangle":
+      return <RectangleIcon className="w-4 h-4 text-gray-600" />;
+    case "square":
+      return <Square className="w-4 h-4 text-gray-600" />;
+    case "star":
+      return <Star className="w-4 h-4 text-gray-600" />;
     default:
       return null;
   }

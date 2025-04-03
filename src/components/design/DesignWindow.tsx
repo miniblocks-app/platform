@@ -84,11 +84,15 @@ export const DesignWindow = () => {
     <DndContext onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
       <div className="flex-1 flex">
         <div className="w-64 bg-white border-r flex flex-col">
-          <ComponentTree
-            workspace={workspace}
-            currentProject={currentProject}
-          />
-          <ComponentPalette />   
+          <div className="flex-shrink-0">
+            <ComponentTree
+              workspace={workspace}
+              currentProject={currentProject}
+            />
+          </div>
+          <div className="flex-1 min-h-0 overflow-y-auto left-panel-scroll">
+            <ComponentPalette />   
+          </div>
         </div>
         <DesignCanvas />
         <PropertiesPanel />
