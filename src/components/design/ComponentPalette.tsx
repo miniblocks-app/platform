@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Type, Image, Search, Square, FileInput as InputIcon, Plus, Minus, List, CircleDot, CheckSquare, Donut } from 'lucide-react';
+import { Type, Image, Search, Square, FileInput as InputIcon, Plus, Minus, List, CircleDot, CheckSquare, Donut, Circle, Minus as LineIcon, Box as RectangleIcon, Star, SlidersHorizontal } from 'lucide-react';
 import { useDraggable } from '@dnd-kit/core';
 import { ComponentType, ComponentSection } from '../../types';
 import clsx from 'clsx';
@@ -57,6 +57,41 @@ const COMPONENT_SECTIONS: ComponentSection[] = [
         type: 'checkbox',
         label: 'Checkbox',
         icon: <CheckSquare className="w-6 h-6 text-gray-600" />,
+      },
+      {
+        type: 'slider',
+        label: 'Slider',
+        icon: <SlidersHorizontal className="w-6 h-6 text-gray-600" />,
+      },
+    ],
+  },
+  {
+    title: 'Shapes',
+    components: [
+      {
+        type: 'circle',
+        label: 'Circle',
+        icon: <Circle className="w-6 h-6 text-gray-600" />,
+      },
+      {
+        type: 'line',
+        label: 'Line',
+        icon: <LineIcon className="w-6 h-6 text-gray-600" />,
+      },
+      {
+        type: 'rectangle',
+        label: 'Rectangle',
+        icon: <RectangleIcon className="w-6 h-6 text-gray-600" />,
+      },
+      {
+        type: 'square',
+        label: 'Square',
+        icon: <Square className="w-6 h-6 text-gray-600" />,
+      },
+      {
+        type: 'star',
+        label: 'Star',
+        icon: <Star className="w-6 h-6 text-gray-600" />,
       },
     ],
   },
@@ -118,7 +153,7 @@ export const ComponentPalette = () => {
           <Search className="absolute left-3 top-2.5 w-4 h-4 text-gray-400" />
         </div>
       </div>
-      <div className="overflow-y-auto">
+      <div>
         {filteredSections.map((section, index) => (
           <div key={section.title} className={clsx(index > 0 && 'border-t')}>
             <div className="px-4 py-2 bg-gray-50">

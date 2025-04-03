@@ -5,12 +5,53 @@ import { Undo2, Redo2, ZoomIn, ZoomOut, Grid, Trash2 } from 'lucide-react';
 import { ComponentPreview } from './ComponentPreview';
 import clsx from 'clsx';
 
+interface ComponentData {
+  id: string;
+  type: string;
+  props: {
+    style?: {
+      position?: string;
+      left?: string;
+      top?: string;
+      [key: string]: any;
+    };
+    text?: string;
+    [key: string]: any;
+  };
+}
+
+interface Screen {
+  id: string;
+  name: string;
+  components: ComponentData[];
+  settings: {
+    scrollable: boolean;
+    backgroundColor: string;
+    orientation: 'portrait' | 'landscape';
+    statusBar?: {
+      visible: boolean;
+      style: 'default' | 'light' | 'dark';
+      color: string;
+    };
+  };
+}
+
+interface AlignmentLine {
+  type: 'vertical' | 'horizontal';
+  position: number;
+  start: number;
+  end: number;
+  spacing?: number;
+  isDashed?: boolean;
+}
+
 export const DesignCanvas = () => {
-  const { selectedScreen, selectedComponent, currentProject, updateComponent, deleteComponent, undo, redo } = useAppStore();
-  const screen = currentProject?.screens.find((s) => s.id === selectedScreen);
+  const { selectedScreen, selectedComponent, currentProject, updateComponent, deleteComponent, undo, redo, addComponent } = useAppStore();
+  const screen = currentProject?.screens.find((s) => s.id === selectedScreen) as Screen | undefined;
   const [zoom, setZoom] = useState(1);
   const [showGrid, setShowGrid] = useState(false);
-  const [clipboard, setClipboard] = useState<any>(null);
+  const [clipboard, setClipboard] = useState<ComponentData | null>(null);
+  const [alignmentLines, setAlignmentLines] = useState<AlignmentLine[]>([]);
   
   const { setNodeRef, isOver } = useDroppable({
     id: 'canvas',
@@ -23,45 +64,189 @@ export const DesignCanvas = () => {
     const handleKeyboard = (e: KeyboardEvent) => {
       if (!selectedScreen) return;
 
-      if (e.ctrlKey) {
+      // Check for both Ctrl and Command (Meta) key
+      const isModifierKey = e.ctrlKey || e.metaKey;
+
+      if (isModifierKey) {
         switch (e.key.toLowerCase()) {
           case 'z':
             e.preventDefault();
-            undo();
+            if (e.shiftKey) {
+              redo(); // Shift + Cmd/Ctrl + Z for Redo on Mac
+            } else {
+              undo();
+            }
             break;
           case 'y':
             e.preventDefault();
-            redo();
+            redo(); // For Windows Ctrl + Y
             break;
-          case 'c':
+          case 'c': {
             e.preventDefault();
-            const selectedComp = screen?.components.find(c => c.id === useAppStore.getState().selectedComponent);
-            if (selectedComp) {
-              setClipboard({ ...selectedComp, id: crypto.randomUUID() });
+            if (!selectedComponent || !screen) return;
+            
+            const componentToCopy = screen.components.find(c => c.id === selectedComponent);
+            if (componentToCopy) {
+              // Create a deep copy of the component
+              const copy = JSON.parse(JSON.stringify(componentToCopy));
+              setClipboard(copy);
             }
             break;
-          case 'v':
+          }
+          case 'v': {
             e.preventDefault();
-            if (clipboard) {
-              const newComponent = { ...clipboard, id: crypto.randomUUID() };
-              useAppStore.getState().addComponent(selectedScreen, newComponent);
-            }
+            if (!clipboard || !selectedScreen) return;
+            
+            // Create a new component with a new ID but same properties
+            const newComponent: ComponentData = {
+              ...clipboard,
+              id: crypto.randomUUID(),
+              props: {
+                ...clipboard.props,
+                style: {
+                  ...(clipboard.props.style || {}),
+                  // Offset the pasted component slightly to make it visible
+                  left: `${parseInt(clipboard.props.style?.left || '0') + 20}px`,
+                  top: `${parseInt(clipboard.props.style?.top || '0') + 20}px`,
+                }
+              }
+            };
+            
+            addComponent(selectedScreen, newComponent);
             break;
+          }
         }
-      } else if (e.key === 'Delete') {
-        const selectedComp = useAppStore.getState().selectedComponent;
-        if (selectedComp) {
-          deleteComponent(selectedScreen, selectedComp);
+      } else if (e.key === 'Delete' || e.key === 'Backspace') {
+        if (selectedComponent) {
+          e.preventDefault();
+          deleteComponent(selectedScreen, selectedComponent);
         }
       }
     };
 
     window.addEventListener('keydown', handleKeyboard);
     return () => window.removeEventListener('keydown', handleKeyboard);
-  }, [selectedScreen, clipboard]);
+  }, [selectedScreen, selectedComponent, clipboard, screen, undo, redo, deleteComponent, addComponent]);
 
   const handleZoomIn = () => setZoom(prev => Math.min(prev + 0.1, 2));
   const handleZoomOut = () => setZoom(prev => Math.max(prev - 0.1, 0.5));
+
+  const calculateAlignmentLines = (componentId: string, newLeft: number, newTop: number) => {
+    if (!screen) return [];
+    
+    const component = screen.components.find(c => c.id === componentId);
+    if (!component) return [];
+
+    const lines: AlignmentLine[] = [];
+    const componentWidth = 100; // Approximate width of components
+    const componentHeight = 40; // Approximate height of components
+    
+    // Screen dimensions
+    const screenWidth = 390;
+    const screenHeight = 844;
+    
+    // Calculate centers
+    const screenCenterX = screenWidth / 2;
+    const screenCenterY = screenHeight / 2;
+    const componentCenterX = newLeft + (componentWidth / 2);
+    const componentCenterY = newTop + (componentHeight / 2);
+    
+    // Center alignment lines
+    if (Math.abs(componentCenterX - screenCenterX) < 10) {
+      lines.push({
+        type: 'vertical',
+        position: screenCenterX,
+        start: 0,
+        end: screenHeight
+      });
+    }
+    
+    if (Math.abs(componentCenterY - screenCenterY) < 10) {
+      lines.push({
+        type: 'horizontal',
+        position: screenCenterY,
+        start: 0,
+        end: screenWidth
+      });
+    }
+    
+    // Margin lines
+    if (Math.abs(newLeft - 16) < 10) { // Left margin
+      lines.push({
+        type: 'vertical',
+        position: 16,
+        start: 0,
+        end: screenHeight
+      });
+    }
+    
+    if (Math.abs(newLeft + componentWidth - (screenWidth - 16)) < 10) { // Right margin
+      lines.push({
+        type: 'vertical',
+        position: screenWidth - 16,
+        start: 0,
+        end: screenHeight
+      });
+    }
+    
+    // Spacing between components
+    screen.components.forEach(otherComponent => {
+      if (otherComponent.id === componentId) return;
+      
+      const otherLeft = parseInt(otherComponent.props.style?.left || '0');
+      const otherTop = parseInt(otherComponent.props.style?.top || '0');
+      const otherCenterX = otherLeft + (componentWidth / 2);
+      const otherCenterY = otherTop + (componentHeight / 2);
+      
+      // Vertical spacing (align centers)
+      if (Math.abs(componentCenterX - otherCenterX) < 10) {
+        const spacing = Math.abs(newTop - otherTop);
+        if (spacing > 0) {
+          // Center alignment line
+          lines.push({
+            type: 'vertical',
+            position: componentCenterX,
+            start: Math.min(newTop, otherTop),
+            end: Math.max(newTop + componentHeight, otherTop + componentHeight)
+          });
+          
+          // Add spacing indicator
+          lines.push({
+            type: 'vertical',
+            position: componentCenterX,
+            start: Math.min(newTop + componentHeight, otherTop + componentHeight),
+            end: Math.max(newTop, otherTop),
+            spacing
+          });
+        }
+      }
+      
+      // Horizontal spacing (align centers)
+      if (Math.abs(componentCenterY - otherCenterY) < 10) {
+        const spacing = Math.abs(newLeft - otherLeft);
+        if (spacing > 0) {
+          // Center alignment line
+          lines.push({
+            type: 'horizontal',
+            position: componentCenterY,
+            start: Math.min(newLeft, otherLeft),
+            end: Math.max(newLeft + componentWidth, otherLeft + componentWidth)
+          });
+          
+          // Add spacing indicator
+          lines.push({
+            type: 'horizontal',
+            position: componentCenterY,
+            start: Math.min(newLeft + componentWidth, otherLeft + componentWidth),
+            end: Math.max(newLeft, otherLeft),
+            spacing
+          });
+        }
+      }
+    });
+    
+    return lines;
+  };
 
   const handleComponentDrag = (componentId: string, deltaX: number, deltaY: number) => {
     if (!screen) return;
@@ -69,23 +254,82 @@ export const DesignCanvas = () => {
     const component = screen.components.find(c => c.id === componentId);
     if (!component) return;
 
-    const currentLeft = parseInt(component.props.style.left || '0');
-    const currentTop = parseInt(component.props.style.top || '0');
+    const currentLeft = parseInt(component.props.style?.left || '0');
+    const currentTop = parseInt(component.props.style?.top || '0');
 
     // Calculate new position
-    const newLeft = Math.max(0, Math.min(currentLeft + deltaX, 390 - 100)); // 390 is screen width, 100 is approx component width
-    const newTop = Math.max(0, Math.min(currentTop + deltaY, 844 - 100)); // 844 is screen height, 100 is approx component height
+    const newLeft = Math.max(0, Math.min(currentLeft + deltaX, 390 - 100));
+    const newTop = Math.max(0, Math.min(currentTop + deltaY, 844 - 100));
+
+    // Calculate alignment lines
+    const lines = calculateAlignmentLines(componentId, newLeft, newTop);
+    setAlignmentLines(lines);
+
+    // Snap to alignment if close enough
+    let finalLeft = newLeft;
+    let finalTop = newTop;
+    
+    lines.forEach(line => {
+      if (line.type === 'vertical') {
+        // Adjust the position based on component center
+        const componentCenterX = newLeft + 50; // half of componentWidth
+        if (Math.abs(componentCenterX - line.position) < 10) {
+          finalLeft = line.position - 50; // Subtract half width to align center
+        }
+      }
+      if (line.type === 'horizontal') {
+        // Adjust the position based on component center
+        const componentCenterY = newTop + 20; // half of componentHeight
+        if (Math.abs(componentCenterY - line.position) < 10) {
+          finalTop = line.position - 20; // Subtract half height to align center
+        }
+      }
+    });
 
     updateComponent(screen.id, componentId, {
       props: {
         ...component.props,
         style: {
-          ...component.props.style,
-          left: `${newLeft}px`,
-          top: `${newTop}px`,
+          ...(component.props.style || {}),
+          left: `${finalLeft}px`,
+          top: `${finalTop}px`,
         }
       }
-    });
+    } as Partial<ComponentData>);
+  };
+
+  const renderAlignmentLines = () => {
+    return alignmentLines.map((line, index) => (
+      <div
+        key={index}
+        className="absolute pointer-events-none"
+        style={{
+          [line.type === 'vertical' ? 'left' : 'top']: `${line.position}px`,
+          [line.type === 'vertical' ? 'top' : 'left']: `${line.start}px`,
+          [line.type === 'vertical' ? 'width' : 'height']: '1px',
+          [line.type === 'vertical' ? 'height' : 'width']: `${line.end - line.start}px`,
+          backgroundColor: 'rgb(59, 130, 246)', // blue-500
+          borderStyle: line.isDashed ? 'dashed' : 'solid',
+          borderWidth: '1px',
+          borderColor: 'rgb(59, 130, 246)', // blue-500
+        }}
+      >
+        {line.spacing && (
+          <div
+            className="absolute bg-blue-500 text-white text-xs px-2 py-1 rounded-full transform -translate-x-1/2"
+            style={{
+              [line.type === 'vertical' ? 'top' : 'left']: '50%',
+              [line.type === 'vertical' ? 'left' : 'top']: '50%',
+              transform: line.type === 'vertical' 
+                ? 'translate(-50%, -50%)' 
+                : 'translate(-50%, -50%) rotate(-90deg)',
+            }}
+          >
+            {line.spacing}
+          </div>
+        )}
+      </div>
+    ));
   };
 
   const renderComponent = (component: any) => {
@@ -110,6 +354,7 @@ export const DesignCanvas = () => {
           const handleMouseUp = () => {
             window.removeEventListener('mousemove', handleMouseMove);
             window.removeEventListener('mouseup', handleMouseUp);
+            setAlignmentLines([]); // Clear alignment lines when done dragging
           };
           
           window.addEventListener('mousemove', handleMouseMove);
@@ -162,6 +407,7 @@ export const DesignCanvas = () => {
               'h-full pt-[35px] relative',
               screen.settings.scrollable && 'overflow-y-auto'
             )}>
+              {renderAlignmentLines()}
               {screen.components.map(renderComponent)}
             </div>
           </>
@@ -181,14 +427,14 @@ export const DesignCanvas = () => {
         <div className="flex items-center space-x-2">
           <button 
             className="p-2 hover:bg-gray-100 rounded-md" 
-            title="Undo (Ctrl+Z)"
+            title="Undo (Ctrl/⌘ + Z)"
             onClick={undo}
           >
             <Undo2 className="w-5 h-5 text-gray-600" />
           </button>
           <button 
             className="p-2 hover:bg-gray-100 rounded-md" 
-            title="Redo (Ctrl+Y)"
+            title="Redo (Ctrl/⌘ + Y or Shift + ⌘ + Z)"
             onClick={redo}
           >
             <Redo2 className="w-5 h-5 text-gray-600" />
@@ -228,7 +474,7 @@ export const DesignCanvas = () => {
               ? "text-red-600 hover:bg-red-50" 
               : "text-gray-400 cursor-not-allowed"
           )}
-          title="Delete (Del)"
+          title="Delete (Delete or Backspace)"
           onClick={() => {
             if (selectedComponent && selectedScreen) {
               deleteComponent(selectedScreen, selectedComponent);
