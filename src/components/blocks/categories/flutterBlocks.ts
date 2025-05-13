@@ -1,6 +1,6 @@
-import "../components/blocks/customBlocks/flutter_block.js";
-import "../components/blocks/customBlocks/flutter_generator.js";
-import "../components/blocks/customBlocks/flutter_scaffolding.js";
+import "../customBlocks/flutter_block.js";
+import "../customBlocks/flutter_generator.js";
+import "../customBlocks/flutter_scaffolding.js";
 
 export interface ToolboxCategory {
     kind: string;
