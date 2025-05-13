@@ -1,8 +1,7 @@
 import {BlocklyWorkspace, WorkspaceSvg} from "react-blockly";
 import {useAppStore} from '../../store';
 import {useCallback, useState} from "react";
-import "./customBlocks/custom_Blocks";
-import {flutterCategory, ToolboxCategory} from "../../categories/flutter.ts";
+import {flutterCategory, ToolboxCategory} from "./categories/flutterBlocks.ts";
 import {dartGenerator} from "blockly/dart";
 import {ComponentTree} from "../design/ComponentTree.tsx";
 import {Backpack} from '@blockly/workspace-backpack';
@@ -11,7 +10,7 @@ import {PositionedMinimap} from '@blockly/workspace-minimap';
 import "@blockly/toolbox-search";
 import CustomCategory from "../../themes/toolbox/customCats.tsx";
 import {LogicTheme} from "../../themes/logicTheme.tsx";
-import {commonCategory, variablesCategory, loopsCategory, functionCategory, listCategory} from "./categories/google_blocks.ts";
+import {commonCategory, variablesCategory, loopsCategory, functionCategory, listCategory} from "./categories/googleBlocks.ts";
 import 'blockly/blocks';
 
 export const BlocksWindow = () => {
