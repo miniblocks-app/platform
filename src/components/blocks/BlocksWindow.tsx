@@ -13,10 +13,67 @@ import {LogicTheme} from "../../themes/logicTheme.tsx";
 import {commonCategory, variablesCategory, loopsCategory, functionCategory, listCategory} from "./categories/googleBlocks.ts";
 import 'blockly/blocks';
 
+
+import {Button} from "@/components/ui/button";
+import {Card, CardContent} from "@/components/ui/card";
+import {Clipboard, ClipboardCheck} from "lucide-react";
+
+
+const CodePreview: React.FC<{code: string}> = ({code}) => {
+    const [copied, setCopied] = useState(false);
+
+    const handleCopy = async () => {
+        try {
+            await navigator.clipboard.writeText(code);
+            setCopied(true);
+            setTimeout(() => setCopied(false), 2000);
+        } catch (_) {
+            // fallback – select text if clipboard api fails
+            const range = document.createRange();
+            const pre = document.getElementById('dart‑code');
+            if (pre) {
+                range.selectNodeContents(pre);
+                const sel = window.getSelection();
+                sel?.removeAllRanges();
+                sel?.addRange(range);
+            }
+        }
+    };
+
+    return (
+        <Card className="bottom‑4 right‑4 w‑[32rem] max‑h‑[calc(100vh‑8rem)] shadow‑xl bg‑slate‑900/95 backdrop‑blur">
+            <CardContent className="p‑4">
+                <Button
+                    size="icon"
+                    variant="ghost"
+                    onClick={handleCopy}
+                    className="top‑2 right‑2"
+                >
+                    {copied ? <><ClipboardCheck className="h‑5 w‑5" /> <>Copied!</></> : <><Clipboard className="h‑5 w‑5" /><>Copy</></>}
+                </Button>
+                <pre
+                    id="dart‑code"
+                    className="text‑sm leading‑6 whitespace‑pre overflow‑auto font‑mono text‑green‑200"
+                >{code || '// Dart code will appear here…'}</pre>
+            </CardContent>
+        </Card>
+    );
+};
+
 export const BlocksWindow = () => {
-  const {debugMode, advanceMode, blocklyXml, setBlocklyXml, currentProject, workspace, setWorkspace, setDartCode } = useAppStore();
-  const [dartCode, setLocalDartCode] = useState("");
-  const baseContents: ToolboxCategory[] = [
+    const {
+        debugMode,
+        advanceMode,
+        blocklyXml,
+        setBlocklyXml,
+        currentProject,
+        workspace,
+        setWorkspace,
+        setDartCode,
+    } = useAppStore();
+    const [dartCode, setLocalDartCode] = useState("");
+
+    const baseContents: ToolboxCategory[] = [
         {
             kind: "search",
             name: "Search",
@@ -24,24 +81,23 @@ export const BlocksWindow = () => {
         },
         { kind: "sep" },
         { kind: "sep" },
-        // colorCategory,
         listCategory,
         functionCategory,
         commonCategory,
         loopsCategory,
         variablesCategory,
-        // textCategory,
     ];
-  if (advanceMode) {
+    if (advanceMode) {
         baseContents.push(flutterCategory);
     }
-  const toolboxCategories = {
+
+    const toolboxCategories = {
         kind: "categoryToolbox",
         contents: baseContents,
     };
-  const workspaceConfiguration = {
+
+    const workspaceConfiguration = {
         theme: LogicTheme,
-        // renderer: "custom_renderer",
         toolbar: CustomCategory,
         grid: {
             spacing: 20,
@@ -60,56 +116,52 @@ export const BlocksWindow = () => {
             trashcan: true,
         },
         toolboxConfiguration: {
-            hidden: true, // Hide the toolbox
+            hidden: true,
         },
     };
-  // Whenever the XML changes (user drags blocks, etc.)
-  const handleXmlChange = (newXml: string) => {
-    setBlocklyXml(newXml);
-  };
-  const workspaceDidChange = useCallback((ws: WorkspaceSvg) => {
-    setWorkspace(ws);
-    const code = dartGenerator.workspaceToCode(ws);
-    setLocalDartCode(code);
-    setDartCode(code);
-  }, [setWorkspace, setDartCode]);
 
+    // Persist XML
+    const handleXmlChange = (newXml: string) => {
+        setBlocklyXml(newXml);
+    };
 
-    function handleWorkspaceInjected(workspace: WorkspaceSvg) {
-        const minimap = new PositionedMinimap(workspace);
-        minimap.init();
+    // Update dart code on every workspace change
+    const workspaceDidChange = useCallback(
+        (ws: WorkspaceSvg) => {
+            setWorkspace(ws);
+            const code = dartGenerator.workspaceToCode(ws);
+            setLocalDartCode(code);
+            setDartCode(code);
+        },
+        [setWorkspace, setDartCode]
+    );
 
-        const backpack = new Backpack(workspace);
-        backpack.init();
-
-        const workspaceSearch = new WorkspaceSearch(workspace);
-        workspaceSearch.init();
-    }
+    // Enhance workspace with minimap/backpack/search
+    const handleWorkspaceInjected = (ws: WorkspaceSvg) => {
+        new PositionedMinimap(ws).init();
+        new Backpack(ws).init();
+        new WorkspaceSearch(ws).init();
+    };
 
     return (
         <>
-            <div className="flex w-[200px]">
-                <div className="w-64 bg-white border-r flex flex-col">
-                    <ComponentTree workspace={workspace} currentProject={currentProject}/>
+            <div className="flex w‑[200px]">
+                <div className="w‑64 bg‑white border‑r flex flex‑col">
+                    <ComponentTree workspace={workspace} currentProject={currentProject} />
                 </div>
             </div>
+
             <BlocklyWorkspace
                 initialXml={blocklyXml ?? undefined}
                 toolboxConfiguration={toolboxCategories}
-                className="[h-screen-100px] relative grow"
+                className="[h‑screen‑100px] relative grow"
                 workspaceConfiguration={workspaceConfiguration}
                 onXmlChange={handleXmlChange}
                 onWorkspaceChange={workspaceDidChange}
                 onInject={handleWorkspaceInjected}
             />
-            {debugMode && (
-                <textarea
-                    id="code"
-                    style={{height: "[h-screen-200px]", width: "400px"}}
-                    value={dartCode}
-                    readOnly
-                ></textarea>
-            )}
+
+            {debugMode && <CodePreview code={dartCode} />}
         </>
     );
 };
