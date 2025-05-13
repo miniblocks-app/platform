@@ -4,16 +4,27 @@ Blockly.Blocks['flutter_import_material'] = {
     init: function() {
         this.appendDummyInput()
             .appendField("import 'package:flutter/material.dart';");
-        // This block returns the import statement as a string.
         this.setOutput(true, "Import");
-        this.setColour(120);
+        this.setPreviousStatement(false, null);
+        this.setNextStatement(false, null);
+        this.setColour(510);
         this.setTooltip("Import Flutter Material package");
         this.setHelpUrl("https://api.flutter.dev/flutter/material/material-library.html");
     }
 };
 
-//
-// -- RUN APP BLOCK --
+Blockly.Blocks['flutter_main'] = {
+    init() {
+        this.appendDummyInput().appendField("main()");
+        this.appendStatementInput("body")
+            .setCheck(null)
+            .appendField("body");
+        this.setColour(290);
+        this.setTooltip("Dart entry point");
+        this.setHelpUrl("https://dart.dev/guides/language/language-tour#functions");
+    }
+};
+
 Blockly.Blocks['runApp'] = {
     init: function() {
         this.appendValueInput("NAME")
@@ -24,6 +35,18 @@ Blockly.Blocks['runApp'] = {
         this.setNextStatement(false, null);
         this.setTooltip("");
         this.setHelpUrl("https://api.flutter.dev/flutter/widgets/runApp.html");
+    }
+};
+
+Blockly.Blocks['flutter_center'] = {
+    init() {
+        this.appendValueInput("child")
+            .setCheck("Widget")
+            .appendField("Center child");
+        this.setOutput(true, ["Widget", "Center"]);
+        this.setColour(230);
+        this.setTooltip("Centers its child");
+        this.setHelpUrl("https://api.flutter.dev/flutter/widgets/Center-class.html");
     }
 };
 

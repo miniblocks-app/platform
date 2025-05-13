@@ -5,13 +5,28 @@ dartGenerator.forBlock['flutter_import_material'] = function(block) {
   return [code, Order.NONE];
 };
 
+const INDENT = '  ';
+function indent(code, spaces = 2) {
+  return code.replace(/^/gm, INDENT.repeat(spaces / 2));
+}
 
-// Ensure we have the Flutter import once.
-dartGenerator.definitions_['import_material'] =
-    'import \'package:flutter/material.dart\';';
+dartGenerator.forBlock['flutter_main'] = function (block) {
+  const body = dartGenerator.statementToCode(block, 'body');
+  return `void main() {\n${indent(body)}\n}\n`;
+};
 
-//
-// -- TEXT GENERATOR --
+dartGenerator.forBlock['flutter_center'] = function (block) {
+  const child = dartGenerator.valueToCode(block, 'child', Order.NONE);
+  const code = `Center(\n${child ? INDENT + 'child: ' + child + ',\n' : ''})`;
+  return [code, Order.NONE];
+};
+
+dartGenerator.finish = function (code) {
+  const headers = Object.values(dartGenerator.definitions_).join('\n');
+  return `${headers}\n\n${code}`;
+};
+
+
 dartGenerator.forBlock['flutter_text'] = function(block) {
   let value_data = dartGenerator.valueToCode(block, 'data', Order.ATOMIC);
   let code = 'Text(' + value_data + ')';
@@ -345,13 +360,3 @@ dartGenerator.forBlock['flutter_raw_statement'] = function(block) {
   return block.getFieldValue('code') + '\n';
 };
 
-dartGenerator.finish = function(code) {
-  // Gather any definitions (imports, constants, etc.) that you added
-  let imports = [];
-  for (let name in dartGenerator.definitions_) {
-    imports.push(dartGenerator.definitions_[name]);
-  }
-
-  // Combine them at the top, then append the generated code
-  return imports.join('\n') + '\n\n' + code;
-};
