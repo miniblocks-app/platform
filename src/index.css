@@ -1,6 +1,4 @@
 @import "tailwindcss";
-@tailwind base;
-@tailwind components;
 @tailwind utilities;
 
 /* Custom scrollbar for left panel */
@@ -62,4 +60,8 @@
 /*To make sure the scrollbar remains hidden when the blockly toolbox is closed*/
 svg[display='none'] {
   display: none;
+}
+
+@layer base {
+  * { @apply border-none; }   /* zero width + style:none */
 }
