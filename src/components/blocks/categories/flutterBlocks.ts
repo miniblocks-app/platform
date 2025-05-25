@@ -17,14 +17,22 @@ export const flutterCategory: ToolboxCategory= {
     name: "Flutter",
     colour: "#ffb5eb",
     contents: [
-        {
-            kind: "block",
-            type: "flutter_import_material",
-        },
-        {
-            kind: "block",
-            type: "flutter_main",
-        },
+        // {
+        //     kind: "block",
+        //     type: "flutter_import_material",
+        // },
+        // {
+        //     kind: "block",
+        //     type: "flutter_main",
+        // },
+        // {
+        //     kind: "block",
+        //     type: "runApp",
+        // },
+        // {
+        //     kind: "block",
+        //     type: "app",
+        // },
         {
             kind: "block",
             type: "flutter_center",
@@ -60,14 +68,6 @@ export const flutterCategory: ToolboxCategory= {
         {
             kind: "block",
             type: "flutter_text",
-        },
-        {
-            kind: "block",
-            type: "runApp",
-        },
-        {
-            kind: "block",
-            type: "app",
         },
         {
             kind: "block",

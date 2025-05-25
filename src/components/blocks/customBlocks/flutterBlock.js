@@ -1,42 +1,60 @@
 import * as Blockly from "blockly";
 
-Blockly.Blocks['flutter_import_material'] = {
-    init: function() {
-        this.appendDummyInput()
-            .appendField("import 'package:flutter/material.dart';");
-        this.setOutput(true, "Import");
-        this.setPreviousStatement(false, null);
-        this.setNextStatement(false, null);
-        this.setColour(510);
-        this.setTooltip("Import Flutter Material package");
-        this.setHelpUrl("https://api.flutter.dev/flutter/material/material-library.html");
-    }
-};
-
-Blockly.Blocks['flutter_main'] = {
-    init() {
-        this.appendDummyInput().appendField("main()");
-        this.appendStatementInput("body")
-            .setCheck(null)
-            .appendField("body");
-        this.setColour(290);
-        this.setTooltip("Dart entry point");
-        this.setHelpUrl("https://dart.dev/guides/language/language-tour#functions");
-    }
-};
-
-Blockly.Blocks['runApp'] = {
-    init: function() {
-        this.appendValueInput("NAME")
-            .setCheck("Widget")
-            .appendField("RunApp");
-        this.setColour(230);
-        this.setPreviousStatement(true, null);
-        this.setNextStatement(false, null);
-        this.setTooltip("");
-        this.setHelpUrl("https://api.flutter.dev/flutter/widgets/runApp.html");
-    }
-};
+// TODO: Deprecated blocks, remove in future versions
+// Blockly.Blocks['flutter_import_material'] = {
+//     init: function() {
+//         this.appendDummyInput()
+//             .appendField("import 'package:flutter/material.dart';");
+//         this.setOutput(true, "Import");
+//         this.setPreviousStatement(false, null);
+//         this.setNextStatement(false, null);
+//         this.setColour(510);
+//         this.setTooltip("Import Flutter Material package");
+//         this.setHelpUrl("https://api.flutter.dev/flutter/material/material-library.html");
+//     }
+// };
+// Blockly.Blocks['flutter_main'] = {
+//     init() {
+//         this.appendDummyInput().appendField("main()");
+//         this.appendStatementInput("body")
+//             .setCheck(null)
+//             .appendField("body");
+//         this.setColour(290);
+//         this.setTooltip("Dart entry point");
+//         this.setHelpUrl("https://dart.dev/guides/language/language-tour#functions");
+//     }
+// };
+// Blockly.Blocks['runApp'] = {
+//     init: function() {
+//         this.appendValueInput("NAME")
+//             .setCheck("Widget")
+//             .appendField("RunApp");
+//         this.setColour(230);
+//         this.setPreviousStatement(true, null);
+//         this.setNextStatement(false, null);
+//         this.setTooltip("");
+//         this.setHelpUrl("https://api.flutter.dev/flutter/widgets/runApp.html");
+//     }
+// };
+// Blockly.Blocks['app'] = {
+//     init: function() {
+//         this.appendDummyInput()
+//             .appendField("App of type")
+//             .appendField(new Blockly.FieldDropdown([["material","MATERIAL"], ["cupertino","CUPERTINO"]]), "type");
+//         this.appendValueInput("title")
+//             .setCheck("String")
+//             .setAlign(Blockly.ALIGN_RIGHT)
+//             .appendField("title");
+//         this.appendValueInput("home")
+//             .setCheck(null)
+//             .setAlign(Blockly.ALIGN_RIGHT)
+//             .appendField("home");
+//         this.setOutput(true, ["Widget", "MaterialApp"]);
+//         this.setColour(230);
+//         this.setTooltip("");
+//         this.setHelpUrl("https://api.flutter.dev/flutter/material/MaterialApp-class.html");
+//     }
+// };
 
 Blockly.Blocks['flutter_center'] = {
     init() {
@@ -50,30 +68,6 @@ Blockly.Blocks['flutter_center'] = {
     }
 };
 
-//
-// -- APP (MaterialApp / CupertinoApp) BLOCK --
-Blockly.Blocks['app'] = {
-    init: function() {
-        this.appendDummyInput()
-            .appendField("App of type")
-            .appendField(new Blockly.FieldDropdown([["material","MATERIAL"], ["cupertino","CUPERTINO"]]), "type");
-        this.appendValueInput("title")
-            .setCheck("String")
-            .setAlign(Blockly.ALIGN_RIGHT)
-            .appendField("title");
-        this.appendValueInput("home")
-            .setCheck(null)
-            .setAlign(Blockly.ALIGN_RIGHT)
-            .appendField("home");
-        this.setOutput(true, ["Widget", "MaterialApp"]);
-        this.setColour(230);
-        this.setTooltip("");
-        this.setHelpUrl("https://api.flutter.dev/flutter/material/MaterialApp-class.html");
-    }
-};
-
-//
-// -- SCAFFOLD BLOCK --
 Blockly.Blocks['scaffold'] = {
     init: function() {
         this.appendDummyInput()

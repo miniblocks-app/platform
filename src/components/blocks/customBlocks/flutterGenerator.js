@@ -22,8 +22,25 @@ dartGenerator.forBlock['flutter_center'] = function (block) {
 };
 
 dartGenerator.finish = function (code) {
+  const customHeader = `
+import 'package:flutter/material.dart';
+
+void main() {
+	  runApp(MaterialApp(
+	  	 home: MyWidget(),
+	  ));
+}
+
+class MyWidget extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Hello();
+  }
+}
+`.trim();
+
   const headers = Object.values(dartGenerator.definitions_).join('\n');
-  return `${headers}\n\n${code}`;
+  return `${customHeader}\n${headers ? headers + '\n' : ''}\n${code}`;
 };
 
 
@@ -354,8 +371,7 @@ dartGenerator.forBlock['procedures_defreturn'] = function(block) {
   return code;
 };
 
-//
-// -- RAW STATEMENT GENERATOR --
+
 dartGenerator.forBlock['flutter_raw_statement'] = function(block) {
   return block.getFieldValue('code') + '\n';
 };
