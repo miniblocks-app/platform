@@ -15,9 +15,9 @@ export default function Login() {
     try {
       await authService.login(credentials);
       navigate('/profile');
-    } catch (err) {
-      setError('Invalid email or password');
-    }
+  } catch {
+    setError('Invalid email or password');
+  }
   };
 
   return (
