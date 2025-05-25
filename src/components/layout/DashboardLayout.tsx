@@ -1,5 +1,7 @@
 import { useState } from 'react';
-import { FiUser, FiSmartphone } from 'react-icons/fi';
+import { useNavigate } from 'react-router-dom';
+import { User, Smartphone } from 'lucide-react';
+import { authService } from '../../lib/auth';
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -7,16 +9,38 @@ interface DashboardLayoutProps {
 
 export default function DashboardLayout({ children }: DashboardLayoutProps) {
   const [activeTab, setActiveTab] = useState<'my-projects' | 'sample-projects'>('my-projects');
+  const navigate = useNavigate();
+
+  const handleLogoClick = () => {
+    navigate('/');
+  };
+
+  const handleUserClick = () => {
+    if (authService.isAuthenticated()) {
+      navigate('/profile');
+    } else {
+      navigate('/login');
+    }
+  };
 
   return (
     <div className="h-screen flex flex-col">
       {/* Header */}
       <header className="h-16 border-b flex items-center justify-between px-6">
         <div className="flex items-center">
-          <img src="/miniblocks-colored.png" alt="Miniblocks Logo" className="h-8" />
+          <img 
+            src="/miniblocks-colored.png" 
+            alt="Miniblocks Logo" 
+            className="h-8 cursor-pointer hover:opacity-80 transition-opacity" 
+            onClick={handleLogoClick}
+          />
         </div>
-        <div className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center cursor-pointer hover:bg-gray-200 transition-colors">
-          <FiUser size={20} className="text-gray-600" />
+        <div 
+          className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center cursor-pointer hover:bg-gray-200 transition-colors"
+          onClick={handleUserClick}
+          title={authService.isAuthenticated() ? "View Profile" : "Sign In"}
+        >
+          <User size={20} className="text-gray-600" />
         </div>
       </header>
 
@@ -32,7 +56,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                 }`}
                 onClick={() => setActiveTab('my-projects')}
               >
-                <FiSmartphone className={activeTab === 'my-projects' ? 'text-purple-700' : 'text-gray-500'} />
+                <Smartphone className={activeTab === 'my-projects' ? 'text-purple-700' : 'text-gray-500'} />
                 My Projects
               </button>
               <button
@@ -41,7 +65,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                 }`}
                 onClick={() => setActiveTab('sample-projects')}
               >
-                <FiSmartphone className={activeTab === 'sample-projects' ? 'text-purple-700' : 'text-gray-500'} />
+                <Smartphone className={activeTab === 'sample-projects' ? 'text-purple-700' : 'text-gray-500'} />
                 Sample Projects
               </button>
             </div>
