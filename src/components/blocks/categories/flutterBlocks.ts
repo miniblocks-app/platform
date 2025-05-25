@@ -32,13 +32,13 @@ export const flutterCategory: ToolboxCategory= {
         //     kind: "block",
         //     type: "app",
         // },
+        // {
+        //     kind: "block",
+        //     type: "flutter_stateless_widget",
+        // },
         {
             kind: "block",
             type: "flutter_center",
-        },
-        {
-            kind: "block",
-            type: "flutter_stateless_widget",
         },
         {
             kind: "block",

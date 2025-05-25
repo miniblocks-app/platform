@@ -270,7 +270,7 @@ Blockly.Blocks['flutter_fab'] = {
 Blockly.Blocks['flutter_stateless_widget'] = {
     init: function() {
         this.appendDummyInput()
-            .appendField(new Blockly.FieldTextInput("MyWidget"), "classname")
+            .appendField(new Blockly.FieldTextInput("App"), "classname")
             .appendField("StatelessWidget");
         this.appendValueInput("content")
             .setCheck("Widget")
