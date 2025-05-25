@@ -1,6 +1,5 @@
 import "../customBlocks/flutterBlock.js";
 import "../customBlocks/flutterGenerator.js";
-import "../customBlocks/flutterScaffolding.js";
 
 
 export interface ToolboxCategory {

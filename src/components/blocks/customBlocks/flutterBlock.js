@@ -87,24 +87,21 @@ Blockly.Blocks['scaffold'] = {
             .appendField("floatingActionButton");
         this.setOutput(true, ["Widget", "Scaffold"]);
         this.setColour(165);
-        this.setTooltip("");
-        this.setHelpUrl("https://api.flutter.dev/flutter/material/Scaffold-class.html");
+        this.setTooltip("Hi");
+        this.setHelpUrl("https://api.flutter.dev/flutter/material/Scaffold-class");
     }
 };
 
-//
-// -- APP BAR BLOCK --
 Blockly.Blocks['appBar'] = {
     init: function() {
         this.appendDummyInput()
             .appendField("appBar");
-        // Set check to ["Widget"] or ["Text"] so it can accept a Text widget or any widget:
         this.appendValueInput("title")
             .setAlign(Blockly.ALIGN_RIGHT)
-            .appendField("title")
-            .setCheck(["Widget","Text"]);
+            .appendField("title").setCheck("flutter_text");
         this.setOutput(true, ["Widget", "AppBar"]);
         this.setColour(165);
+
         this.setTooltip("");
         this.setHelpUrl("https://api.flutter.dev/flutter/material/AppBar-class.html");
     }
@@ -387,3 +384,4 @@ Blockly.Blocks['flutter_raw_statement'] = {
         this.setHelpUrl("");
     }
 };
+
