@@ -1,6 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useAppStore } from '../store';
 import { CogIcon, ComputerIcon, Hammer, Play, Share2, User } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { authService } from '../lib/auth';
 
 export const Header = () => {
   const {
@@ -16,11 +18,15 @@ export const Header = () => {
     dartCode
   } = useAppStore();
 
+  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080';
+
   const [isEditing, setIsEditing] = useState(false);
   const [projectName, setProjectName] = useState(currentProject?.name || 'My First Project');
   const [buildStatus, setBuildStatus] = useState<'idle' | 'zipping' | 'finished' | 'error'>('idle');
   const [showQR, setShowQR] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (isEditing && inputRef.current) {
@@ -32,8 +38,7 @@ export const Header = () => {
   const handleBuildClick = async () => {
     setBuildStatus('zipping');
     setShowQR(false);
-
-    const response = await fetch('https://miniblocks-core-639528289562.us-central1.run.app/upload', {
+    const response = await fetch(`${API_URL}/upload`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -79,11 +84,28 @@ export const Header = () => {
     }
   };
 
+  const handleLogoClick = () => {
+    navigate('/');
+  };
+
+  const handleUserClick = () => {
+    if (authService.isAuthenticated()) {
+      navigate('/profile');
+    } else {
+      navigate('/login');
+    }
+  };
+
   return (
     <>
       <header className="flex items-center justify-between px-4 py-2 border-b bg-white">
         <div className="flex items-center space-x-8">
-          <img src="/miniblocks-colored.png" alt="Miniblocks Logo" className="h-8" />
+          <img 
+            src="/miniblocks-colored.png" 
+            alt="Miniblocks Logo" 
+            className="h-8 cursor-pointer hover:opacity-80 transition-opacity" 
+            onClick={handleLogoClick}
+          />
           <div className="flex space-x-2">
             <button
               className={`px-4 py-1 rounded-md ${
@@ -175,7 +197,11 @@ export const Header = () => {
               <Play className="w-4 h-4" />
               <span>Preview</span>
             </button>
-            <button className="p-2 hover:bg-gray-100 rounded-full">
+            <button 
+              onClick={handleUserClick}
+              className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+              title={authService.isAuthenticated() ? "View Profile" : "Sign In"}
+            >
               <User className="w-5 h-5 text-gray-600" />
             </button>
           </div>
