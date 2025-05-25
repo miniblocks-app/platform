@@ -1,6 +1,5 @@
 import "../customBlocks/flutterBlock.js";
 import "../customBlocks/flutterGenerator.js";
-import "../customBlocks/flutterScaffolding.js";
 
 
 export interface ToolboxCategory {
@@ -17,21 +16,29 @@ export const flutterCategory: ToolboxCategory= {
     name: "Flutter",
     colour: "#ffb5eb",
     contents: [
-        {
-            kind: "block",
-            type: "flutter_import_material",
-        },
-        {
-            kind: "block",
-            type: "flutter_main",
-        },
+        // {
+        //     kind: "block",
+        //     type: "flutter_import_material",
+        // },
+        // {
+        //     kind: "block",
+        //     type: "flutter_main",
+        // },
+        // {
+        //     kind: "block",
+        //     type: "runApp",
+        // },
+        // {
+        //     kind: "block",
+        //     type: "app",
+        // },
+        // {
+        //     kind: "block",
+        //     type: "flutter_stateless_widget",
+        // },
         {
             kind: "block",
             type: "flutter_center",
-        },
-        {
-            kind: "block",
-            type: "flutter_stateless_widget",
         },
         {
             kind: "block",
@@ -60,14 +67,6 @@ export const flutterCategory: ToolboxCategory= {
         {
             kind: "block",
             type: "flutter_text",
-        },
-        {
-            kind: "block",
-            type: "runApp",
-        },
-        {
-            kind: "block",
-            type: "app",
         },
         {
             kind: "block",
