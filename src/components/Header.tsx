@@ -1,8 +1,10 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useAppStore } from '../store';
-import { CogIcon, ComputerIcon, Hammer, Play, Share2, User } from 'lucide-react';
+import { CogIcon, ComputerIcon, Hammer, Play, Share2, User, Smartphone, X, Loader2, RefreshCw } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { authService } from '../lib/auth';
+import clsx from 'clsx';
+import { useWebhookEvents } from '../hooks/useWebhookEvents';
 
 export const Header = () => {
   const {
@@ -24,9 +26,13 @@ export const Header = () => {
   const [projectName, setProjectName] = useState(currentProject?.name || 'My First Project');
   const [buildStatus, setBuildStatus] = useState<'idle' | 'zipping' | 'finished' | 'error'>('idle');
   const [showQR, setShowQR] = useState(false);
+  const [showWebView, setShowWebView] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
+  const [isCompiling, setIsCompiling] = useState(false);
+  const [isWebReady, setIsWebReady] = useState(false);
 
   const navigate = useNavigate();
+  const { event: workflowEvent } = useWebhookEvents();
 
   useEffect(() => {
     if (isEditing && inputRef.current) {
@@ -83,6 +89,52 @@ export const Header = () => {
       window.open(`/preview/${selectedScreen}`, '_blank');
     }
   };
+
+  const handleRequestWebView = async () => {
+    if (selectedScreen) {
+      setIsCompiling(true);
+      setIsWebReady(false);
+      try {
+        const response = await fetch(`${API_URL}/api/compile`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ code: dartCode })
+        });
+
+        if (!response.ok) {
+          throw new Error('Compilation request failed');
+        }
+        // Don't do anything here - keep the loading state
+        // The loading state will only be cleared by the webhook
+      } catch (error) {
+        console.error('Error requesting compilation:', error);
+        setIsCompiling(false);
+        setIsWebReady(false);
+      }
+    }
+  };
+
+  const handleViewWeb = () => {
+    if (selectedScreen && isWebReady) {
+      setShowWebView(true);
+    }
+  };
+
+  // Update webViewStatus when workflow completes
+  useEffect(() => {
+    if (workflowEvent?.type === 'workflow_run' && 
+        workflowEvent.action === 'completed') {
+      // Only stop the loading animation when we get the webhook
+      setIsCompiling(false);
+      if (workflowEvent.workflow_run.conclusion === 'success') {
+        setIsWebReady(true);
+      } else {
+        setIsWebReady(false);
+      }
+    }
+  }, [workflowEvent]);
 
   const handleLogoClick = () => {
     navigate('/');
@@ -197,6 +249,57 @@ export const Header = () => {
               <Play className="w-4 h-4" />
               <span>Preview</span>
             </button>
+
+            {/* Request Web-View / Compile button */}
+            <button
+                className={clsx(
+                    'p-2 text-white rounded-md flex items-center space-x-2 transition-colors',
+                    {
+                      // enabled, blue, normal cursor  ➜ user can request a build
+                      'bg-blue-500 hover:bg-blue-600': selectedScreen && !isCompiling,
+                      // greyed-out if nothing is selected
+                      'bg-gray-300 cursor-not-allowed': !selectedScreen,
+                      // show wait cursor + lighter blue while compiling
+                      'bg-blue-400 cursor-wait': isCompiling
+                    }
+                )}
+                onClick={handleRequestWebView}
+                disabled={!selectedScreen || isCompiling}
+                title={
+                  !selectedScreen
+                      ? 'Select a screen to compile'
+                      : isCompiling
+                          ? 'Compiling…'
+                          : 'Request Web View'
+                }
+            >
+              {isCompiling ? (
+                  <Loader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                  <RefreshCw className="w-4 h-4" />
+              )}
+              <span>{isCompiling ? 'Compiling…' : 'Request Web View'}</span>
+            </button>
+
+            <button
+              className={clsx(
+                'p-2 text-white rounded-md flex items-center space-x-2 transition-colors',
+                {
+                  'bg-blue-500 hover:bg-blue-600': selectedScreen && isWebReady,
+                  'bg-gray-300 cursor-not-allowed': !selectedScreen || !isWebReady
+                }
+              )}
+              onClick={handleViewWeb}
+              disabled={!selectedScreen || !isWebReady}
+              title={
+                !selectedScreen ? 'Select a screen to view' :
+                !isWebReady ? 'Wait for compilation to complete' :
+                'View compiled version'
+              }
+            >
+              <Smartphone className="w-4 h-4" />
+              <span>View Web</span>
+            </button>
             <button 
               onClick={handleUserClick}
               className="p-2 hover:bg-gray-100 rounded-full transition-colors"
@@ -207,6 +310,48 @@ export const Header = () => {
           </div>
         </div>
       </header>
+
+      {/* Web View Modal */}
+      {showWebView && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="relative">
+            {/* Close button */}
+            <button
+              onClick={() => setShowWebView(false)}
+              className="absolute -top-12 right-0 p-2 text-white hover:text-gray-300"
+            >
+              <X className="w-6 h-6" />
+            </button>
+            
+            {/* Mobile Frame */}
+            <div className="relative">
+              {/* Device Frame */}
+              <div className="absolute inset-0 bg-black rounded-[60px] -m-4 shadow-xl" />
+              
+              {/* Screen Content */}
+              <div
+                className="bg-white rounded-[50px] overflow-hidden relative p-8"
+                style={{ 
+                  width: '390px',
+                  height: '844px',
+                }}
+              >
+                {/* Notch */}
+                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[150px] h-[35px] bg-black rounded-b-[20px]" />
+                
+                {/* Content Area */}
+                <div className="h-full pt-[35px] relative">
+                  <iframe
+                    src="https://miniblocks-app.github.io/compiler/"
+                    className="w-full h-full border-0"
+                    title="Web View"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Loader / QR Code Display */}
       {buildStatus !== 'idle' && (
