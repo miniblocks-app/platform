@@ -258,7 +258,7 @@ dartGenerator.forBlock['flutter_fab'] = function(block) {
 dartGenerator.forBlock['flutter_stateful_widget'] = function(block) {
   let text_classname = block.getFieldValue('classname');
   let value_content = dartGenerator.valueToCode(block, 'content', Order.NONE);
-  let statement_lets = dartGenerator.statementToCode(block, 'lets');
+  let statement_lets = dartGenerator.statementToCode(block, 'Variables');
 
   let code =
       'class ' + text_classname + ' extends StatefulWidget {\n' +
