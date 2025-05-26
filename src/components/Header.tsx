@@ -126,15 +126,19 @@ export const Header = () => {
   useEffect(() => {
     if (workflowEvent?.type === 'workflow_run' && 
         workflowEvent.action === 'completed') {
-      console.log('Workflow completed:', workflowEvent.workflow_run.conclusion);
-      // Only stop the loading animation when we get the webhook
+      console.log('Workflow completed:', workflowEvent.workflow_run.name);
+      
+      // Stop the loading animation
       setIsCompiling(false);
-      if (workflowEvent.workflow_run.conclusion === 'success') {
-        console.log('Workflow succeeded, enabling Web View button');
+
+      // Handle different workflow types
+      if (workflowEvent.workflow_run.name === 'Flutter Web Build') {
+        console.log('Web build completed, enabling Web View button');
         setIsWebReady(true);
-      } else {
-        console.log('Workflow failed, disabling Web View button');
-        setIsWebReady(false);
+      } else if (workflowEvent.workflow_run.name === 'Build and Release') {
+        console.log('Mobile build completed, showing QR code');
+        setBuildStatus('finished');
+        setShowQR(true);
       }
     }
   }, [workflowEvent]);
