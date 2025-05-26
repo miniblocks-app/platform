@@ -3,6 +3,7 @@ import { Type, Image, Search, Square, FileInput as InputIcon, Plus, Minus, List,
 import { useDraggable } from '@dnd-kit/core';
 import { ComponentType, ComponentSection } from '../../types';
 import clsx from 'clsx';
+import { TooltipIcon, TOOLTIP_DESCRIPTIONS } from '../ui/TooltipIcon';
 
 const COMPONENT_SECTIONS: ComponentSection[] = [
   {
@@ -101,9 +102,10 @@ interface ComponentItemProps {
   type: ComponentType;
   label: string;
   icon: React.ReactNode;
+  tooltipsEnabled?: boolean;
 }
 
-const ComponentItem = ({ type, label, icon }: ComponentItemProps) => {
+const ComponentItem = ({ type, label, icon, tooltipsEnabled }: ComponentItemProps) => {
   const { attributes, listeners, setNodeRef, isDragging } = useDraggable({
     id: `component-${type}`,
     data: {
@@ -124,12 +126,21 @@ const ComponentItem = ({ type, label, icon }: ComponentItemProps) => {
       <div className="p-2 rounded-md mb-2 bg-gray-50">
         {icon}
       </div>
-      <span className="text-sm text-gray-700 text-center">{label}</span>
+      <span className="text-sm text-gray-700 text-center flex items-center">
+        {label}
+        {tooltipsEnabled && TOOLTIP_DESCRIPTIONS[type] && (
+          <TooltipIcon description={TOOLTIP_DESCRIPTIONS[type]} />
+        )}
+      </span>
     </div>
   );
 };
 
-export const ComponentPalette = () => {
+interface ComponentPaletteProps {
+  tooltipsEnabled: boolean;
+}
+
+export const ComponentPalette = ({ tooltipsEnabled }: ComponentPaletteProps) => {
   const [searchQuery, setSearchQuery] = useState('');
 
   const filteredSections = COMPONENT_SECTIONS.map(section => ({
@@ -166,6 +177,7 @@ export const ComponentPalette = () => {
                   type={component.type}
                   label={component.label}
                   icon={component.icon}
+                  tooltipsEnabled={tooltipsEnabled}
                 />
               ))}
             </div>

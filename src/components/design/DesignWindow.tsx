@@ -13,6 +13,7 @@ export const DesignWindow = () => {
   const [activeId, setActiveId] = React.useState<string | null>(null);
   const [activeDragType, setActiveDragType] = React.useState<string | null>(null);
   const { currentProject, workspace } = useAppStore();
+  const [tooltipsEnabled, setTooltipsEnabled] = React.useState(false);
 
   const handleDragStart = (event: any) => {
     setActiveId(event.active.id);
@@ -91,15 +92,15 @@ export const DesignWindow = () => {
             />
           </div>
           <div className="flex-1 min-h-0 overflow-y-auto left-panel-scroll">
-            <ComponentPalette />   
+            <ComponentPalette tooltipsEnabled={tooltipsEnabled} />   
           </div>
         </div>
-        <DesignCanvas />
-        <PropertiesPanel />
+        <DesignCanvas tooltipsEnabled={tooltipsEnabled} setTooltipsEnabled={setTooltipsEnabled} />
+        <PropertiesPanel tooltipsEnabled={tooltipsEnabled} />
       </div>
       <DragOverlay>
         {activeId && activeDragType && (
-          <ComponentPreview type={activeDragType} />
+          <ComponentPreview type={activeDragType} tooltipsEnabled={tooltipsEnabled} />
         )}
       </DragOverlay>
     </DndContext>

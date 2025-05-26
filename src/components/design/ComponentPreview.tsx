@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { ComponentType } from '../../types';
-import { Info } from 'lucide-react';
+import { TooltipIcon, TOOLTIP_DESCRIPTIONS } from '../ui/TooltipIcon';
 
 interface ComponentPreviewProps {
   type: ComponentType;
@@ -14,73 +14,20 @@ interface ComponentPreviewProps {
     min?: number;
     max?: number;
     src?: string;
+    variant?: 'filled' | 'outlined' | 'text';
   };
   tooltipsEnabled?: boolean;
-}
-
-const TOOLTIP_DESCRIPTIONS: Record<ComponentType, string> = {
-  button: 'A clickable button to perform actions.',
-  text: 'Displays static or dynamic text.',
-  image: 'Shows an image or icon.',
-  spacer: 'Adds empty space between components.',
-  input: 'A field for user text input.',
-  counter: 'A numeric input with increment/decrement.',
-  dropdown: 'A menu to select one option from a list.',
-  radio: 'A single selectable option in a group.',
-  checkbox: 'A box that can be checked or unchecked.',
-  slider: 'A draggable bar for selecting a value.',
-  circle: 'A circular shape.',
-  line: 'A straight line shape.',
-  rectangle: 'A rectangular shape.',
-  square: 'A square shape.',
-  star: 'A star shape.'
-};
-
-function TooltipIcon({ description }: { description: string }) {
-  const [show, setShow] = useState(false);
-  return (
-    <span
-      style={{ position: 'relative', display: 'inline-block', marginLeft: 4, cursor: 'pointer' }}
-      onMouseEnter={() => setShow(true)}
-      onMouseLeave={() => setShow(false)}
-      tabIndex={0}
-      onFocus={() => setShow(true)}
-      onBlur={() => setShow(false)}
-    >
-      <Info size={16} style={{ color: '#2563eb', verticalAlign: 'middle' }} />
-      {show && (
-        <span
-          style={{
-            position: 'absolute',
-            left: '120%',
-            top: '50%',
-            transform: 'translateY(-50%)',
-            background: '#333',
-            color: '#fff',
-            padding: '6px 10px',
-            borderRadius: 4,
-            fontSize: 13,
-            whiteSpace: 'nowrap',
-            zIndex: 10,
-            boxShadow: '0 2px 8px rgba(0,0,0,0.15)'
-          }}
-        >
-          {description}
-        </span>
-      )}
-    </span>
-  );
 }
 
 export const ComponentPreview: React.FC<ComponentPreviewProps> = ({ type, props = {}, tooltipsEnabled }) => {
   const [counterValue, setCounterValue] = useState(0);
   const style = props.style || {};
-  const tooltip = tooltipsEnabled ? <TooltipIcon description={TOOLTIP_DESCRIPTIONS[type]} /> : null;
+  const [showTooltip, setShowTooltip] = useState(false);
   
-  switch (type) {
-    case 'button':
-      return (
-        <span style={{ display: 'inline-flex', alignItems: 'center' }}>
+  const renderComponentElement = () => {
+    switch (type) {
+      case 'button':
+        return (
           <button 
             className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-md transition-colors"
             style={{
@@ -93,13 +40,10 @@ export const ComponentPreview: React.FC<ComponentPreviewProps> = ({ type, props 
           >
             {props.text || 'Button'}
           </button>
-          {tooltip}
-        </span>
-      );
-      
-    case 'text':
-      return (
-        <span style={{ display: 'inline-flex', alignItems: 'center' }}>
+        );
+        
+      case 'text':
+        return (
           <p style={{
             color: style.color,
             backgroundColor: style.backgroundColor,
@@ -109,28 +53,25 @@ export const ComponentPreview: React.FC<ComponentPreviewProps> = ({ type, props 
           }}>
             {props.text || 'Text'}
           </p>
-          {tooltip}
-        </span>
-      );
-      
-    case 'image':
-      const [preview, setPreview] = useState(props.src || null);
-      const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0];
-        if (file) {
-          const reader = new FileReader();
-          reader.onload = (ev) => {
-            setPreview(ev.target?.result as string);
-            if (props && typeof props === 'object') {
-              props.src = ev.target?.result as string;
-            }
-          };
-          reader.readAsDataURL(file);
-        }
-      };
-      return (
-        <span style={{ display: 'inline-flex', alignItems: 'center' }}>
-          <div 
+        );
+        
+      case 'image':
+        const [preview, setPreview] = useState(props.src || null);
+        const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+          const file = e.target.files?.[0];
+          if (file) {
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+              setPreview(ev.target?.result as string);
+              if (props && typeof props === 'object') {
+                (props as any).src = ev.target?.result as string;
+              }
+            };
+            reader.readAsDataURL(file);
+          }
+        };
+        return (
+          <div
             className="w-24 h-24 bg-gray-200 rounded-md flex items-center justify-center hover:bg-gray-300 transition-colors relative overflow-hidden"
             style={{
               backgroundColor: style.backgroundColor,
@@ -150,30 +91,24 @@ export const ComponentPreview: React.FC<ComponentPreviewProps> = ({ type, props 
               </svg>
             </label>
           </div>
-          {tooltip}
-        </span>
-      );
-      
-    case 'spacer':
-      return (
-        <span style={{ display: 'inline-flex', alignItems: 'center' }}>
-          <div 
+        );
+        
+      case 'spacer':
+        return (
+          <div
             className="bg-gray-100 border border-dashed border-gray-300 rounded"
             style={{ 
-              width: '100px', 
-              height: '20px',
+              width: style.width || '100px', 
+              height: style.height || '20px',
               backgroundColor: style.backgroundColor,
               opacity: style.opacity,
               padding: style.padding,
             }}
           />
-          {tooltip}
-        </span>
-      );
-      
-    case 'input':
-      return (
-        <span style={{ display: 'inline-flex', alignItems: 'center' }}>
+        );
+        
+      case 'input':
+        return (
           <input
             type="text"
             placeholder={props.placeholder || "Enter text..."}
@@ -185,55 +120,42 @@ export const ComponentPreview: React.FC<ComponentPreviewProps> = ({ type, props 
               padding: style.padding,
               fontSize: style.fontSize,
             }}
-            value={props.value || ''}
+            value={props.value as string || ''}
             readOnly
           />
-          {tooltip}
-        </span>
-      );
-      
-    case 'counter':
-      return (
-        <span style={{ display: 'inline-flex', alignItems: 'center' }}>
-          <div 
+        );
+        
+      case 'counter':
+        return (
+          <div
             className="flex items-center space-x-2"
             style={{
+              backgroundColor: style.backgroundColor,
               opacity: style.opacity,
               padding: style.padding,
             }}
           >
-            <button 
-              className="px-3 py-1 bg-gray-200 rounded-md"
-              style={{
-                color: style.color,
-                backgroundColor: style.backgroundColor,
-                fontSize: style.fontSize,
-              }}
-              onClick={() => setCounterValue(prev => prev - 1)}
+            <button
+              className="px-2 py-1 bg-gray-200 rounded-l-md"
+              onClick={() => setCounterValue(prev => Math.max(0, prev - 1))}
             >
               -
             </button>
-            <span style={{ color: style.color, fontSize: style.fontSize }}>{counterValue}</span>
-            <button 
-              className="px-3 py-1 bg-gray-200 rounded-md"
-              style={{
-                color: style.color,
-                backgroundColor: style.backgroundColor,
-                fontSize: style.fontSize,
-              }}
+            <span className="px-2 py-1 border-t border-b">
+              {counterValue}
+            </span>
+            <button
+              className="px-2 py-1 bg-gray-200 rounded-r-md"
               onClick={() => setCounterValue(prev => prev + 1)}
             >
               +
             </button>
           </div>
-          {tooltip}
-        </span>
-      );
-      
-    case 'dropdown':
-      return (
-        <span style={{ display: 'inline-flex', alignItems: 'center' }}>
-          <select 
+        );
+        
+      case 'dropdown':
+        return (
+          <select
             className="px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             style={{
               color: style.color,
@@ -242,59 +164,67 @@ export const ComponentPreview: React.FC<ComponentPreviewProps> = ({ type, props 
               padding: style.padding,
               fontSize: style.fontSize,
             }}
+            value={props.value as string}
+            onChange={() => { /* Prevent interaction in preview */ }}
           >
-            {(props.options || ['Option 1', 'Option 2', 'Option 3']).map((option, index) => (
-              <option key={index}>{option}</option>
+            {(props.options || []).map((option, index) => (
+              <option key={index} value={option}>
+                {option}
+              </option>
             ))}
           </select>
-          {tooltip}
-        </span>
-      );
-      
-    case 'radio':
-      return (
-        <span style={{ display: 'inline-flex', alignItems: 'center' }}>
+        );
+        
+      case 'radio':
+        return (
           <label 
             className="flex items-center space-x-2"
             style={{
+              color: style.color,
+              backgroundColor: style.backgroundColor,
               opacity: style.opacity,
               padding: style.padding,
+              fontSize: style.fontSize,
             }}
           >
-            <input type="radio" checked={props.checked || false} readOnly />
-            <span style={{ color: style.color, fontSize: style.fontSize }}>
-              {props.text || 'Radio Option'}
-            </span>
+            <input
+              type="radio"
+              checked={props.checked}
+              onChange={() => { /* Prevent interaction in preview */ }}
+              className="form-radio"
+            />
+            <span>Radio</span>
           </label>
-          {tooltip}
-        </span>
-      );
-      
-    case 'checkbox':
-      return (
-        <span style={{ display: 'inline-flex', alignItems: 'center' }}>
+        );
+        
+      case 'checkbox':
+        return (
           <label 
             className="flex items-center space-x-2"
             style={{
+              color: style.color,
+              backgroundColor: style.backgroundColor,
               opacity: style.opacity,
               padding: style.padding,
+              fontSize: style.fontSize,
             }}
           >
-            <input type="checkbox" checked={props.checked || false} readOnly />
-            <span style={{ color: style.color, fontSize: style.fontSize }}>
-              {props.text || 'Checkbox'}
-            </span>
+            <input
+              type="checkbox"
+              checked={props.checked}
+              onChange={() => { /* Prevent interaction in preview */ }}
+              className="form-checkbox"
+            />
+            <span>Checkbox</span>
           </label>
-          {tooltip}
-        </span>
-      );
-      
-    case 'slider':
-      return (
-        <span style={{ display: 'inline-flex', alignItems: 'center' }}>
-          <div 
+        );
+        
+      case 'slider':
+        return (
+          <div
             className="flex flex-col space-y-2"
             style={{
+              backgroundColor: style.backgroundColor,
               opacity: style.opacity,
               padding: style.padding,
             }}
@@ -303,117 +233,113 @@ export const ComponentPreview: React.FC<ComponentPreviewProps> = ({ type, props 
               type="range"
               min={props.min || 0}
               max={props.max || 100}
-              value={props.value || 50}
-              className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
-              style={{
-                accentColor: style.color || '#3B82F6',
-              }}
-              readOnly
+              value={props.value as number || 50}
+              onChange={() => { /* Prevent interaction in preview */ }}
+              className="w-full"
             />
-            <div className="flex justify-between text-xs text-gray-500">
+            <div className="flex justify-between text-xs text-gray-600">
               <span>{props.min || 0}</span>
               <span>{props.max || 100}</span>
             </div>
           </div>
-          {tooltip}
-        </span>
-      );
-      
-    case 'circle':
-      return (
-        <span style={{ display: 'inline-flex', alignItems: 'center' }}>
+        );
+        
+      case 'circle':
+        return (
           <div
             className="rounded-full"
             style={{
-              width: '50px',
-              height: '50px',
+              width: style.width || '50px',
+              height: style.height || '50px',
               backgroundColor: style.backgroundColor || '#3B82F6',
-              border: `2px solid ${style.color || '#000000'}`,
               opacity: style.opacity,
             }}
           />
-          {tooltip}
-        </span>
-      );
-      
-    case 'line':
-      return (
-        <span style={{ display: 'inline-flex', alignItems: 'center' }}>
+        );
+        
+      case 'line':
+        return (
           <div
             style={{
-              width: '100px',
-              height: '2px',
-              backgroundColor: style.color || '#000000',
+              width: style.width || '100px',
+              height: style.height || '2px',
+              backgroundColor: style.backgroundColor || '#000000',
               opacity: style.opacity,
             }}
           />
-          {tooltip}
-        </span>
-      );
-      
-    case 'rectangle':
-      return (
-        <span style={{ display: 'inline-flex', alignItems: 'center' }}>
+        );
+        
+      case 'rectangle':
+        return (
           <div
             style={{
-              width: '100px',
-              height: '50px',
+              width: style.width || '100px',
+              height: style.height || '50px',
               backgroundColor: style.backgroundColor || '#3B82F6',
-              border: `2px solid ${style.color || '#000000'}`,
               opacity: style.opacity,
             }}
           />
-          {tooltip}
-        </span>
-      );
-      
-    case 'square':
-      return (
-        <span style={{ display: 'inline-flex', alignItems: 'center' }}>
+        );
+        
+      case 'square':
+        return (
           <div
             style={{
-              width: '50px',
-              height: '50px',
+              width: style.width || '50px',
+              height: style.height || '50px',
               backgroundColor: style.backgroundColor || '#3B82F6',
-              border: `2px solid ${style.color || '#000000'}`,
               opacity: style.opacity,
             }}
           />
-          {tooltip}
-        </span>
-      );
-      
-    case 'star':
-      return (
-        <span style={{ display: 'inline-flex', alignItems: 'center' }}>
-          <div
-            style={{
-              width: '50px',
-              height: '50px',
-              position: 'relative',
-              opacity: style.opacity,
-            }}
-          >
-            <svg
-              viewBox="0 0 24 24"
-              fill={style.backgroundColor || '#3B82F6'}
-              stroke={style.color || '#000000'}
-              strokeWidth="2"
-              style={{ width: '100%', height: '100%' }}
-            >
-              <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+        );
+        
+      case 'star':
+        return (
+          <div style={{ 
+            width: style.width || '50px', 
+            height: style.height || '50px', 
+            opacity: style.opacity,
+          }}>
+            <svg viewBox="0 0 24 24" fill={style.color || '#FFD700'} stroke="currentColor" strokeWidth="0" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.279-7.416-3.967-7.417 3.967 1.481-8.279-6.064-5.828 8.332-1.151z"/>
             </svg>
           </div>
-          {tooltip}
-        </span>
-      );
-      
-    default:
-      return (
-        <span style={{ display: 'inline-flex', alignItems: 'center' }}>
+        );
+        
+      default:
+        return (
           <span>{type}</span>
-          {tooltip}
+        );
+    }
+  };
+
+  return (
+    <div
+      style={{ position: 'relative', display: 'inline-block' }}
+      onMouseEnter={() => tooltipsEnabled && setShowTooltip(true)}
+      onMouseLeave={() => tooltipsEnabled && setShowTooltip(false)}
+    >
+      {renderComponentElement()}
+      {showTooltip && tooltipsEnabled && TOOLTIP_DESCRIPTIONS[type as ComponentType] && (
+        <span
+          style={{
+            position: 'absolute',
+            left: '50%',
+            top: '100%',
+            transform: 'translateX(-50%) translateY(5px)',
+            background: '#333',
+            color: '#fff',
+            padding: '6px 10px',
+            borderRadius: 4,
+            fontSize: 13,
+            whiteSpace: 'nowrap',
+            zIndex: 100,
+            boxShadow: '0 2px 8px rgba(0,0,0,0.15)'
+          }}
+        >
+          {TOOLTIP_DESCRIPTIONS[type as ComponentType]}
         </span>
-      );
-  }
+      )}
+    </div>
+  );
 };
