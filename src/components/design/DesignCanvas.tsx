@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useDroppable } from '@dnd-kit/core';
 import { useAppStore } from '../../store';
-import { Undo2, Redo2, ZoomIn, ZoomOut, Grid, Trash2, Info, Eraser } from 'lucide-react';
+import { Undo2, Redo2, ZoomIn, ZoomOut, Grid, Trash2, Info, Eraser, LayoutGrid } from 'lucide-react';
 import { ComponentPreview } from './ComponentPreview';
 import { ClearCanvasDialog } from './ClearCanvasDialog';
 import clsx from 'clsx';
@@ -434,6 +434,48 @@ export const DesignCanvas = () => {
     </div>
   );
 
+  const handleRearrange = () => {
+    if (!screen) return;
+    
+    // Get all components
+    const components = [...screen.components];
+    
+    // Sort components by their current position (top to bottom, left to right)
+    components.sort((a, b) => {
+      const aTop = parseInt(a.props.style?.top || '0');
+      const bTop = parseInt(b.props.style?.top || '0');
+      if (aTop !== bTop) return aTop - bTop;
+      return parseInt(a.props.style?.left || '0') - parseInt(b.props.style?.left || '0');
+    });
+
+    // Calculate new positions in a grid layout
+    const padding = 16; // Padding from edges
+    const spacing = 16; // Spacing between components
+    const componentWidth = 100; // Approximate width of components
+    const componentHeight = 40; // Approximate height of components
+    const maxComponentsPerRow = Math.floor((390 - 2 * padding) / (componentWidth + spacing));
+
+    // Update component positions
+    components.forEach((component, index) => {
+      const row = Math.floor(index / maxComponentsPerRow);
+      const col = index % maxComponentsPerRow;
+      
+      const newLeft = padding + col * (componentWidth + spacing);
+      const newTop = padding + row * (componentHeight + spacing);
+
+      updateComponent(screen.id, component.id, {
+        props: {
+          ...component.props,
+          style: {
+            ...(component.props.style || {}),
+            left: `${newLeft}px`,
+            top: `${newTop}px`,
+          }
+        }
+      } as Partial<ComponentData>);
+    });
+  };
+
   return (
     <div className="flex-1 flex flex-col">
       {/* Canvas Toolbar */}
@@ -491,6 +533,19 @@ export const DesignCanvas = () => {
           >
             <Info className="w-4 h-4" />
             <span className="text-xs font-medium">Enable Tooltips</span>
+          </button>
+          <button
+            className={clsx(
+              'ml-2 px-3 py-1 rounded transition-colors flex items-center gap-1',
+              'bg-gray-100 text-gray-600 hover:bg-gray-200'
+            )}
+            onClick={handleRearrange}
+            title="Rearrange Components"
+            type="button"
+            disabled={!selectedScreen || !screen?.components.length}
+          >
+            <LayoutGrid className="w-4 h-4" />
+            <span className="text-xs font-medium">Rearrange</span>
           </button>
           <button
             className={clsx(
