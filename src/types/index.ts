@@ -9,7 +9,14 @@ export type ComponentType =
   | 'counter'
   | 'dropdown'
   | 'radio'
-  | 'checkbox';
+  | 'checkbox'
+  | 'slider'
+  // Shape components
+  | 'circle'
+  | 'line'
+  | 'rectangle'
+  | 'square'
+  | 'star';
 
 export interface ComponentData {
   id: string;
