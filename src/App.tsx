@@ -12,6 +12,7 @@ import Register from "./pages/Register";
 import Profile from "./pages/Profile";
 import { authService } from "./lib/auth";
 import MainLayout from "@/components/layout/MainLayout.tsx";
+import PikaMascot from "./components/PikaMascot";
 
 // Protected Route component
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
@@ -50,6 +51,7 @@ function CanvasLayout() {
         </div>
       </main>
       <DeleteScreenDialog />
+      <PikaMascot />
     </div>
   );
 }
