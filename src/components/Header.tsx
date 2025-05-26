@@ -44,7 +44,7 @@ export const Header = () => {
   const handleBuildClick = async () => {
     setBuildStatus('zipping');
     setShowQR(false);
-    const response = await fetch(`${API_URL}/upload`, {
+    const response = await fetch(`${API_URL}/api/upload`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -126,11 +126,14 @@ export const Header = () => {
   useEffect(() => {
     if (workflowEvent?.type === 'workflow_run' && 
         workflowEvent.action === 'completed') {
+      console.log('Workflow completed:', workflowEvent.workflow_run.conclusion);
       // Only stop the loading animation when we get the webhook
       setIsCompiling(false);
       if (workflowEvent.workflow_run.conclusion === 'success') {
+        console.log('Workflow succeeded, enabling Web View button');
         setIsWebReady(true);
       } else {
+        console.log('Workflow failed, disabling Web View button');
         setIsWebReady(false);
       }
     }
