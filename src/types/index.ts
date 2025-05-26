@@ -22,7 +22,7 @@ export interface ComponentData {
   id: string;
   type: ComponentType;
   props: {
-    style?: {
+    style: {
       position?: string;
       left?: string;
       top?: string;
@@ -38,11 +38,6 @@ export interface ComponentData {
     value?: string | number;
     options?: string[];
     checked?: boolean;
-    variant?: 'filled' | 'outlined' | 'text';
-    placeholder?: string;
-    src?: string;
-    min?: number;
-    max?: number;
   };
   children?: ComponentData[];
 }

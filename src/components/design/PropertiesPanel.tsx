@@ -1,30 +1,23 @@
 import { useAppStore } from '../../store';
 import { ChevronDown } from 'lucide-react';
-import { ComponentType, Screen, ComponentData } from '../../types';
-import { TooltipIcon, TOOLTIP_DESCRIPTIONS } from '../ui/TooltipIcon';
-import React, { ChangeEvent } from 'react';
+import { ComponentType } from '../../types';
 
-interface CommonPropertiesProps {
-  style: ComponentData['props']['style'];
-  text?: string;
-  onStyleChange: (updates: Partial<ComponentData['props']['style']>) => void;
-  onTextChange?: (text: string) => void;
-  tooltipsEnabled?: boolean;
-}
-
-const CommonProperties = ({
+const CommonProperties = ({ 
   style,
   text,
   onStyleChange,
-  onTextChange,
-  tooltipsEnabled
-}: CommonPropertiesProps) => (
+  onTextChange 
+}: { 
+  style: any;
+  text?: string;
+  onStyleChange: (updates: any) => void;
+  onTextChange?: (text: string) => void;
+}) => (
   <div className="space-y-4">
     {onTextChange && (
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1 flex items-center">
+        <label className="block text-sm font-medium text-gray-700 mb-1">
           Text
-          {tooltipsEnabled && <TooltipIcon description={TOOLTIP_DESCRIPTIONS.Text} />}
         </label>
         <input
           type="text"
@@ -36,55 +29,51 @@ const CommonProperties = ({
     )}
     
     <div>
-      <label className="block text-sm font-medium text-gray-700 mb-1 flex items-center">
+      <label className="block text-sm font-medium text-gray-700 mb-1">
         Color
-        {tooltipsEnabled && <TooltipIcon description={TOOLTIP_DESCRIPTIONS.Color} />}
       </label>
       <input
         type="color"
-        value={style?.color || '#000000'}
+        value={style.color || '#000000'}
         onChange={(e) => onStyleChange({ color: e.target.value })}
         className="h-8 w-full rounded border"
       />
     </div>
     
     <div>
-      <label className="block text-sm font-medium text-gray-700 mb-1 flex items-center">
+      <label className="block text-sm font-medium text-gray-700 mb-1">
         Background Color
-        {tooltipsEnabled && <TooltipIcon description={TOOLTIP_DESCRIPTIONS["Background Color"]} />}
       </label>
       <input
         type="color"
-        value={style?.backgroundColor || '#ffffff'}
+        value={style.backgroundColor || '#ffffff'}
         onChange={(e) => onStyleChange({ backgroundColor: e.target.value })}
         className="h-8 w-full rounded border"
       />
     </div>
     
     <div>
-      <label className="block text-sm font-medium text-gray-700 mb-1 flex items-center">
+      <label className="block text-sm font-medium text-gray-700 mb-1">
         Opacity
-        {tooltipsEnabled && <TooltipIcon description={TOOLTIP_DESCRIPTIONS.Opacity} />}
       </label>
       <input
         type="range"
         min="0"
         max="1"
         step="0.1"
-        value={style?.opacity || 1}
-        onChange={(e) => onStyleChange({ opacity: parseFloat(e.target.value) })}
+        value={style.opacity || 1}
+        onChange={(e) => onStyleChange({ opacity: e.target.value })}
         className="w-full"
       />
     </div>
     
     <div>
-      <label className="block text-sm font-medium text-gray-700 mb-1 flex items-center">
+      <label className="block text-sm font-medium text-gray-700 mb-1">
         Padding
-        {tooltipsEnabled && <TooltipIcon description={TOOLTIP_DESCRIPTIONS.Padding} />}
       </label>
       <input
         type="text"
-        value={style?.padding || '0px'}
+        value={style.padding || '0px'}
         onChange={(e) => onStyleChange({ padding: e.target.value })}
         placeholder="e.g., 8px or 8px 16px"
         className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -92,13 +81,12 @@ const CommonProperties = ({
     </div>
     
     <div>
-      <label className="block text-sm font-medium text-gray-700 mb-1 flex items-center">
+      <label className="block text-sm font-medium text-gray-700 mb-1">
         Font Size
-        {tooltipsEnabled && <TooltipIcon description={TOOLTIP_DESCRIPTIONS["Font Size"]} />}
       </label>
       <input
         type="text"
-        value={style?.fontSize || '16px'}
+        value={style.fontSize || '16px'}
         onChange={(e) => onStyleChange({ fontSize: e.target.value })}
         placeholder="e.g., 16px or 1rem"
         className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -107,27 +95,22 @@ const CommonProperties = ({
   </div>
 );
 
-interface ComponentSpecificPropertiesProps {
-  type: ComponentType;
-  props: ComponentData['props'];
-  onChange: (updates: Partial<ComponentData['props']>) => void;
-  tooltipsEnabled?: boolean;
-}
-
 const ComponentSpecificProperties = ({
   type,
   props,
-  onChange,
-  tooltipsEnabled
-}: ComponentSpecificPropertiesProps) => {
+  onChange
+}: {
+  type: ComponentType;
+  props: any;
+  onChange: (updates: any) => void;
+}) => {
   switch (type) {
     case 'button':
       return (
         <div className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1 flex items-center">
+            <label className="block text-sm font-medium text-gray-700 mb-1">
               Button Style
-              {tooltipsEnabled && <TooltipIcon description={TOOLTIP_DESCRIPTIONS["Button Style"]} />}
             </label>
             <select
               value={props.variant || 'filled'}
@@ -146,9 +129,8 @@ const ComponentSpecificProperties = ({
       return (
         <div className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1 flex items-center">
+            <label className="block text-sm font-medium text-gray-700 mb-1">
               Placeholder
-              {tooltipsEnabled && <TooltipIcon description={TOOLTIP_DESCRIPTIONS.Placeholder} />}
             </label>
             <input
               type="text"
@@ -164,9 +146,8 @@ const ComponentSpecificProperties = ({
       return (
         <div className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1 flex items-center">
+            <label className="block text-sm font-medium text-gray-700 mb-1">
               Options (one per line)
-              {tooltipsEnabled && <TooltipIcon description={TOOLTIP_DESCRIPTIONS["Options (one per line)"]} />}
             </label>
             <textarea
               value={(props.options || []).join('\n')}
@@ -182,9 +163,8 @@ const ComponentSpecificProperties = ({
       return (
         <div className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1 flex items-center">
+            <label className="block text-sm font-medium text-gray-700 mb-1">
               Upload Image
-              {tooltipsEnabled && <TooltipIcon description={TOOLTIP_DESCRIPTIONS["Upload Image"]} />}
             </label>
             <input
               type="file"
@@ -220,46 +200,12 @@ const ComponentSpecificProperties = ({
         </div>
       );
       
-    case 'slider':
-      return (
-        <div className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1 flex items-center">
-              Min Value
-              {tooltipsEnabled && <TooltipIcon description={TOOLTIP_DESCRIPTIONS["Min Value"]} />}
-            </label>
-            <input
-              type="number"
-              value={props.min || 0}
-              onChange={(e) => onChange({ min: parseInt(e.target.value, 10) })}
-              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1 flex items-center">
-              Max Value
-              {tooltipsEnabled && <TooltipIcon description={TOOLTIP_DESCRIPTIONS["Max Value"]} />}
-            </label>
-            <input
-              type="number"
-              value={props.max || 100}
-              onChange={(e) => onChange({ max: parseInt(e.target.value, 10) })}
-              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
-        </div>
-      );
-      
     default:
       return null;
   }
 };
 
-interface PropertiesPanelProps {
-  tooltipsEnabled?: boolean;
-}
-
-export const PropertiesPanel = ({ tooltipsEnabled }: PropertiesPanelProps) => {
+export const PropertiesPanel = () => {
   const { 
     selectedScreen, 
     selectedComponent,
@@ -268,122 +214,121 @@ export const PropertiesPanel = ({ tooltipsEnabled }: PropertiesPanelProps) => {
     updateComponent
   } = useAppStore();
   
-  const screen = currentProject?.screens.find(s => s.id === selectedScreen) as Screen | undefined;
-  const component = screen?.components.find(c => c.id === selectedComponent) as ComponentData | undefined;
+  const screen = currentProject?.screens.find(s => s.id === selectedScreen);
+  const component = screen?.components.find(c => c.id === selectedComponent);
   
-  const handleScreenSettingChange = (key: keyof Screen['settings'], value: any) => {
-    if (!selectedScreen || !screen) return;
-    updateComponent(selectedScreen, selectedScreen, { 
+  const handleScreenSettingChange = (key: string, value: any) => {
+    if (!screen) return;
+    updateScreen(screen.id, {
       settings: {
         ...screen.settings,
         [key]: value,
-      }
-    } as any);
+      },
+    } as Partial<import('../../types').Screen>);
   };
 
-  const handleComponentStyleChange = (updates: Partial<ComponentData['props']['style']>) => {
-    if (!selectedScreen || !selectedComponent || !component) return;
-    updateComponent(selectedScreen, selectedComponent, {
+  const handleComponentStyleChange = (updates: any) => {
+    if (!screen || !component) return;
+    updateComponent(screen.id, component.id, {
       props: {
         ...component.props,
         style: {
-          ...(component.props.style || {}),
+          ...component.props.style,
           ...updates,
         },
-      }
-    });
+      },
+    } as Partial<import('../../types').ComponentData>);
   };
 
-  const handleComponentPropChange = (updates: Partial<ComponentData['props']>) => {
-    if (!selectedScreen || !selectedComponent || !component) return;
-    updateComponent(selectedScreen, selectedComponent, {
+  const handleComponentPropChange = (updates: any) => {
+    if (!screen || !component) return;
+    updateComponent(screen.id, component.id, {
       props: {
         ...component.props,
         ...updates,
-      }
-    });
+      },
+    } as Partial<import('../../types').ComponentData>);
   };
 
-  if (!selectedScreen) {
-    return (
-      <div className="w-64 bg-gray-50 p-4 border-l flex-shrink-0 overflow-y-auto text-gray-600 text-sm">
-        Select a screen or component to edit properties.
-      </div>
-    );
-  }
-
-  const screenComponentData = screen ? { 
-    id: screen.id, 
-    type: 'screen' as ComponentType,
-    props: { style: screen.settings as any }
-  } : undefined;
+  if (!screen) return null;
 
   return (
-    <div className="w-64 bg-white p-4 border-l flex-shrink-0 overflow-y-auto right-panel-scroll">
-      <h2 className="text-lg font-semibold mb-4">
-        {selectedComponent ? `${component?.type} Properties` : 'Screen Properties'}
-      </h2>
-
-      {selectedComponent ? (
-        <>
-          <CommonProperties
-            style={component.props.style}
-            text={component.props.text}
-            onStyleChange={handleComponentStyleChange}
-            onTextChange={handleComponentPropChange}
-            tooltipsEnabled={tooltipsEnabled}
-          />
-          <div className="mt-6 pt-4 border-t">
-            <ComponentSpecificProperties
-              type={component.type}
-              props={component.props}
-              onChange={handleComponentPropChange}
-              tooltipsEnabled={tooltipsEnabled}
-            />
-          </div>
-        </>
-      ) : (
-        <div className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1 flex items-center">
-              Scrollable
-              {tooltipsEnabled && <TooltipIcon description="Enables or disables scrolling for the screen." />}
-            </label>
-            <input
-              type="checkbox"
-              checked={screen.settings.scrollable}
-              onChange={(e) => handleScreenSettingChange('scrollable', e.target.checked)}
-              className="mr-2"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1 flex items-center">
-              Background Color
-              {tooltipsEnabled && <TooltipIcon description="Sets the background color of the screen." />}
-            </label>
-            <input
-              type="color"
-              value={screen.settings.backgroundColor || '#ffffff'}
-              onChange={(e) => handleScreenSettingChange('backgroundColor', e.target.value)}
-              className="h-8 w-full rounded border"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1 flex items-center">
-              Orientation
-              {tooltipsEnabled && <TooltipIcon description="Sets the screen orientation." />}
-            </label>
-            <select
-              value={screen.settings.orientation}
-              onChange={(e) => handleScreenSettingChange('orientation', e.target.value as 'portrait' | 'landscape')}
-              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            >
-              <option value="portrait">Portrait</option>
-              <option value="landscape">Landscape</option>
-            </select>
-          </div>
+    <div className="h-full w-72 bg-white border-l flex flex-col">
+      <div className="p-4 border-b">
+        <div className="flex items-center justify-between">
+          <h3 className="font-semibold text-gray-700">
+            {component ? 'Component Properties' : 'Screen Properties'}
+          </h3>
+          <button className="text-gray-400 hover:text-gray-600">
+            <ChevronDown className="w-4 h-4" />
+          </button>
         </div>
-      )}
+      </div>
+      
+      <div className="flex-1 overflow-y-auto">
+        <div className="p-4">
+          {component ? (
+            <>
+              <CommonProperties
+                style={component.props.style || {}}
+                text={component.props.text}
+                onStyleChange={handleComponentStyleChange}
+                onTextChange={(text) => handleComponentPropChange({ text })}
+              />
+              <div className="mt-6">
+                <ComponentSpecificProperties
+                  type={component.type}
+                  props={component.props}
+                  onChange={handleComponentPropChange}
+                />
+              </div>
+            </>
+          ) : (
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Scrollable
+                </label>
+                <div className="relative inline-block w-10 mr-2 align-middle select-none">
+                  <input
+                    type="checkbox"
+                    checked={screen.settings.scrollable}
+                    onChange={(e) => handleScreenSettingChange('scrollable', e.target.checked)}
+                    className="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer"
+                  />
+                  <label className="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer"></label>
+                </div>
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Background Color
+                </label>
+                <input
+                  type="color"
+                  value={screen.settings.backgroundColor}
+                  onChange={(e) => handleScreenSettingChange('backgroundColor', e.target.value)}
+                  className="h-8 w-full rounded border"
+                />
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Orientation
+                </label>
+                <select
+                  value={screen.settings.orientation}
+                  onChange={(e) => handleScreenSettingChange('orientation', e.target.value)}
+                  className="w-full rounded-md border border-gray-300 p-2 text-sm"
+                >
+                  <option value="portrait">Portrait</option>
+                  <option value="landscape">Landscape</option>
+                </select>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
     </div>
   );
 };

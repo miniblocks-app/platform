@@ -4,8 +4,6 @@ import { useAppStore } from '../../store';
 import { Undo2, Redo2, ZoomIn, ZoomOut, Grid, Trash2, Info } from 'lucide-react';
 import { ComponentPreview } from './ComponentPreview';
 import clsx from 'clsx';
-import { TOOLTIP_DESCRIPTIONS } from '../ui/TooltipIcon';
-import { ComponentType } from '../../types';
 
 interface ComponentData {
   id: string;
@@ -47,18 +45,14 @@ interface AlignmentLine {
   isDashed?: boolean;
 }
 
-interface DesignCanvasProps {
-  tooltipsEnabled: boolean;
-  setTooltipsEnabled: (enabled: boolean) => void;
-}
-
-export const DesignCanvas = ({ tooltipsEnabled, setTooltipsEnabled }: DesignCanvasProps) => {
+export const DesignCanvas = () => {
   const { selectedScreen, selectedComponent, currentProject, updateComponent, deleteComponent, undo, redo, addComponent } = useAppStore();
   const screen = currentProject?.screens.find((s) => s.id === selectedScreen) as Screen | undefined;
   const [zoom, setZoom] = useState(1);
   const [showGrid, setShowGrid] = useState(false);
   const [clipboard, setClipboard] = useState<ComponentData | null>(null);
   const [alignmentLines, setAlignmentLines] = useState<AlignmentLine[]>([]);
+  const [tooltipsEnabled, setTooltipsEnabled] = useState(false);
   
   const { setNodeRef, isOver } = useDroppable({
     id: 'canvas',
@@ -350,21 +344,14 @@ export const DesignCanvas = ({ tooltipsEnabled, setTooltipsEnabled }: DesignCanv
   };
 
   const renderComponent = (component: any) => {
-    const [showTooltip, setShowTooltip] = useState(false);
-
     return (
       <div 
         key={component.id}
-        style={{
-          ...component.props.style,
-          position: 'absolute',
-        }}
+        style={component.props.style}
         className={clsx(
-          "cursor-move",
+          "absolute cursor-move",
           selectedComponent === component.id && "ring-2 ring-blue-500"
         )}
-        onMouseEnter={() => tooltipsEnabled && setShowTooltip(true)}
-        onMouseLeave={() => tooltipsEnabled && setShowTooltip(false)}
         onMouseDown={(e) => {
           const startX = e.clientX;
           const startY = e.clientY;
@@ -392,27 +379,8 @@ export const DesignCanvas = ({ tooltipsEnabled, setTooltipsEnabled }: DesignCanv
         <ComponentPreview 
           type={component.type} 
           props={component.props}
+          tooltipsEnabled={tooltipsEnabled}
         />
-        {showTooltip && tooltipsEnabled && TOOLTIP_DESCRIPTIONS[component.type as ComponentType] && (
-          <span
-            style={{
-              position: 'absolute',
-              left: '50%',
-              top: '100%',
-              transform: 'translateX(-50%) translateY(5px)',
-              background: '#333',
-              color: '#fff',
-              padding: '6px 10px',
-              borderRadius: 4,
-              fontSize: 13,
-              whiteSpace: 'nowrap',
-              zIndex: 1000,
-              boxShadow: '0 2px 8px rgba(0,0,0,0.15)'
-            }}
-          >
-            {TOOLTIP_DESCRIPTIONS[component.type as ComponentType]}
-          </span>
-        )}
       </div>
     );
   };
@@ -510,18 +478,17 @@ export const DesignCanvas = ({ tooltipsEnabled, setTooltipsEnabled }: DesignCanv
           >
             <Grid className="w-5 h-5" />
           </button>
-          {/* Tooltip Toggle */}
           <button
             className={clsx(
-              "p-2 rounded",
-              tooltipsEnabled ? "bg-blue-200 text-blue-700" : "hover:bg-gray-200 text-gray-600",
-              "flex items-center space-x-1"
+              'ml-2 px-3 py-1 rounded transition-colors flex items-center gap-1',
+              tooltipsEnabled ? 'bg-blue-100 text-blue-700' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
             )}
-            onClick={() => setTooltipsEnabled(!tooltipsEnabled)}
-            title={tooltipsEnabled ? "Hide Tooltips" : "Show Tooltips"}
+            onClick={() => setTooltipsEnabled((v) => !v)}
+            title="Enable Tooltips"
+            type="button"
           >
-            <Info size={20} />
-            <span className="text-sm font-medium">Enable Tooltips</span>
+            <Info className="w-4 h-4" />
+            <span className="text-xs font-medium">Enable Tooltips</span>
           </button>
         </div>
         <button 
