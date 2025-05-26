@@ -12,6 +12,7 @@ interface ComponentPreviewProps {
     placeholder?: string;
     min?: number;
     max?: number;
+    src?: string;
   };
 }
 
@@ -50,16 +51,40 @@ export const ComponentPreview: React.FC<ComponentPreviewProps> = ({ type, props 
       );
       
     case 'image':
+      const [preview, setPreview] = useState(props.src || null);
+      const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = (ev) => {
+            setPreview(ev.target?.result as string);
+            if (props && typeof props === 'object') {
+              props.src = ev.target?.result as string;
+            }
+          };
+          reader.readAsDataURL(file);
+        }
+      };
       return (
         <div 
-          className="w-24 h-24 bg-gray-200 rounded-md flex items-center justify-center hover:bg-gray-300 transition-colors"
+          className="w-24 h-24 bg-gray-200 rounded-md flex items-center justify-center hover:bg-gray-300 transition-colors relative overflow-hidden"
           style={{
             backgroundColor: style.backgroundColor,
             opacity: style.opacity,
             padding: style.padding,
           }}
         >
-          <span style={{ color: style.color, fontSize: style.fontSize }}>Image</span>
+          {preview ? (
+            <img src={preview} alt="Uploaded" className="object-cover w-full h-full" />
+          ) : (
+            <span style={{ color: style.color, fontSize: style.fontSize }}>Image</span>
+          )}
+          <label className="absolute bottom-1 right-1 bg-white bg-opacity-80 rounded-full p-1 cursor-pointer shadow hover:bg-opacity-100 transition-all border border-gray-300">
+            <input type="file" accept="image/*" className="hidden" onChange={handleImageChange} />
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4 text-gray-700">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 16.5v-9m4.5 4.5h-9" />
+            </svg>
+          </label>
         </div>
       );
       
