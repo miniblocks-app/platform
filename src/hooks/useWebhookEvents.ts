@@ -22,8 +22,7 @@ export function useWebhookEvents() {
   const heartbeatIntervalRef = useRef<number | null>(null);
 
   useEffect(() => {
-    console.log('Connecting to SSE at:', `${API_URL}/api/events`);
-    
+    console.log('Connecting to SSE at:', `${API_URL}/api/events`);    
     // Function to create a new EventSource connection
     const createEventSource = () => {
       if (eventSourceRef.current) {
