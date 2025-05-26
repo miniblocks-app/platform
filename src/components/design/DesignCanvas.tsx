@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useDroppable } from '@dnd-kit/core';
 import { useAppStore } from '../../store';
-import { Undo2, Redo2, ZoomIn, ZoomOut, Grid, Trash2 } from 'lucide-react';
+import { Undo2, Redo2, ZoomIn, ZoomOut, Grid, Trash2, Info } from 'lucide-react';
 import { ComponentPreview } from './ComponentPreview';
 import clsx from 'clsx';
 
@@ -52,6 +52,7 @@ export const DesignCanvas = () => {
   const [showGrid, setShowGrid] = useState(false);
   const [clipboard, setClipboard] = useState<ComponentData | null>(null);
   const [alignmentLines, setAlignmentLines] = useState<AlignmentLine[]>([]);
+  const [tooltipsEnabled, setTooltipsEnabled] = useState(false);
   
   const { setNodeRef, isOver } = useDroppable({
     id: 'canvas',
@@ -378,6 +379,7 @@ export const DesignCanvas = () => {
         <ComponentPreview 
           type={component.type} 
           props={component.props}
+          tooltipsEnabled={tooltipsEnabled}
         />
       </div>
     );
@@ -475,6 +477,18 @@ export const DesignCanvas = () => {
             title="Toggle Grid"
           >
             <Grid className="w-5 h-5" />
+          </button>
+          <button
+            className={clsx(
+              'ml-2 px-3 py-1 rounded transition-colors flex items-center gap-1',
+              tooltipsEnabled ? 'bg-blue-100 text-blue-700' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+            )}
+            onClick={() => setTooltipsEnabled((v) => !v)}
+            title="Enable Tooltips"
+            type="button"
+          >
+            <Info className="w-4 h-4" />
+            <span className="text-xs font-medium">Enable Tooltips</span>
           </button>
         </div>
         <button 
