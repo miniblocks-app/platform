@@ -117,6 +117,16 @@ export const DesignCanvas = () => {
           }
         }
       } else if (e.key === 'Delete' || e.key === 'Backspace') {
+        // Prevent delete/backspace if focus is in an input, textarea, or contenteditable
+        const active = document.activeElement;
+        const isInput =
+          active &&
+          (
+            active.tagName === 'INPUT' ||
+            active.tagName === 'TEXTAREA' ||
+            (active as HTMLElement).isContentEditable
+          );
+        if (isInput) return;
         if (selectedComponent) {
           e.preventDefault();
           deleteComponent(selectedScreen, selectedComponent);
