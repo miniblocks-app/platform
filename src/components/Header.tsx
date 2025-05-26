@@ -55,11 +55,6 @@ export const Header = () => {
     if (response.ok) {
       console.log('Build request sent successfully');
       setBuildStatus('finished');
-
-      // After 3 minutes, show the QR code
-      setTimeout(() => {
-        setShowQR(true);
-      }, 180000); // 180000ms = 3 minutes
     } else {
       console.error('Failed to send build request');
       setBuildStatus('error');
@@ -365,10 +360,24 @@ export const Header = () => {
         <div className="p-4 text-center bg-gray-50 border-t">
           {buildStatus === 'zipping' && <p>Zipping your code!</p>}
           {buildStatus === 'finished' && !showQR && (
-            <p>Build finished. Preparing your download...</p>
+            <div className="relative">
+              <button 
+                onClick={() => setBuildStatus('idle')}
+                className="absolute -top-2 -right-2 p-1 hover:bg-gray-200 rounded-full transition-colors"
+              >
+                <X className="w-4 h-4 text-gray-600" />
+              </button>
+              <p>Build finished. Preparing your download...</p>
+            </div>
           )}
           {showQR && (
-            <div className="flex flex-col items-center">
+            <div className="flex flex-col items-center relative">
+              <button 
+                onClick={() => setShowQR(false)}
+                className="absolute -top-2 -right-2 p-1 hover:bg-gray-200 rounded-full transition-colors"
+              >
+                <X className="w-4 h-4 text-gray-600" />
+              </button>
               <p>Download is available!</p>
               <img
                 src="./qr-code.png"
