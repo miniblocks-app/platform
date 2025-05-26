@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
 import { useDroppable } from '@dnd-kit/core';
 import { useAppStore } from '../../store';
-import { Undo2, Redo2, ZoomIn, ZoomOut, Grid, Trash2, Info } from 'lucide-react';
+import { Undo2, Redo2, ZoomIn, ZoomOut, Grid, Trash2, Info, Eraser } from 'lucide-react';
 import { ComponentPreview } from './ComponentPreview';
+import { ClearCanvasDialog } from './ClearCanvasDialog';
 import clsx from 'clsx';
 
 interface ComponentData {
@@ -46,13 +47,14 @@ interface AlignmentLine {
 }
 
 export const DesignCanvas = () => {
-  const { selectedScreen, selectedComponent, currentProject, updateComponent, deleteComponent, undo, redo, addComponent } = useAppStore();
+  const { selectedScreen, selectedComponent, currentProject, updateComponent, deleteComponent, undo, redo, addComponent, clearComponents } = useAppStore();
   const screen = currentProject?.screens.find((s) => s.id === selectedScreen) as Screen | undefined;
   const [zoom, setZoom] = useState(1);
   const [showGrid, setShowGrid] = useState(false);
   const [clipboard, setClipboard] = useState<ComponentData | null>(null);
   const [alignmentLines, setAlignmentLines] = useState<AlignmentLine[]>([]);
   const [tooltipsEnabled, setTooltipsEnabled] = useState(false);
+  const [showClearDialog, setShowClearDialog] = useState(false);
   
   const { setNodeRef, isOver } = useDroppable({
     id: 'canvas',
@@ -490,6 +492,19 @@ export const DesignCanvas = () => {
             <Info className="w-4 h-4" />
             <span className="text-xs font-medium">Enable Tooltips</span>
           </button>
+          <button
+            className={clsx(
+              'ml-2 px-3 py-1 rounded transition-colors flex items-center gap-1',
+              'bg-gray-100 text-gray-600 hover:bg-gray-200'
+            )}
+            onClick={() => setShowClearDialog(true)}
+            title="Clear Canvas"
+            type="button"
+            disabled={!selectedScreen || !screen?.components.length}
+          >
+            <Eraser className="w-4 h-4" />
+            <span className="text-xs font-medium">Clear Canvas</span>
+          </button>
         </div>
         <button 
           className={clsx(
@@ -516,6 +531,16 @@ export const DesignCanvas = () => {
           {renderMobileFrame()}
         </div>
       </div>
+
+      <ClearCanvasDialog
+        isOpen={showClearDialog}
+        onClose={() => setShowClearDialog(false)}
+        onConfirm={() => {
+          if (selectedScreen) {
+            clearComponents(selectedScreen);
+          }
+        }}
+      />
     </div>
   );
 };
