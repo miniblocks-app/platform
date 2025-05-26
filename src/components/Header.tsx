@@ -380,7 +380,7 @@ export const Header = () => {
               </button>
               <p>Download is available!</p>
               <img
-                src="./qr-code.png"
+                src="/qr-code.png"
                 alt="Download QR"
                 className="w-32 h-32 mt-2"
               />
