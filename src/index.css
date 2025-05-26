@@ -54,7 +54,21 @@
   height: 150px;
   top: 16px !important;
   left: unset !important;
-  right: 100px
+  right: 100px;
+  z-index: 1;
+}
+
+/* Adjust z-index for Blockly navigation and search */
+.blocklyToolboxDiv {
+  z-index: 1 !important;
+}
+
+.blocklyFlyout {
+  z-index: 1 !important;
+}
+
+.blocklySearch {
+  z-index: 1 !important;
 }
 
 /*To make sure the scrollbar remains hidden when the blockly toolbox is closed*/

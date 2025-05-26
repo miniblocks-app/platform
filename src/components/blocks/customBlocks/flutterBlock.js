@@ -55,6 +55,21 @@ import * as Blockly from "blockly";
 //         this.setHelpUrl("https://api.flutter.dev/flutter/material/MaterialApp-class.html");
 //     }
 // };
+//
+// -- STATELESS WIDGET BLOCK --
+// Blockly.Blocks['flutter_stateless_widget'] = {
+//     init: function() {
+//         this.appendDummyInput()
+//             .appendField(new Blockly.FieldTextInput("MyWidget"), "classname")
+//             .appendField("StatelessWidget");
+//         this.appendValueInput("content")
+//             .setCheck("Widget")
+//             .appendField("build(BuildContext context)");
+//         this.setColour(120);
+//         this.setTooltip("");
+//         this.setHelpUrl("https://api.flutter.dev/flutter/widgets/StatelessWidget-class.html");
+//     }
+// };
 
 Blockly.Blocks['flutter_center'] = {
     init() {
@@ -107,8 +122,6 @@ Blockly.Blocks['appBar'] = {
     }
 };
 
-//
-// -- TEXT WIDGET BLOCK --
 Blockly.Blocks['flutter_text'] = {
     init: function() {
         this.appendValueInput("data")
@@ -121,8 +134,6 @@ Blockly.Blocks['flutter_text'] = {
     }
 };
 
-//
-// -- ROW BLOCK --
 Blockly.Blocks['flutter_row'] = {
     init: function() {
         this.appendDummyInput()
@@ -137,8 +148,6 @@ Blockly.Blocks['flutter_row'] = {
     }
 };
 
-//
-// -- COLUMN BLOCK --
 Blockly.Blocks['flutter_column'] = {
     init: function() {
         this.appendDummyInput()
@@ -153,8 +162,6 @@ Blockly.Blocks['flutter_column'] = {
     }
 };
 
-//
-// -- LISTVIEW BLOCK --
 Blockly.Blocks['flutter_listview'] = {
     init: function() {
         this.appendDummyInput()
@@ -169,8 +176,7 @@ Blockly.Blocks['flutter_listview'] = {
     }
 };
 
-//
-// -- ICON BLOCK --
+
 Blockly.Blocks['flutter_icon'] = {
     init: function() {
         this.appendValueInput("icon")
@@ -189,8 +195,6 @@ Blockly.Blocks['flutter_icon'] = {
     }
 };
 
-//
-// -- ICONS.* BLOCK --
 Blockly.Blocks['flutter_icons'] = {
     init: function() {
         this.appendDummyInput()
@@ -203,8 +207,6 @@ Blockly.Blocks['flutter_icons'] = {
     }
 };
 
-//
-// -- PLACEHOLDER BLOCK --
 Blockly.Blocks['flutter_placeholder'] = {
     init: function() {
         this.appendDummyInput()
@@ -227,8 +229,6 @@ Blockly.Blocks['flutter_placeholder'] = {
     }
 };
 
-//
-// -- RAISED BUTTON BLOCK --
 Blockly.Blocks['flutter_raised_button'] = {
     init: function() {
         this.appendDummyInput()
@@ -246,8 +246,6 @@ Blockly.Blocks['flutter_raised_button'] = {
     }
 };
 
-//
-// -- FLOATING ACTION BUTTON BLOCK --
 Blockly.Blocks['flutter_fab'] = {
     init: function() {
         this.appendDummyInput()
@@ -265,43 +263,24 @@ Blockly.Blocks['flutter_fab'] = {
     }
 };
 
-//
-// -- STATELESS WIDGET BLOCK --
-Blockly.Blocks['flutter_stateless_widget'] = {
-    init: function() {
-        this.appendDummyInput()
-            .appendField(new Blockly.FieldTextInput("App"), "classname")
-            .appendField("StatelessWidget");
-        this.appendValueInput("content")
-            .setCheck("Widget")
-            .appendField("build(BuildContext context)");
-        this.setColour(120);
-        this.setTooltip("");
-        this.setHelpUrl("https://api.flutter.dev/flutter/widgets/StatelessWidget-class.html");
-    }
-};
 
-//
-// -- STATEFUL WIDGET BLOCK --
 Blockly.Blocks['flutter_stateful_widget'] = {
     init: function() {
         this.appendDummyInput()
-            .appendField(new Blockly.FieldTextInput("MyWidget"), "classname")
-            .appendField("StatefulWidget");
-        this.appendStatementInput("lets")
+            .appendField(new Blockly.FieldTextInput("App"), "classname")
+            .appendField("MainWidget");
+        this.appendStatementInput("Variables")
             .setCheck(null)
-            .appendField("lets");
+            .appendField("Variables");
         this.appendValueInput("content")
             .setCheck("Widget")
-            .appendField("build(BuildContext context)");
         this.setColour(250);
-        this.setTooltip("");
+        this.setTooltip("MainWidget is a StatefulWidget that can hold state and rebuild when the state changes.");
         this.setHelpUrl("https://api.flutter.dev/flutter/widgets/StatefulWidget-class.html");
     }
 };
 
-//
-// -- CREATE INSTANCE BLOCK --
+
 Blockly.Blocks['flutter_create_instance'] = {
     init: function() {
         this.appendDummyInput()
@@ -314,8 +293,7 @@ Blockly.Blocks['flutter_create_instance'] = {
     }
 };
 
-//
-// -- CONTAINER BLOCK --
+
 Blockly.Blocks['flutter_container'] = {
     init: function() {
         this.appendDummyInput()
@@ -339,8 +317,7 @@ Blockly.Blocks['flutter_container'] = {
     }
 };
 
-//
-// -- SET STATE CALL BLOCK --
+
 Blockly.Blocks['flutter_set_state_call'] = {
     init: function() {
         this.appendDummyInput()
@@ -356,8 +333,6 @@ Blockly.Blocks['flutter_set_state_call'] = {
     }
 };
 
-//
-// -- RAW INPUT (for expressions) BLOCK --
 Blockly.Blocks['flutter_raw_input'] = {
     init: function() {
         this.appendDummyInput()
@@ -370,8 +345,6 @@ Blockly.Blocks['flutter_raw_input'] = {
     }
 };
 
-//
-// -- RAW STATEMENT (for statements) BLOCK --
 Blockly.Blocks['flutter_raw_statement'] = {
     init: function() {
         this.appendDummyInput()
