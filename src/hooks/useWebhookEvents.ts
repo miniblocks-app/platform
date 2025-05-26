@@ -20,12 +20,13 @@ export function useWebhookEvents() {
   const [isConnected, setIsConnected] = useState(false);
 
   useEffect(() => {
-    console.log('Connecting to SSE...');
-    const eventSource = new EventSource(`${API_URL}/api/login`);
+    console.log('Connecting to SSE at:', `${API_URL}/api/events`);
+    const eventSource = new EventSource(`${API_URL}/api/events`);
 
     eventSource.onopen = () => {
-      console.log('SSE connection opened');
+      console.log('SSE connection opened successfully');
       setError(null);
+      setIsConnected(true);
     };
 
     eventSource.onmessage = (event) => {
@@ -34,9 +35,26 @@ export function useWebhookEvents() {
         console.log('Received SSE message:', data);
         
         if (data.type === 'connected') {
+          console.log('Received connection confirmation');
           setIsConnected(true);
         } else if (data.type === 'workflow_run') {
-          setEvent(data);
+          console.log('Received workflow run event:', {
+            action: data.action,
+            status: data.workflow_run.status,
+            conclusion: data.workflow_run.conclusion
+          });
+          const workflowEvent: WorkflowRunEvent = {
+            type: 'workflow_run',
+            action: data.action,
+            workflow_run: {
+              id: data.workflow_run.id,
+              name: data.workflow_run.name,
+              status: data.workflow_run.status,
+              conclusion: data.workflow_run.conclusion,
+              html_url: data.workflow_run.html_url
+            }
+          };
+          setEvent(workflowEvent);
         }
       } catch (err) {
         console.error('Failed to parse event data:', err);
@@ -46,6 +64,7 @@ export function useWebhookEvents() {
 
     eventSource.onerror = (err) => {
       console.error('EventSource error:', err);
+      console.error('EventSource readyState:', eventSource.readyState);
       setError('Failed to connect to event stream');
       setIsConnected(false);
       eventSource.close();
