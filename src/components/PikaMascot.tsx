@@ -3,11 +3,12 @@ import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { motion, AnimatePresence } from 'framer-motion';
 import PikaIcon from './PikaIcon';
+import MascotGif from '../assets/Mascot.gif';
 
 const PikaMascot = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [message, setMessage] = useState('');
-  const [chatHistory, setChatHistory] = useState<{ type: 'user' | 'pika', text: string }[]>([]);
+  const [chatHistory, setChatHistory] = useState<{ type: 'user' | 'pika'; text: string }[]>([]);
 
   const handleSendMessage = () => {
     if (!message.trim()) return;
@@ -87,6 +88,9 @@ const PikaMascot = () => {
     return "I'm not so sure about that.. Maybe you can check the documentation here: https://miniblocks-docs.vercel.app/";
   };
 
+  const latestPika =
+    chatHistory.filter(m => m.type === 'pika').pop()?.text ?? 'How can I help?';
+
   return (
     <div className="fixed bottom-4 right-4 z-50">
       <AnimatePresence>
@@ -95,59 +99,52 @@ const PikaMascot = () => {
             initial={{ opacity: 0, y: 20, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
-            className="bg-white rounded-lg shadow-lg p-4 mb-4 w-80 border border-gray-200"
+            className="flex items-start space-x-2"
           >
-            <div className="flex items-center gap-2 mb-4">
-              <PikaIcon />
-              <h3 className="font-semibold text-gray-800">Pika Assistant</h3>
-            </div>
-            <div className="h-48 overflow-y-auto mb-4 space-y-2">
-              {chatHistory.length === 0 && (
-                <div className="text-center text-gray-500 text-sm">
-                  How can I help?
-                </div>
-              )}
-              {chatHistory.map((chat, index) => (
-                <div
-                  key={index}
-                  className={`flex ${
-                    chat.type === 'user' ? 'justify-end' : 'justify-start'
-                  }`}
-                >
-                  <div
-                    className={`max-w-[80%] p-2 rounded-lg ${
-                      chat.type === 'user'
-                        ? 'bg-blue-500 text-white'
-                        : 'bg-gray-100 text-gray-800'
-                    }`}
-                  >
-                    {chat.text}
+            {/* Mascot GIF outside the white box */}
+            <img
+              src={MascotGif}
+              alt="Pika"
+              className="w-48 h-48 object-contain"
+            />
+
+            {/* Chat card */}
+            <div className="bg-white p-4 rounded-lg shadow-lg w-64">
+              <div className="flex flex-col space-y-4">
+                {/* Speech bubble */}
+                <div className="relative max-w-full">
+                  <div className="bg-gray-100 text-gray-800 p-3 rounded-lg">
+                    {latestPika}
                   </div>
+                  <div className="absolute left-0 top-full w-0 h-0 border-t-8 border-t-gray-100 border-x-8 border-x-transparent" />
                 </div>
-              ))}
-            </div>
-            <div className="flex gap-2">
-              <Input
-                value={message}
-                onChange={(e) => setMessage(e.target.value)}
-                placeholder="Ask Pika something..."
-                onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
-                className="flex-1"
-              />
-              <Button 
-                onClick={handleSendMessage}
-                className="bg-green-500 hover:bg-green-600"
-              >
-                Send
-              </Button>
+
+                {/* Input field */}
+                <div className="flex w-full">
+                  <Input
+                    value={message}
+                    onChange={e => setMessage(e.target.value)}
+                    placeholder="Ask Pika something..."
+                    onKeyPress={e => e.key === 'Enter' && handleSendMessage()}
+                    className="flex-1 mr-2"
+                  />
+                  <Button
+                    onClick={handleSendMessage}
+                    className="bg-blue-500 hover:bg-blue-600 text-white"
+                  >
+                    Send
+                  </Button>
+                </div>
+              </div>
             </div>
           </motion.div>
         )}
       </AnimatePresence>
-      
+
+      {/* Ask Pika toggle button */}
       <Button
-        onClick={() => setIsOpen(!isOpen)}
-        className="bg-green-500 hover:bg-green-600 text-white rounded-full p-4 shadow-lg flex items-center gap-2"
+        onClick={() => setIsOpen(o => !o)}
+        className="bg-blue-500 hover:bg-blue-600 text-white rounded-full p-4 shadow-lg flex items-center gap-2"
       >
         <PikaIcon />
         Ask Pika!
@@ -156,4 +153,4 @@ const PikaMascot = () => {
   );
 };
 
-export default PikaMascot; 
+export default PikaMascot;
