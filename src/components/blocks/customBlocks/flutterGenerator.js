@@ -1,19 +1,55 @@
 import {dartGenerator, Order} from "blockly/dart";
 
-dartGenerator.forBlock['flutter_import_material'] = function(block) {
-  let code = "import 'package:flutter/material.dart'";
-  return [code, Order.NONE];
-};
-
-const INDENT = '  ';
-function indent(code, spaces = 2) {
-  return code.replace(/^/gm, INDENT.repeat(spaces / 2));
-}
-
-dartGenerator.forBlock['flutter_main'] = function (block) {
-  const body = dartGenerator.statementToCode(block, 'body');
-  return `void main() {\n${indent(body)}\n}\n`;
-};
+// dartGenerator.forBlock['flutter_import_material'] = function(block) {
+//   let code = "import 'package:flutter/material.dart'";
+//   return [code, Order.NONE];
+// };
+// dartGenerator.forBlock['runApp'] = function(block) {
+//   let value_name = dartGenerator.valueToCode(block, 'NAME', Order.NONE);
+//   let code = 'runApp(' + value_name + ');\n';
+//   return code;
+// };
+// const INDENT = '  ';
+// function indent(code, spaces = 2) {
+//   return code.replace(/^/gm, INDENT.repeat(spaces / 2));
+// }
+// dartGenerator.forBlock['flutter_main'] = function (block) {
+//   const body = dartGenerator.statementToCode(block, 'body');
+//   return `void main() {\n${indent(body)}\n}\n`;
+// };
+// dartGenerator.forBlock['app'] = function(block) {
+//   let dropdown_type = block.getFieldValue('type');
+//   let value_home = dartGenerator.valueToCode(block, 'home', Order.NONE);
+//   let value_title = dartGenerator.valueToCode(block, 'title', Order.ATOMIC);
+//
+//   let code = '';
+//   if (dropdown_type === "MATERIAL") {
+//     code = 'MaterialApp(\n';
+//     if (value_title) {
+//       code += '\t title: ' + value_title + ',\n';
+//     }
+//     if (value_home) {
+//       code += '\t home: ' + value_home + ',\n';
+//     }
+//     code += ')';
+//   } else {
+//     // Could implement CupertinoApp similarly
+//     code = '// CupertinoApp not implemented\nMaterialApp()';
+//   }
+//   return [code, Order.NONE];
+// };
+// dartGenerator.forBlock['flutter_stateless_widget'] = function(block) {
+//   let text_classname = block.getFieldValue('classname');
+//   let value_content = dartGenerator.valueToCode(block, 'content', Order.NONE);
+//
+//   let code = 'class ' + text_classname + ' extends StatelessWidget {\n' +
+//       '  @override\n' +
+//       '  Widget build(BuildContext context) {\n' +
+//       '    return ' + value_content + ';\n' +
+//       '  }\n' +
+//       '}\n';
+//   return code;
+// };
 
 dartGenerator.forBlock['flutter_center'] = function (block) {
   const child = dartGenerator.valueToCode(block, 'child', Order.NONE);
@@ -22,8 +58,25 @@ dartGenerator.forBlock['flutter_center'] = function (block) {
 };
 
 dartGenerator.finish = function (code) {
+  const customHeader = `
+import 'package:flutter/material.dart';
+
+void main() {
+	  runApp(MaterialApp(
+	  	 home: MyWidget(),
+	  ));
+}
+
+class MyWidget extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return App();
+  }
+}
+`.trim();
+
   const headers = Object.values(dartGenerator.definitions_).join('\n');
-  return `${headers}\n\n${code}`;
+  return `${customHeader}\n${headers ? headers + '\n' : ''}\n${code}`;
 };
 
 
@@ -33,40 +86,7 @@ dartGenerator.forBlock['flutter_text'] = function(block) {
   return [code, Order.NONE];
 };
 
-//
-// -- runApp(...) GENERATOR --
-dartGenerator.forBlock['runApp'] = function(block) {
-  let value_name = dartGenerator.valueToCode(block, 'NAME', Order.NONE);
-  let code = 'runApp(' + value_name + ');\n';
-  return code;
-};
 
-//
-// -- App (MaterialApp) GENERATOR --
-dartGenerator.forBlock['app'] = function(block) {
-  let dropdown_type = block.getFieldValue('type');
-  let value_home = dartGenerator.valueToCode(block, 'home', Order.NONE);
-  let value_title = dartGenerator.valueToCode(block, 'title', Order.ATOMIC);
-
-  let code = '';
-  if (dropdown_type === "MATERIAL") {
-    code = 'MaterialApp(\n';
-    if (value_title) {
-      code += '\t title: ' + value_title + ',\n';
-    }
-    if (value_home) {
-      code += '\t home: ' + value_home + ',\n';
-    }
-    code += ')';
-  } else {
-    // Could implement CupertinoApp similarly
-    code = '// CupertinoApp not implemented\nMaterialApp()';
-  }
-  return [code, Order.NONE];
-};
-
-//
-// -- Scaffold GENERATOR --
 dartGenerator.forBlock['scaffold'] = function(block) {
   let value_appbar = dartGenerator.valueToCode(block, 'appBar', Order.NONE);
   let value_body = dartGenerator.valueToCode(block, 'body', Order.NONE);
@@ -86,8 +106,6 @@ dartGenerator.forBlock['scaffold'] = function(block) {
   return [code, Order.NONE];
 };
 
-//
-// -- AppBar GENERATOR --
 dartGenerator.forBlock['appBar'] = function(block) {
   let value_title = dartGenerator.valueToCode(block, 'title', Order.NONE);
   let code = 'AppBar(\n';
@@ -98,8 +116,6 @@ dartGenerator.forBlock['appBar'] = function(block) {
   return [code, Order.NONE];
 };
 
-//
-// -- Row GENERATOR --
 dartGenerator.forBlock['flutter_row'] = function(block) {
   let value_children = dartGenerator.valueToCode(block, 'children', Order.NONE);
   let code = 'Row(\n';
@@ -115,8 +131,7 @@ dartGenerator.forBlock['flutter_row'] = function(block) {
   return [code, Order.NONE];
 };
 
-//
-// -- Column GENERATOR --
+
 dartGenerator.forBlock['flutter_column'] = function(block) {
   let value_children = dartGenerator.valueToCode(block, 'children', Order.NONE);
   let code = 'Column(\n';
@@ -132,8 +147,7 @@ dartGenerator.forBlock['flutter_column'] = function(block) {
   return [code, Order.NONE];
 };
 
-//
-// -- ListView GENERATOR --
+
 dartGenerator.forBlock['flutter_listview'] = function(block) {
   let value_children = dartGenerator.valueToCode(block, 'children', Order.NONE);
   let code = 'ListView(\n';
@@ -149,8 +163,7 @@ dartGenerator.forBlock['flutter_listview'] = function(block) {
   return [code, Order.NONE];
 };
 
-//
-// -- Icon GENERATOR --
+
 dartGenerator.forBlock['flutter_icon'] = function(block) {
   let value_icon = dartGenerator.valueToCode(block, 'icon', Order.NONE);
   let value_color = dartGenerator.valueToCode(block, 'color', Order.ATOMIC);
@@ -177,16 +190,14 @@ dartGenerator.forBlock['flutter_icon'] = function(block) {
   return [code, Order.NONE];
 };
 
-//
-// -- Icons.* GENERATOR --
+
 dartGenerator.forBlock['flutter_icons'] = function(block) {
   let text_constant = block.getFieldValue('constant');
   let code = "Icons." + text_constant;
   return [code, Order.NONE];
 };
 
-//
-// -- Placeholder GENERATOR --
+
 dartGenerator.forBlock['flutter_placeholder'] = function(block) {
   let colour_color = block.getFieldValue('color');
   let number_strokewidth = block.getFieldValue('strokeWidth');
@@ -205,8 +216,7 @@ dartGenerator.forBlock['flutter_placeholder'] = function(block) {
   return [code, Order.NONE];
 };
 
-//
-// -- RaisedButton GENERATOR --
+
 dartGenerator.forBlock['flutter_raised_button'] = function(block) {
   let value_child = dartGenerator.valueToCode(block, 'child', Order.ATOMIC);
   let statement_onPressed = dartGenerator.statementToCode(block, 'onPressed');
@@ -224,8 +234,6 @@ dartGenerator.forBlock['flutter_raised_button'] = function(block) {
   return [code, Order.NONE];
 };
 
-//
-// -- FloatingActionButton GENERATOR --
 dartGenerator.forBlock['flutter_fab'] = function(block) {
   let value_child = dartGenerator.valueToCode(block, 'child', Order.ATOMIC);
   let statement_onPressed = dartGenerator.statementToCode(block, 'onPressed');
@@ -243,27 +251,14 @@ dartGenerator.forBlock['flutter_fab'] = function(block) {
   return [code, Order.NONE];
 };
 
-//
-// -- StatelessWidget GENERATOR --
-dartGenerator.forBlock['flutter_stateless_widget'] = function(block) {
-  let text_classname = block.getFieldValue('classname');
-  let value_content = dartGenerator.valueToCode(block, 'content', Order.NONE);
 
-  let code = 'class ' + text_classname + ' extends StatelessWidget {\n' +
-      '  @override\n' +
-      '  Widget build(BuildContext context) {\n' +
-      '    return ' + value_content + ';\n' +
-      '  }\n' +
-      '}\n';
-  return code;
-};
 
-//
-// -- StatefulWidget GENERATOR --
+
+
 dartGenerator.forBlock['flutter_stateful_widget'] = function(block) {
   let text_classname = block.getFieldValue('classname');
   let value_content = dartGenerator.valueToCode(block, 'content', Order.NONE);
-  let statement_lets = dartGenerator.statementToCode(block, 'lets');
+  let statement_lets = dartGenerator.statementToCode(block, 'Variables');
 
   let code =
       'class ' + text_classname + ' extends StatefulWidget {\n' +
@@ -280,16 +275,13 @@ dartGenerator.forBlock['flutter_stateful_widget'] = function(block) {
   return code;
 };
 
-//
-// -- Create Instance GENERATOR --
+
 dartGenerator.forBlock['flutter_create_instance'] = function(block) {
   let text_classname = block.getFieldValue('className');
   let code = text_classname + '()';
   return [code, Order.NONE];
 };
 
-//
-// -- Container GENERATOR --
 dartGenerator.forBlock['flutter_container'] = function(block) {
   let value_width = dartGenerator.valueToCode(block, 'width', Order.ATOMIC);
   let value_height = dartGenerator.valueToCode(block, 'height', Order.ATOMIC);
@@ -318,23 +310,23 @@ dartGenerator.forBlock['flutter_container'] = function(block) {
   return [code, Order.NONE];
 };
 
-//
-// -- setState(...) CALL GENERATOR --
+
 dartGenerator.forBlock['flutter_set_state_call'] = function(block) {
   let statements_code = dartGenerator.statementToCode(block, 'code');
   let code = 'setState(() {\n' + statements_code + '\n});\n';
   return code;
 };
 
-//
-// -- RAW INPUT (expressions) GENERATOR --
 dartGenerator.forBlock['flutter_raw_input'] = function(block) {
   const code = block.getFieldValue('code');
   return [code, Order.ATOMIC];
 };
 
-//
-// -- PROCEDURE (void) GENERATOR --
+dartGenerator.forBlock['flutter_raw_statement'] = function(block) {
+  return block.getFieldValue('code') + '\n';
+};
+
+
 dartGenerator.forBlock['procedures_defnoreturn'] = function(block) {
   let funcName = block.getFieldValue('NAME');
   let branch = dartGenerator.statementToCode(block, 'STACK');
@@ -343,8 +335,6 @@ dartGenerator.forBlock['procedures_defnoreturn'] = function(block) {
   return code;
 };
 
-//
-// -- PROCEDURE (return) GENERATOR --
 dartGenerator.forBlock['procedures_defreturn'] = function(block) {
   let funcName = block.getFieldValue('NAME');
   let branch = dartGenerator.statementToCode(block, 'STACK');
@@ -354,9 +344,4 @@ dartGenerator.forBlock['procedures_defreturn'] = function(block) {
   return code;
 };
 
-//
-// -- RAW STATEMENT GENERATOR --
-dartGenerator.forBlock['flutter_raw_statement'] = function(block) {
-  return block.getFieldValue('code') + '\n';
-};
 
