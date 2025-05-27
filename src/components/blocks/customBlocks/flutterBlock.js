@@ -358,3 +358,17 @@ Blockly.Blocks['flutter_raw_statement'] = {
     }
 };
 
+Blockly.Blocks['flutter_textfield'] = {
+    init: function() {
+        this.appendDummyInput()
+            .appendField("TextField");
+        this.appendValueInput("hintText")
+            .setCheck("String")
+            .appendField("hint");
+        this.setOutput(true, "Widget");
+        this.setColour(160);
+        this.setTooltip("Simple text input field");
+        this.setHelpUrl("https://api.flutter.dev/flutter/material/TextField-class.html");
+    }
+};
+

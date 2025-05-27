@@ -74,6 +74,11 @@ export const DesignWindow = () => {
             textBlock.initSvg();
             textBlock.render();
             textBlock.moveBy(Math.random() * 300, Math.random() * 200);
+            } else if (componentType === 'input') {
+            const inputBlock = workspace.newBlock('flutter_textfield');
+            inputBlock.initSvg();
+            inputBlock.render();
+            inputBlock.moveBy(Math.random() * 300, Math.random() * 200);
             }
         } else {
           console.warn("Blockly workspace is not available in DesignWindow.");
