@@ -10,7 +10,14 @@ import {PositionedMinimap} from '@blockly/workspace-minimap';
 import "@blockly/toolbox-search";
 import CustomCategory from "../../themes/toolbox/customCats.tsx";
 import {LogicTheme} from "../../themes/logicTheme.tsx";
-import {commonCategory, variablesCategory, loopsCategory, functionCategory, listCategory} from "./categories/googleBlocks.ts";
+import {
+    commonCategory,
+    variablesCategory,
+    loopsCategory,
+    functionCategory,
+    listCategory,
+    mathCategory
+} from "./categories/googleBlocks.ts";
 import 'blockly/blocks';
 
 
@@ -63,7 +70,6 @@ const CodePreview: React.FC<{code: string}> = ({code}) => {
 export const BlocksWindow = () => {
     const {
         debugMode,
-        advanceMode,
         blocklyXml,
         setBlocklyXml,
         currentProject,
@@ -86,11 +92,9 @@ export const BlocksWindow = () => {
         commonCategory,
         loopsCategory,
         variablesCategory,
+        mathCategory,
+        flutterCategory
     ];
-    if (advanceMode) {
-        baseContents.push(flutterCategory);
-    }
-
     const toolboxCategories = {
         kind: "categoryToolbox",
         contents: baseContents,

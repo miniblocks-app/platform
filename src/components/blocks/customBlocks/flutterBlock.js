@@ -71,15 +71,28 @@ import * as Blockly from "blockly";
 //     }
 // };
 
-Blockly.Blocks['flutter_center'] = {
-    init() {
-        this.appendValueInput("child")
-            .setCheck("Widget")
-            .appendField("Center child");
-        this.setOutput(true, ["Widget", "Center"]);
+
+Blockly.Blocks['flutter_string'] = {
+    init: function() {
+        this.appendDummyInput()
+            .appendField("Value")
+            .appendField(new Blockly.FieldTextInput("Hello World"), "fluString");
+        this.setOutput(true, null);
         this.setColour(230);
-        this.setTooltip("Centers its child");
-        this.setHelpUrl("https://api.flutter.dev/flutter/widgets/Center-class.html");
+        this.setTooltip("String value to feed to the Text widget");
+        this.setHelpUrl("");
+    }
+};
+
+Blockly.Blocks['flutter_text_variable'] = {
+    init: function() {
+        this.appendValueInput("data")
+            .setCheck(null)  // Accept any type
+            .appendField("Text Variable");
+        this.setColour(230);
+        this.setOutput(true, ["Widget", "Text"]);
+        this.setTooltip("Text widget that can display variables");
+        this.setHelpUrl("https://api.flutter.dev/flutter/widgets/Text-class.html");
     }
 };
 
@@ -87,11 +100,11 @@ Blockly.Blocks['scaffold'] = {
     init: function() {
         this.appendDummyInput()
             .setAlign(Blockly.ALIGN_CENTRE)
-            .appendField("Scaffold");
+            .appendField("App with a bottom sheet:");
         this.appendValueInput("appBar")
             .setCheck("AppBar")
             .setAlign(Blockly.ALIGN_RIGHT)
-            .appendField("appBar");
+            .appendField("Add App Title:");
         this.appendValueInput("body")
             .setCheck("Widget")
             .setAlign(Blockly.ALIGN_RIGHT)
@@ -102,18 +115,18 @@ Blockly.Blocks['scaffold'] = {
             .appendField("floatingActionButton");
         this.setOutput(true, ["Widget", "Scaffold"]);
         this.setColour(165);
-        this.setTooltip("Hi");
-        this.setHelpUrl("https://api.flutter.dev/flutter/material/Scaffold-class");
+        this.setTooltip("A Scaffold is a top-level container that holds the structure of the app, including the AppBar, body, and FloatingActionButton.");
+        this.setHelpUrl("https://api.flutter.dev/flutter/material/Scaffold-class.html");
     }
 };
 
 Blockly.Blocks['appBar'] = {
     init: function() {
         this.appendDummyInput()
-            .appendField("appBar");
+            .appendField("App Title");
         this.appendValueInput("title")
             .setAlign(Blockly.ALIGN_RIGHT)
-            .appendField("title").setCheck("flutter_text");
+            .appendField("title")
         this.setOutput(true, ["Widget", "AppBar"]);
         this.setColour(165);
 
@@ -268,14 +281,15 @@ Blockly.Blocks['flutter_stateful_widget'] = {
     init: function() {
         this.appendDummyInput()
             .appendField(new Blockly.FieldTextInput("App"), "classname")
-            .appendField("MainWidget");
-        this.appendStatementInput("Variables")
+            .appendField("Let's Build Something Awesome!");
+        this.appendStatementInput("First")
             .setCheck(null)
-            .appendField("Variables");
+            .appendField("Make");
         this.appendValueInput("content")
             .setCheck("Widget")
+            .appendField("View");
         this.setColour(250);
-        this.setTooltip("MainWidget is a StatefulWidget that can hold state and rebuild when the state changes.");
+        this.setTooltip("MainWidget is a StatefulWidget that can hold state and rebuild when the state changes. Use the Process sections to define anything you want. The display section will display it's body.");
         this.setHelpUrl("https://api.flutter.dev/flutter/widgets/StatefulWidget-class.html");
     }
 };
@@ -321,10 +335,10 @@ Blockly.Blocks['flutter_container'] = {
 Blockly.Blocks['flutter_set_state_call'] = {
     init: function() {
         this.appendDummyInput()
-            .appendField("setState");
+            .appendField("Change Something");
         this.appendStatementInput("code")
             .setCheck(null)
-            .appendField("code to run");
+            .appendField("What to change?");
         this.setPreviousStatement(true, null);
         this.setNextStatement(true, null);
         this.setColour(230);
@@ -355,6 +369,18 @@ Blockly.Blocks['flutter_raw_statement'] = {
         this.setColour(230);
         this.setTooltip("");
         this.setHelpUrl("");
+    }
+};
+
+Blockly.Blocks['flutter_center'] = {
+    init: function() {
+        this.appendValueInput("child")
+            .setCheck("Widget")
+            .appendField("Center");
+        this.setOutput(true, ["Widget", "Center"]);
+        this.setColour(160);
+        this.setTooltip("Align child widget to the very middle");
+        this.setHelpUrl("https://api.flutter.dev/flutter/widgets/Center-class.html");
     }
 };
 

@@ -1,4 +1,12 @@
 import {dartGenerator, Order} from "blockly/dart";
+import * as Blockly from 'blockly';           // use the top-level bundle
+
+// In both classic and ESM builds the enum is on Blockly.Names.NameType
+const NameType = Blockly?.Names?.NameType;
+
+// If for some reason it's still missing, fall back to Blockly.Names.Type
+// (older builds) or skip the arg so Blockly will treat it as 'VARIABLE'.
+const NT = NameType || Blockly?.Names?.Type || undefined;
 
 // dartGenerator.forBlock['flutter_import_material'] = function(block) {
 //   let code = "import 'package:flutter/material.dart'";
@@ -51,11 +59,16 @@ import {dartGenerator, Order} from "blockly/dart";
 //   return code;
 // };
 
-dartGenerator.forBlock['flutter_center'] = function (block) {
-  const child = dartGenerator.valueToCode(block, 'child', Order.NONE);
-  const code = `Center(\n${child ? INDENT + 'child: ' + child + ',\n' : ''})`;
-  return [code, Order.NONE];
+dartGenerator.forBlock['flutter_center'] = function(block) {
+    let value_child = dartGenerator.valueToCode(block, 'child', Order.NONE);
+    let code = 'Center(\n';
+    if (value_child) {
+        code += '\t child: ' + value_child + ',\n';
+    }
+    code += ')';
+    return [code, Order.NONE];
 };
+
 
 dartGenerator.finish = function (code) {
   const customHeader = `
@@ -75,8 +88,11 @@ class MyWidget extends StatelessWidget {
 }
 `.trim();
 
+  // Remove any global variable declarations
+  const cleanCode = code.replace(/^var\s+\w+;?\n?/gm, '');
+
   const headers = Object.values(dartGenerator.definitions_).join('\n');
-  return `${customHeader}\n${headers ? headers + '\n' : ''}\n${code}`;
+  return `${customHeader}\n${headers ? headers + '\n' : ''}\n${cleanCode}`;
 };
 
 
@@ -176,7 +192,7 @@ dartGenerator.forBlock['flutter_icon'] = function(block) {
   if (value_color) {
     // color will be something like #FF0000 or 0xFFFF0000
     // If it's #RRGGBB, convert to 0xFFRRGGBB
-    // Make sure to handle slice logic carefully if it’s a hex string
+    // Make sure to handle slice logic carefully if it's a hex string
     if (value_color.startsWith("#")) {
       code += '\t color: const Color(0xFF' + value_color.slice(1).toUpperCase() + '),\n';
     } else {
@@ -258,7 +274,29 @@ dartGenerator.forBlock['flutter_fab'] = function(block) {
 dartGenerator.forBlock['flutter_stateful_widget'] = function(block) {
   let text_classname = block.getFieldValue('classname');
   let value_content = dartGenerator.valueToCode(block, 'content', Order.NONE);
-  let statement_lets = dartGenerator.statementToCode(block, 'Variables');
+  let statement_lets = dartGenerator.statementToCode(block, 'First');
+
+  // Process variable declarations to ensure they're properly formatted
+  let processedVars = '';
+  if (statement_lets) {
+    // Split by newlines and process each variable declaration
+    const varLines = statement_lets.split('\n');
+    processedVars = varLines
+      .map(line => {
+        // If it's a variable declaration, ensure it has a type
+        if (line.includes('=')) {
+          const [decl, value] = line.split('=');
+          const trimmedDecl = decl.trim();
+          // If no type is specified, add 'dynamic'
+          if (!trimmedDecl.includes(' ')) {
+            return `dynamic ${trimmedDecl} = ${value.trim()}`;
+          }
+        }
+        return line;
+      })
+      .filter(line => line.trim()) // Remove empty lines
+      .join('\n');
+  }
 
   let code =
       'class ' + text_classname + ' extends StatefulWidget {\n' +
@@ -266,7 +304,7 @@ dartGenerator.forBlock['flutter_stateful_widget'] = function(block) {
       '  _' + text_classname + 'State createState() => _' + text_classname + 'State();\n' +
       '}\n\n' +
       'class _' + text_classname + 'State extends State<' + text_classname + '> {\n' +
-      statement_lets + '\n' +
+      (processedVars ? processedVars + '\n' : '') +
       '  @override\n' +
       '  Widget build(BuildContext context) {\n' +
       '    return ' + value_content + ';\n' +
@@ -342,6 +380,25 @@ dartGenerator.forBlock['procedures_defreturn'] = function(block) {
   let returnValue = dartGenerator.valueToCode(block, 'RETURN', Order.NONE) || '';
   let code = `\n${funcName}() {\n\t${branch}\n\treturn ${returnValue};\n}\n`;
   return code;
+};
+
+dartGenerator.forBlock['flutter_string'] = function (block) {
+  // Whatever is in the text input:
+  const raw = block.getFieldValue('fluString') || '';
+
+  // Let Blockly handle all escaping, then convert the outer quotes to single.
+  // quote_ returns e.g. `"Hello \"Bob\""` → replace the outer " with '
+  const doubleQuoted = dartGenerator.quote_(raw);   // ⇒ "Hello \"Bob\""
+  const singleQuoted =
+      "'" + doubleQuoted.slice(1, -1) + "'";          // ⇒ 'Hello \"Bob\"'
+
+  return [singleQuoted, dartGenerator.ORDER_ATOMIC];
+};
+
+dartGenerator.forBlock['flutter_text_variable'] = function(block) {
+  let value_data = dartGenerator.valueToCode(block, 'data', Order.ATOMIC);
+  let code = 'Text("$' + value_data + '")';
+  return [code, Order.NONE];
 };
 
 dartGenerator.forBlock['flutter_textfield'] = function(block) {
