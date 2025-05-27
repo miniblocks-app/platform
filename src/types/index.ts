@@ -16,7 +16,14 @@ export type ComponentType =
   | 'line'
   | 'rectangle'
   | 'square'
-  | 'star';
+  | 'star'
+  //Gaming components
+  | 'scoreboard'
+  | 'healthbar'
+  | 'timer'
+  | 'minimap'
+  | 'pausemenu'
+  | 'levelindicator';
 
 export interface ComponentData {
   id: string;
