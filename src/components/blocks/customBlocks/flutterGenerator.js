@@ -403,7 +403,7 @@ dartGenerator.forBlock['flutter_text_variable'] = function(block) {
 
 dartGenerator.forBlock['flutter_textfield'] = function(block) {
   let value_hintText = dartGenerator.valueToCode(block, 'hintText', Order.ATOMIC);
-  
+
   let code = 'TextField(\n';
   if (value_hintText) {
     code += '\t decoration: InputDecoration(\n';
@@ -414,4 +414,83 @@ dartGenerator.forBlock['flutter_textfield'] = function(block) {
   return [code, Order.NONE];
 };
 
+// Export function for LLM context
+export const getFlutterGeneratorsInfo = () => {
+  return {
+    codeExamples: {
+      flutter_center: {
+        description: "Centers a child widget in the available space",
+        dartCode: "Center(\n  child: Text('Centered Content'),\n)",
+        usage: "Use when you want to center content on screen or within a parent widget"
+      },
+      scaffold: {
+        description: "Basic material design layout structure",
+        dartCode: "Scaffold(\n  appBar: AppBar(title: Text('My App')),\n  body: Center(child: Text('Hello World')),\n  floatingActionButton: FloatingActionButton(child: Icon(Icons.add)),\n)",
+        usage: "Use as the main structure for Flutter screens - provides appBar, body, and FAB slots"
+      },
+      flutter_text: {
+        description: "Displays text with a single style",
+        dartCode: "Text('Hello World')",
+        usage: "Use to display any text content - can be styled with TextStyle"
+      },
+      flutter_row: {
+        description: "Arranges children horizontally",
+        dartCode: "Row(\n  children: <Widget>[\n    Text('Left'),\n    Text('Right'),\n  ],\n)",
+        usage: "Use to arrange widgets side by side horizontally"
+      },
+      flutter_column: {
+        description: "Arranges children vertically",
+        dartCode: "Column(\n  children: <Widget>[\n    Text('Top'),\n    Text('Bottom'),\n  ],\n)",
+        usage: "Use to arrange widgets in a vertical stack"
+      },
+      flutter_container: {
+        description: "Styling and positioning wrapper widget",
+        dartCode: "Container(\n  width: 100,\n  height: 100,\n  color: Colors.blue,\n  child: Text('Content'),\n)",
+        usage: "Use to add padding, margins, colors, decorations, and constraints to child widgets"
+      },
+      flutter_raised_button: {
+        description: "Material design raised button (deprecated)",
+        dartCode: "RaisedButton(\n  onPressed: () {\n    // Handle button press\n  },\n  child: Text('Click Me'),\n)",
+        usage: "Use for primary actions (note: deprecated, use ElevatedButton instead)"
+      },
+      flutter_fab: {
+        description: "Floating action button for primary actions",
+        dartCode: "FloatingActionButton(\n  onPressed: () {\n    // Handle FAB press\n  },\n  child: Icon(Icons.add),\n)",
+        usage: "Use for the primary action in your app - typically placed in Scaffold"
+      }
+    },
+    commonPatterns: [
+      {
+        name: "Basic App Structure",
+        description: "Standard Flutter app with AppBar and centered content",
+        blocks: ["scaffold", "appBar", "flutter_center", "flutter_text"],
+        dartCode: "Scaffold(\n  appBar: AppBar(title: Text('My App')),\n  body: Center(child: Text('Hello World')),\n)"
+      },
+      {
+        name: "Vertical List Layout",
+        description: "Column of items with consistent spacing",
+        blocks: ["flutter_column", "flutter_container", "flutter_text"],
+        dartCode: "Column(\n  children: [\n    Container(child: Text('Item 1')),\n    Container(child: Text('Item 2')),\n  ],\n)"
+      },
+      {
+        name: "Horizontal Button Row",
+        description: "Row of buttons for multiple actions",
+        blocks: ["flutter_row", "flutter_raised_button", "flutter_text"],
+        dartCode: "Row(\n  children: [\n    RaisedButton(child: Text('Cancel')),\n    RaisedButton(child: Text('OK')),\n  ],\n)"
+      },
+      {
+        name: "Card-like Container",
+        description: "Styled container with content",
+        blocks: ["flutter_container", "flutter_column", "flutter_text"],
+        dartCode: "Container(\n  padding: EdgeInsets.all(16),\n  decoration: BoxDecoration(borderRadius: BorderRadius.circular(8)),\n  child: Column(children: [Text('Title'), Text('Content')]),\n)"
+      }
+    ],
+    tips: {
+      layout: "Use Row for horizontal layouts, Column for vertical. Wrap with Container for styling.",
+      interaction: "Always provide onPressed handlers for buttons. Use FAB for primary actions.",
+      structure: "Start with Scaffold as the base, add AppBar for navigation, use body for main content.",
+      nesting: "Widgets can be nested - put Text inside Buttons, Buttons inside Rows, etc."
+    }
+  };
+};
 

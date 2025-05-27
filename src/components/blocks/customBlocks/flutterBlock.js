@@ -397,3 +397,106 @@ Blockly.Blocks['flutter_textfield'] = {
     }
 };
 
+// Export function for LLM context
+export const getFlutterBlocksInfo = () => {
+    return {
+        availableBlocks: [
+            {
+                name: "flutter_center", 
+                description: "Centers its child widget in the available space",
+                inputs: ["child (Widget)"],
+                output: "Center Widget",
+                category: "Layout"
+            },
+            {
+                name: "scaffold", 
+                description: "Provides basic material design visual layout structure with appBar, body, and floating action button",
+                inputs: ["appBar (AppBar)", "body (Widget)", "fab (FloatingActionButton)"],
+                output: "Scaffold Widget",
+                category: "Structure"
+            },
+            {
+                name: "appBar", 
+                description: "Top navigation bar that appears at the top of a Scaffold",
+                inputs: ["title (Text Widget)"],
+                output: "AppBar Widget",
+                category: "Structure"
+            },
+            {
+                name: "flutter_text", 
+                description: "Displays a string of text with single style",
+                inputs: ["data (String)"],
+                output: "Text Widget",
+                category: "Basic"
+            },
+            {
+                name: "flutter_row", 
+                description: "Displays its children in a horizontal array",
+                inputs: ["children (List of Widgets)"],
+                output: "Row Widget",
+                category: "Layout"
+            },
+            {
+                name: "flutter_column", 
+                description: "Displays its children in a vertical array",
+                inputs: ["children (List of Widgets)"],
+                output: "Column Widget",
+                category: "Layout"
+            },
+            {
+                name: "flutter_container", 
+                description: "A convenience widget that combines common painting, positioning, and sizing widgets",
+                inputs: ["width (Number)", "height (Number)", "color (Color)", "child (Widget)"],
+                output: "Container Widget",
+                category: "Layout"
+            },
+            {
+                name: "flutter_stateful_widget", 
+                description: "Creates a widget that can hold mutable state and rebuild when the state changes",
+                inputs: ["classname (String)", "Variables (Statements)", "content (Widget)"],
+                output: "StatefulWidget",
+                category: "Structure"
+            },
+            {
+                name: "flutter_raised_button", 
+                description: "A material design raised button (deprecated, use ElevatedButton instead)",
+                inputs: ["onPressed (Function)", "child (Widget)"],
+                output: "RaisedButton Widget",
+                category: "Interactive"
+            },
+            {
+                name: "flutter_fab", 
+                description: "A circular icon button that hovers over content to promote a primary action",
+                inputs: ["onPressed (Function)", "child (Widget)"],
+                output: "FloatingActionButton Widget",
+                category: "Interactive"
+            },
+            {
+                name: "flutter_icon", 
+                description: "A graphical icon widget drawn with a glyph from a font",
+                inputs: ["icon (IconData)", "color (Color)", "size (Number)"],
+                output: "Icon Widget",
+                category: "Basic"
+            },
+            {
+                name: "flutter_listview", 
+                description: "A scrollable list of widgets arranged linearly",
+                inputs: ["children (List of Widgets)"],
+                output: "ListView Widget",
+                category: "Layout"
+            }
+        ],
+        categories: {
+            "Structure": ["scaffold", "appBar", "flutter_stateful_widget"],
+            "Layout": ["flutter_center", "flutter_row", "flutter_column", "flutter_container", "flutter_listview"],
+            "Basic": ["flutter_text", "flutter_icon"],
+            "Interactive": ["flutter_raised_button", "flutter_fab"]
+        },
+        usage: {
+            basicApp: "Start with Scaffold → add AppBar and body → add content widgets",
+            layout: "Use Row/Column for linear layouts, Container for styling, Center for centering",
+            interaction: "Use buttons (RaisedButton/FAB) for user actions with onPressed events",
+            state: "Use StatefulWidget when you need to update UI based on changing data"
+        }
+    };
+};
