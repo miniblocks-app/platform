@@ -100,7 +100,7 @@ Blockly.Blocks['scaffold'] = {
     init: function() {
         this.appendDummyInput()
             .setAlign(Blockly.ALIGN_CENTRE)
-            .appendField("Scaffold");
+            .appendField("App with a bottom sheet:");
         this.appendValueInput("appBar")
             .setCheck("AppBar")
             .setAlign(Blockly.ALIGN_RIGHT)
@@ -115,7 +115,7 @@ Blockly.Blocks['scaffold'] = {
             .appendField("floatingActionButton");
         this.setOutput(true, ["Widget", "Scaffold"]);
         this.setColour(165);
-        this.setTooltip("Hi");
+        this.setTooltip("A Scaffold is a top-level container that holds the structure of the app, including the AppBar, body, and FloatingActionButton.");
         this.setHelpUrl("https://api.flutter.dev/flutter/material/Scaffold-class.html");
     }
 };
@@ -373,19 +373,13 @@ Blockly.Blocks['flutter_raw_statement'] = {
 };
 
 Blockly.Blocks['flutter_center'] = {
-    init() {
-        // label only
-        this.appendDummyInput()
-            .appendField('center');
-
-        // C-shape cut-out where any widget can be nested
-        this.appendStatementInput('CHILD')
-            .setCheck(null);
-
-        this.setPreviousStatement(true);   // top notch
-        this.setNextStatement(true);       // bottom bump
+    init: function() {
+        this.appendValueInput("child")
+            .setCheck("Widget")
+            .appendField("Center");
+        this.setOutput(true, ["Widget", "Center"]);
         this.setColour(160);
-        this.setTooltip('Align child widget to the very middle');
-        this.setHelpUrl('https://api.flutter.dev/flutter/widgets/Center-class.html');
+        this.setTooltip("Align child widget to the very middle");
+        this.setHelpUrl("https://api.flutter.dev/flutter/widgets/Center-class.html");
     }
 };

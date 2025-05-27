@@ -70,7 +70,6 @@ const CodePreview: React.FC<{code: string}> = ({code}) => {
 export const BlocksWindow = () => {
     const {
         debugMode,
-        advanceMode,
         blocklyXml,
         setBlocklyXml,
         currentProject,
@@ -94,11 +93,8 @@ export const BlocksWindow = () => {
         loopsCategory,
         variablesCategory,
         mathCategory,
+        flutterCategory
     ];
-    if (advanceMode) {
-        baseContents.push(flutterCategory);
-    }
-
     const toolboxCategories = {
         kind: "categoryToolbox",
         contents: baseContents,

@@ -59,19 +59,14 @@ const NT = NameType || Blockly?.Names?.Type || undefined;
 //   return code;
 // };
 
-dartGenerator.forBlock['flutter_center'] = function (block) {
-  // Code of children inside the C-shape; result already ends with '\n'
-  let child = dartGenerator.statementToCode(block, 'CHILD').trim();
-
-  // Fallback if nothing is nested
-  if (!child) child = 'Container()';
-
-  // Indent every line of the child code by two spaces
-  const indented = child.replace(/\n/g, '\n  ');
-
-  return `Center(
-  child: ${indented},
-),\n`;
+dartGenerator.forBlock['flutter_center'] = function(block) {
+    let value_child = dartGenerator.valueToCode(block, 'child', Order.NONE);
+    let code = 'Center(\n';
+    if (value_child) {
+        code += '\t child: ' + value_child + ',\n';
+    }
+    code += ')';
+    return [code, Order.NONE];
 };
 
 
