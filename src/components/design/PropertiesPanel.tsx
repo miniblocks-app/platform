@@ -159,6 +159,47 @@ const ComponentSpecificProperties = ({
         </div>
       );
       
+    case 'image':
+      return (
+        <div className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Upload Image
+            </label>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={e => {
+                const file = e.target.files?.[0];
+                if (file) {
+                  const reader = new FileReader();
+                  reader.onload = (ev) => {
+                    onChange({ src: ev.target?.result as string });
+                  };
+                  reader.readAsDataURL(file);
+                }
+              }}
+              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+            {props.src && (
+              <div className="mt-2 relative">
+                <img src={props.src} alt="Preview" className="w-full h-32 object-cover rounded" />
+                <button
+                  type="button"
+                  className="absolute top-1 right-1 bg-white bg-opacity-80 rounded-full p-1 border border-gray-300 hover:bg-red-100"
+                  onClick={() => onChange({ src: undefined })}
+                  title="Remove image"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4 text-red-500">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      );
+      
     default:
       return null;
   }
@@ -183,7 +224,7 @@ export const PropertiesPanel = () => {
         ...screen.settings,
         [key]: value,
       },
-    });
+    } as Partial<import('../../types').Screen>);
   };
 
   const handleComponentStyleChange = (updates: any) => {
@@ -196,7 +237,7 @@ export const PropertiesPanel = () => {
           ...updates,
         },
       },
-    });
+    } as Partial<import('../../types').ComponentData>);
   };
 
   const handleComponentPropChange = (updates: any) => {
@@ -206,7 +247,7 @@ export const PropertiesPanel = () => {
         ...component.props,
         ...updates,
       },
-    });
+    } as Partial<import('../../types').ComponentData>);
   };
 
   if (!screen) return null;
