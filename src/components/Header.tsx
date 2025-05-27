@@ -217,7 +217,7 @@ export const Header = () => {
                   } rounded-md flex items-center space-x-2`}
                   onClick={() => {
                   setAdvanceMode((prev) => !prev);
-                  window.open('http://localhost:3000', '_blank');
+                  window.open('https://miniblocks-code-optimizer.vercel.app/', '_blank');
                   }}
                 >
                   <CogIcon className="w-4 h-4" />

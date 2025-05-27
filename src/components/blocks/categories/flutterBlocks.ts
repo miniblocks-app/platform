@@ -42,6 +42,10 @@ export const flutterCategory: ToolboxCategory= {
         },
         {
             kind: "block",
+            type: "flutter_string",
+        },
+        {
+            kind: "block",
             type: "flutter_text",
         },
         {
@@ -67,6 +71,10 @@ export const flutterCategory: ToolboxCategory= {
         {
             kind: "block",
             type: "flutter_container",
+        },
+        {
+            kind: "block",
+            type: "flutter_text_variable",
         },
         {
             kind: "block",
