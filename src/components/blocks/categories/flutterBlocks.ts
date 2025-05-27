@@ -70,6 +70,10 @@ export const flutterCategory: ToolboxCategory= {
         },
         {
             kind: "block",
+            type: "flutter_text_variable",
+        },
+        {
+            kind: "block",
             type: "scaffold",
         },
         {
@@ -107,6 +111,10 @@ export const flutterCategory: ToolboxCategory= {
         {
             kind: "block",
             type: "flutter_fab",
+        },
+        {
+            kind: "block",
+            type: "flutter_string",
         }
     ],
 };

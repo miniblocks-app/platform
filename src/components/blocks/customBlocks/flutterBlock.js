@@ -71,17 +71,7 @@ import * as Blockly from "blockly";
 //     }
 // };
 
-Blockly.Blocks['flutter_center'] = {
-    init() {
-        this.appendValueInput("child")
-            .setCheck("Widget")
-            .appendField("Center child");
-        this.setOutput(true, ["Widget", "Center"]);
-        this.setColour(230);
-        this.setTooltip("Centers its child");
-        this.setHelpUrl("https://api.flutter.dev/flutter/widgets/Center-class.html");
-    }
-};
+
 
 Blockly.Blocks['scaffold'] = {
     init: function() {
@@ -113,7 +103,7 @@ Blockly.Blocks['appBar'] = {
             .appendField("appBar");
         this.appendValueInput("title")
             .setAlign(Blockly.ALIGN_RIGHT)
-            .appendField("title").setCheck("flutter_text");
+            .appendField("title")
         this.setOutput(true, ["Widget", "AppBar"]);
         this.setColour(165);
 
@@ -268,12 +258,13 @@ Blockly.Blocks['flutter_stateful_widget'] = {
     init: function() {
         this.appendDummyInput()
             .appendField(new Blockly.FieldTextInput("App"), "classname")
-            .appendField("MainWidget");
-        this.appendStatementInput("Variables")
+            .appendField("Main");
+        this.appendStatementInput("First")
             .setCheck(null)
-            .appendField("Variables");
+            .appendField("First");
         this.appendValueInput("content")
             .setCheck("Widget")
+            .appendField("Second");
         this.setColour(250);
         this.setTooltip("MainWidget is a StatefulWidget that can hold state and rebuild when the state changes.");
         this.setHelpUrl("https://api.flutter.dev/flutter/widgets/StatefulWidget-class.html");
@@ -358,3 +349,44 @@ Blockly.Blocks['flutter_raw_statement'] = {
     }
 };
 
+Blockly.Blocks['flutter_string'] = {
+    init: function() {
+        this.appendDummyInput()
+            .appendField("Value")
+            .appendField(new Blockly.FieldTextInput("Hello World"), "fluString");
+        this.setOutput(true, null);
+        this.setColour(230);
+        this.setTooltip("");
+        this.setHelpUrl("");
+    }
+};
+
+Blockly.Blocks['flutter_text_variable'] = {
+    init: function() {
+        this.appendValueInput("data")
+            .setCheck(null)  // Accept any type
+            .appendField("Text Variable");
+        this.setColour(230);
+        this.setOutput(true, ["Widget", "Text"]);
+        this.setTooltip("Text widget that can display variables");
+        this.setHelpUrl("https://api.flutter.dev/flutter/widgets/Text-class.html");
+    }
+};
+
+Blockly.Blocks['flutter_center'] = {
+    init() {
+        // label only
+        this.appendDummyInput()
+            .appendField('center');
+
+        // C-shape cut-out where any widget can be nested
+        this.appendStatementInput('CHILD')
+            .setCheck(null);
+
+        this.setPreviousStatement(true);   // top notch
+        this.setNextStatement(true);       // bottom bump
+        this.setColour(160);
+        this.setTooltip('Align child widget to the very middle');
+        this.setHelpUrl('https://api.flutter.dev/flutter/widgets/Center-class.html');
+    }
+};
