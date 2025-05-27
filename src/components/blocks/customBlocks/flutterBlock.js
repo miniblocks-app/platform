@@ -72,6 +72,29 @@ import * as Blockly from "blockly";
 // };
 
 
+Blockly.Blocks['flutter_string'] = {
+    init: function() {
+        this.appendDummyInput()
+            .appendField("Value")
+            .appendField(new Blockly.FieldTextInput("Hello World"), "fluString");
+        this.setOutput(true, null);
+        this.setColour(230);
+        this.setTooltip("String value to feed to the Text widget");
+        this.setHelpUrl("");
+    }
+};
+
+Blockly.Blocks['flutter_text_variable'] = {
+    init: function() {
+        this.appendValueInput("data")
+            .setCheck(null)  // Accept any type
+            .appendField("Text Variable");
+        this.setColour(230);
+        this.setOutput(true, ["Widget", "Text"]);
+        this.setTooltip("Text widget that can display variables");
+        this.setHelpUrl("https://api.flutter.dev/flutter/widgets/Text-class.html");
+    }
+};
 
 Blockly.Blocks['scaffold'] = {
     init: function() {
@@ -93,7 +116,7 @@ Blockly.Blocks['scaffold'] = {
         this.setOutput(true, ["Widget", "Scaffold"]);
         this.setColour(165);
         this.setTooltip("Hi");
-        this.setHelpUrl("https://api.flutter.dev/flutter/material/Scaffold-class");
+        this.setHelpUrl("https://api.flutter.dev/flutter/material/Scaffold-class.html");
     }
 };
 
@@ -258,13 +281,13 @@ Blockly.Blocks['flutter_stateful_widget'] = {
     init: function() {
         this.appendDummyInput()
             .appendField(new Blockly.FieldTextInput("App"), "classname")
-            .appendField("Main");
+            .appendField("Let's Build Something Awesome!");
         this.appendStatementInput("First")
             .setCheck(null)
-            .appendField("Process");
+            .appendField("Make");
         this.appendValueInput("content")
             .setCheck("Widget")
-            .appendField("Display");
+            .appendField("View");
         this.setColour(250);
         this.setTooltip("MainWidget is a StatefulWidget that can hold state and rebuild when the state changes. Use the Process sections to define anything you want. The display section will display it's body.");
         this.setHelpUrl("https://api.flutter.dev/flutter/widgets/StatefulWidget-class.html");
@@ -346,30 +369,6 @@ Blockly.Blocks['flutter_raw_statement'] = {
         this.setColour(230);
         this.setTooltip("");
         this.setHelpUrl("");
-    }
-};
-
-Blockly.Blocks['flutter_string'] = {
-    init: function() {
-        this.appendDummyInput()
-            .appendField("Value")
-            .appendField(new Blockly.FieldTextInput("Hello World"), "fluString");
-        this.setOutput(true, null);
-        this.setColour(230);
-        this.setTooltip("");
-        this.setHelpUrl("");
-    }
-};
-
-Blockly.Blocks['flutter_text_variable'] = {
-    init: function() {
-        this.appendValueInput("data")
-            .setCheck(null)  // Accept any type
-            .appendField("Text Variable");
-        this.setColour(230);
-        this.setOutput(true, ["Widget", "Text"]);
-        this.setTooltip("Text widget that can display variables");
-        this.setHelpUrl("https://api.flutter.dev/flutter/widgets/Text-class.html");
     }
 };
 

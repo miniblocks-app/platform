@@ -80,6 +80,63 @@ const PikaMascot = () => {
      if (lowerMessage.includes('rectangle') || lowerMessage.includes('square')) {
         return "Rectangle shapes are available in the Shapes section, for adding rectangular visual elements.";
     }
+    if (lowerMessage.includes('logic') || lowerMessage.includes('if') || lowerMessage.includes('condition')) {
+        return "Logic blocks are in the Logic section. You can use them to create conditional statements, loops, and control flow in your app. Try using 'if' blocks for conditions, 'while' for loops, and 'set variable' for storing values.";
+    }
+    if (lowerMessage.includes('variable') || lowerMessage.includes('var')) {
+        return "You can create and manage variables using the Logic section. Use 'set variable' to create or update variables, and 'get variable' to use their values in your app.";
+    }
+    if (lowerMessage.includes('loop') || lowerMessage.includes('while') || lowerMessage.includes('for')) {
+        return "Loops are available in the Logic section. Use 'while' blocks to repeat actions while a condition is true, or 'for' blocks to iterate a specific number of times.";
+    }
+    if (lowerMessage.includes('function') || lowerMessage.includes('method')) {
+        return "Functions are in the Logic section. You can create reusable blocks of code using 'function' blocks. Define parameters and return values to make your functions more flexible.";
+    }
+    if (lowerMessage.includes('operator') || lowerMessage.includes('math') || lowerMessage.includes('calculate')) {
+        return "Math operators are in the Logic section. You can perform calculations using blocks like 'add', 'subtract', 'multiply', and 'divide'. There are also comparison operators like 'equals', 'greater than', and 'less than'.";
+    }
+    if (lowerMessage.includes('flutter') || lowerMessage.includes('widget')) {
+        return "Flutter blocks are in the Flutter section. You can use them to create Flutter widgets like Center, Container, Text, Row, Column, ListView, and more. These blocks generate Dart code for your Flutter app.";
+    }
+    if (lowerMessage.includes('center') || lowerMessage.includes('align')) {
+        return "The Center block is in the Flutter section. It helps you center any widget both horizontally and vertically in its parent container.";
+    }
+    if (lowerMessage.includes('container')) {
+        return "The Container block is in the Flutter section. It's a versatile widget that can have padding, margins, borders, and background colors. You can also set its width and height.";
+    }
+    if (lowerMessage.includes('row') || lowerMessage.includes('column') || lowerMessage.includes('layout')) {
+        return "Row and Column blocks are in the Flutter section. Use Row to arrange widgets horizontally and Column to arrange them vertically. You can add multiple children to both.";
+    }
+    if (lowerMessage.includes('listview')) {
+        return "The ListView block is in the Flutter section. It creates a scrollable list of widgets. Perfect for displaying long lists of items that might not fit on the screen.";
+    }
+    if (lowerMessage.includes('scaffold')) {
+        return "The Scaffold block is in the Flutter section. It provides a basic visual layout structure for your app, including an AppBar, body, and optional FloatingActionButton.";
+    }
+    if (lowerMessage.includes('appbar')) {
+        return "The AppBar block is in the Flutter section. It creates a top app bar with a title. You can customize it with different colors and styles.";
+    }
+    if (lowerMessage.includes('stateful') || lowerMessage.includes('state')) {
+        return "The StatefulWidget block is in the Flutter section. Use it when you need to create widgets that can change over time. It includes a state class where you can manage variables and update the UI.";
+    }
+    if (lowerMessage.includes('setstate') || lowerMessage.includes('update')) {
+        return "The setState block is in the Flutter section. Use it inside a StatefulWidget to update the UI when your data changes. It triggers a rebuild of the widget with the new state.";
+    }
+    if (lowerMessage.includes('raw code') || lowerMessage.includes('custom code')) {
+        return "The raw code blocks are in the Flutter section. Use them to write custom Dart code when you need more control than what the blocks provide. 'raw code' for expressions and 'raw statement' for statements.";
+    }
+    if (lowerMessage.includes('string') || lowerMessage.includes('text value')) {
+        return "The String block is in the Flutter section. Use it to create text values that can be used in Text widgets or other places where a string is needed.";
+    }
+    if (lowerMessage.includes('icon') || lowerMessage.includes('icons')) {
+        return "Icon blocks are in the Flutter section. Use 'flutter_icons' to select an icon from the Material Icons library, and 'flutter_icon' to create an Icon widget with the selected icon.";
+    }
+    if (lowerMessage.includes('placeholder')) {
+        return "The Placeholder block is in the Flutter section. It creates a box that represents where other widgets will be added. Useful for planning your layout before adding the actual content.";
+    }
+    if (lowerMessage.includes('button') || lowerMessage.includes('fab')) {
+        return "Button blocks are in the Flutter section. You can use RaisedButton for standard buttons and FloatingActionButton for floating buttons. Both can have an onPressed handler and a child widget.";
+    }
     if (lowerMessage.includes('component')) {
       return "All our components are located in the src/components directory. We have UI components, layout components, and more!";
     }
