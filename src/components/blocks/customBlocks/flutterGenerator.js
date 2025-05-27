@@ -401,3 +401,17 @@ dartGenerator.forBlock['flutter_text_variable'] = function(block) {
   return [code, Order.NONE];
 };
 
+dartGenerator.forBlock['flutter_textfield'] = function(block) {
+  let value_hintText = dartGenerator.valueToCode(block, 'hintText', Order.ATOMIC);
+  
+  let code = 'TextField(\n';
+  if (value_hintText) {
+    code += '\t decoration: InputDecoration(\n';
+    code += '\t\t hintText: ' + value_hintText + ',\n';
+    code += '\t ),\n';
+  }
+  code += ')';
+  return [code, Order.NONE];
+};
+
+
