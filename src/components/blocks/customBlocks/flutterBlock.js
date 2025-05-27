@@ -81,7 +81,7 @@ Blockly.Blocks['scaffold'] = {
         this.appendValueInput("appBar")
             .setCheck("AppBar")
             .setAlign(Blockly.ALIGN_RIGHT)
-            .appendField("appBar");
+            .appendField("Add App Title:");
         this.appendValueInput("body")
             .setCheck("Widget")
             .setAlign(Blockly.ALIGN_RIGHT)
@@ -100,7 +100,7 @@ Blockly.Blocks['scaffold'] = {
 Blockly.Blocks['appBar'] = {
     init: function() {
         this.appendDummyInput()
-            .appendField("appBar");
+            .appendField("App Title");
         this.appendValueInput("title")
             .setAlign(Blockly.ALIGN_RIGHT)
             .appendField("title")
@@ -261,12 +261,12 @@ Blockly.Blocks['flutter_stateful_widget'] = {
             .appendField("Main");
         this.appendStatementInput("First")
             .setCheck(null)
-            .appendField("First");
+            .appendField("Process");
         this.appendValueInput("content")
             .setCheck("Widget")
-            .appendField("Second");
+            .appendField("Display");
         this.setColour(250);
-        this.setTooltip("MainWidget is a StatefulWidget that can hold state and rebuild when the state changes.");
+        this.setTooltip("MainWidget is a StatefulWidget that can hold state and rebuild when the state changes. Use the Process sections to define anything you want. The display section will display it's body.");
         this.setHelpUrl("https://api.flutter.dev/flutter/widgets/StatefulWidget-class.html");
     }
 };
@@ -312,10 +312,10 @@ Blockly.Blocks['flutter_container'] = {
 Blockly.Blocks['flutter_set_state_call'] = {
     init: function() {
         this.appendDummyInput()
-            .appendField("setState");
+            .appendField("Change Something");
         this.appendStatementInput("code")
             .setCheck(null)
-            .appendField("code to run");
+            .appendField("What to change?");
         this.setPreviousStatement(true, null);
         this.setNextStatement(true, null);
         this.setColour(230);
