@@ -14,7 +14,7 @@ export const Preview = () => {
   const [lastUpdate, setLastUpdate] = useState(Date.now());
   const [isRefreshing, setIsRefreshing] = useState(false);
   
-  const screen = currentProject?.screens.find(s => s.id === screenId);
+  const screen = (currentProject?.screens.find(s => s.id === screenId) as import('../types').Screen | undefined);
 
   // Hot reload functionality
   useEffect(() => {
@@ -168,15 +168,18 @@ export const Preview = () => {
                   screen.settings.scrollable && 'overflow-y-auto'
                 )}
               >
-                {screen.components.map(component => (
-                  <div
-                    key={component.id}
-                    style={component.props.style}
-                    className="absolute"
-                  >
-                    <ComponentPreview type={component.type} />
-                  </div>
-                ))}
+                {screen.components.map(component => {
+                  const comp = component as import('../types').ComponentData;
+                  return (
+                    <div
+                      key={comp.id}
+                      style={comp.props.style}
+                      className="absolute"
+                    >
+                      <ComponentPreview type={comp.type} props={comp.props} />
+                    </div>
+                  );
+                })}
               </div>
             </div>
           </div>

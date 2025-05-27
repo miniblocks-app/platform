@@ -38,11 +38,19 @@ export const flutterCategory: ToolboxCategory= {
         // },
         {
             kind: "block",
-            type: "flutter_center",
+            type: "flutter_stateful_widget",
         },
         {
             kind: "block",
-            type: "flutter_stateful_widget",
+            type: "flutter_string",
+        },
+        {
+            kind: "block",
+            type: "flutter_text",
+        },
+        {
+            kind: "block",
+            type: "flutter_center",
         },
         {
             kind: "block",
@@ -66,7 +74,7 @@ export const flutterCategory: ToolboxCategory= {
         },
         {
             kind: "block",
-            type: "flutter_text",
+            type: "flutter_text_variable",
         },
         {
             kind: "block",

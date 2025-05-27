@@ -64,6 +64,7 @@ interface AppState {
   setBlocklyXml: (xml: string) => void;
   setDartCode: (code: string) => void;
   setWorkspace: (workspace: WorkspaceSvg | null) => void;
+  clearComponents: (screenId: string) => void;
 }
 
 // Define which parts of the state should be persisted
@@ -292,6 +293,29 @@ const baseStore: StateCreator<AppState> = (set) => ({
   setDartCode: (code) => set({ dartCode: code }),
   // This is the transient state that won't be persisted
   setWorkspace: (workspace) => set({ workspace }),
+  clearComponents: (screenId) =>
+    set((state) => {
+      if (!state.currentProject) return state;
+      const updatedProject = {
+        ...state.currentProject,
+        screens: state.currentProject.screens.map((screen) =>
+          screen.id === screenId
+            ? {
+                ...screen,
+                components: [],
+              }
+            : screen
+        ),
+      };
+      return {
+        currentProject: updatedProject,
+        selectedComponent: null,
+        history: {
+          past: [...state.history.past, state.currentProject],
+          future: [],
+        },
+      };
+    }),
 });
 
 /**

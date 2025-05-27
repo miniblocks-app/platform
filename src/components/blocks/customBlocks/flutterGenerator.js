@@ -1,4 +1,12 @@
 import {dartGenerator, Order} from "blockly/dart";
+import * as Blockly from 'blockly';           // use the top-level bundle
+
+// In both classic and ESM builds the enum is on Blockly.Names.NameType
+const NameType = Blockly?.Names?.NameType;
+
+// If for some reason it's still missing, fall back to Blockly.Names.Type
+// (older builds) or skip the arg so Blockly will treat it as 'VARIABLE'.
+const NT = NameType || Blockly?.Names?.Type || undefined;
 
 // dartGenerator.forBlock['flutter_import_material'] = function(block) {
 //   let code = "import 'package:flutter/material.dart'";
@@ -51,11 +59,16 @@ import {dartGenerator, Order} from "blockly/dart";
 //   return code;
 // };
 
-dartGenerator.forBlock['flutter_center'] = function (block) {
-  const child = dartGenerator.valueToCode(block, 'child', Order.NONE);
-  const code = `Center(\n${child ? INDENT + 'child: ' + child + ',\n' : ''})`;
-  return [code, Order.NONE];
+dartGenerator.forBlock['flutter_center'] = function(block) {
+    let value_child = dartGenerator.valueToCode(block, 'child', Order.NONE);
+    let code = 'Center(\n';
+    if (value_child) {
+        code += '\t child: ' + value_child + ',\n';
+    }
+    code += ')';
+    return [code, Order.NONE];
 };
+
 
 dartGenerator.finish = function (code) {
   const customHeader = `
@@ -75,8 +88,11 @@ class MyWidget extends StatelessWidget {
 }
 `.trim();
 
+  // Remove any global variable declarations
+  const cleanCode = code.replace(/^var\s+\w+;?\n?/gm, '');
+
   const headers = Object.values(dartGenerator.definitions_).join('\n');
-  return `${customHeader}\n${headers ? headers + '\n' : ''}\n${code}`;
+  return `${customHeader}\n${headers ? headers + '\n' : ''}\n${cleanCode}`;
 };
 
 
@@ -176,7 +192,7 @@ dartGenerator.forBlock['flutter_icon'] = function(block) {
   if (value_color) {
     // color will be something like #FF0000 or 0xFFFF0000
     // If it's #RRGGBB, convert to 0xFFRRGGBB
-    // Make sure to handle slice logic carefully if it’s a hex string
+    // Make sure to handle slice logic carefully if it's a hex string
     if (value_color.startsWith("#")) {
       code += '\t color: const Color(0xFF' + value_color.slice(1).toUpperCase() + '),\n';
     } else {
@@ -258,7 +274,29 @@ dartGenerator.forBlock['flutter_fab'] = function(block) {
 dartGenerator.forBlock['flutter_stateful_widget'] = function(block) {
   let text_classname = block.getFieldValue('classname');
   let value_content = dartGenerator.valueToCode(block, 'content', Order.NONE);
-  let statement_lets = dartGenerator.statementToCode(block, 'Variables');
+  let statement_lets = dartGenerator.statementToCode(block, 'First');
+
+  // Process variable declarations to ensure they're properly formatted
+  let processedVars = '';
+  if (statement_lets) {
+    // Split by newlines and process each variable declaration
+    const varLines = statement_lets.split('\n');
+    processedVars = varLines
+      .map(line => {
+        // If it's a variable declaration, ensure it has a type
+        if (line.includes('=')) {
+          const [decl, value] = line.split('=');
+          const trimmedDecl = decl.trim();
+          // If no type is specified, add 'dynamic'
+          if (!trimmedDecl.includes(' ')) {
+            return `dynamic ${trimmedDecl} = ${value.trim()}`;
+          }
+        }
+        return line;
+      })
+      .filter(line => line.trim()) // Remove empty lines
+      .join('\n');
+  }
 
   let code =
       'class ' + text_classname + ' extends StatefulWidget {\n' +
@@ -266,7 +304,7 @@ dartGenerator.forBlock['flutter_stateful_widget'] = function(block) {
       '  _' + text_classname + 'State createState() => _' + text_classname + 'State();\n' +
       '}\n\n' +
       'class _' + text_classname + 'State extends State<' + text_classname + '> {\n' +
-      statement_lets + '\n' +
+      (processedVars ? processedVars + '\n' : '') +
       '  @override\n' +
       '  Widget build(BuildContext context) {\n' +
       '    return ' + value_content + ';\n' +
@@ -344,4 +382,115 @@ dartGenerator.forBlock['procedures_defreturn'] = function(block) {
   return code;
 };
 
+dartGenerator.forBlock['flutter_string'] = function (block) {
+  // Whatever is in the text input:
+  const raw = block.getFieldValue('fluString') || '';
+
+  // Let Blockly handle all escaping, then convert the outer quotes to single.
+  // quote_ returns e.g. `"Hello \"Bob\""` → replace the outer " with '
+  const doubleQuoted = dartGenerator.quote_(raw);   // ⇒ "Hello \"Bob\""
+  const singleQuoted =
+      "'" + doubleQuoted.slice(1, -1) + "'";          // ⇒ 'Hello \"Bob\"'
+
+  return [singleQuoted, dartGenerator.ORDER_ATOMIC];
+};
+
+dartGenerator.forBlock['flutter_text_variable'] = function(block) {
+  let value_data = dartGenerator.valueToCode(block, 'data', Order.ATOMIC);
+  let code = 'Text("$' + value_data + '")';
+  return [code, Order.NONE];
+};
+
+dartGenerator.forBlock['flutter_textfield'] = function(block) {
+  let value_hintText = dartGenerator.valueToCode(block, 'hintText', Order.ATOMIC);
+
+  let code = 'TextField(\n';
+  if (value_hintText) {
+    code += '\t decoration: InputDecoration(\n';
+    code += '\t\t hintText: ' + value_hintText + ',\n';
+    code += '\t ),\n';
+  }
+  code += ')';
+  return [code, Order.NONE];
+};
+
+// Export function for LLM context
+export const getFlutterGeneratorsInfo = () => {
+  return {
+    codeExamples: {
+      flutter_center: {
+        description: "Centers a child widget in the available space",
+        dartCode: "Center(\n  child: Text('Centered Content'),\n)",
+        usage: "Use when you want to center content on screen or within a parent widget"
+      },
+      scaffold: {
+        description: "Basic material design layout structure",
+        dartCode: "Scaffold(\n  appBar: AppBar(title: Text('My App')),\n  body: Center(child: Text('Hello World')),\n  floatingActionButton: FloatingActionButton(child: Icon(Icons.add)),\n)",
+        usage: "Use as the main structure for Flutter screens - provides appBar, body, and FAB slots"
+      },
+      flutter_text: {
+        description: "Displays text with a single style",
+        dartCode: "Text('Hello World')",
+        usage: "Use to display any text content - can be styled with TextStyle"
+      },
+      flutter_row: {
+        description: "Arranges children horizontally",
+        dartCode: "Row(\n  children: <Widget>[\n    Text('Left'),\n    Text('Right'),\n  ],\n)",
+        usage: "Use to arrange widgets side by side horizontally"
+      },
+      flutter_column: {
+        description: "Arranges children vertically",
+        dartCode: "Column(\n  children: <Widget>[\n    Text('Top'),\n    Text('Bottom'),\n  ],\n)",
+        usage: "Use to arrange widgets in a vertical stack"
+      },
+      flutter_container: {
+        description: "Styling and positioning wrapper widget",
+        dartCode: "Container(\n  width: 100,\n  height: 100,\n  color: Colors.blue,\n  child: Text('Content'),\n)",
+        usage: "Use to add padding, margins, colors, decorations, and constraints to child widgets"
+      },
+      flutter_raised_button: {
+        description: "Material design raised button (deprecated)",
+        dartCode: "RaisedButton(\n  onPressed: () {\n    // Handle button press\n  },\n  child: Text('Click Me'),\n)",
+        usage: "Use for primary actions (note: deprecated, use ElevatedButton instead)"
+      },
+      flutter_fab: {
+        description: "Floating action button for primary actions",
+        dartCode: "FloatingActionButton(\n  onPressed: () {\n    // Handle FAB press\n  },\n  child: Icon(Icons.add),\n)",
+        usage: "Use for the primary action in your app - typically placed in Scaffold"
+      }
+    },
+    commonPatterns: [
+      {
+        name: "Basic App Structure",
+        description: "Standard Flutter app with AppBar and centered content",
+        blocks: ["scaffold", "appBar", "flutter_center", "flutter_text"],
+        dartCode: "Scaffold(\n  appBar: AppBar(title: Text('My App')),\n  body: Center(child: Text('Hello World')),\n)"
+      },
+      {
+        name: "Vertical List Layout",
+        description: "Column of items with consistent spacing",
+        blocks: ["flutter_column", "flutter_container", "flutter_text"],
+        dartCode: "Column(\n  children: [\n    Container(child: Text('Item 1')),\n    Container(child: Text('Item 2')),\n  ],\n)"
+      },
+      {
+        name: "Horizontal Button Row",
+        description: "Row of buttons for multiple actions",
+        blocks: ["flutter_row", "flutter_raised_button", "flutter_text"],
+        dartCode: "Row(\n  children: [\n    RaisedButton(child: Text('Cancel')),\n    RaisedButton(child: Text('OK')),\n  ],\n)"
+      },
+      {
+        name: "Card-like Container",
+        description: "Styled container with content",
+        blocks: ["flutter_container", "flutter_column", "flutter_text"],
+        dartCode: "Container(\n  padding: EdgeInsets.all(16),\n  decoration: BoxDecoration(borderRadius: BorderRadius.circular(8)),\n  child: Column(children: [Text('Title'), Text('Content')]),\n)"
+      }
+    ],
+    tips: {
+      layout: "Use Row for horizontal layouts, Column for vertical. Wrap with Container for styling.",
+      interaction: "Always provide onPressed handlers for buttons. Use FAB for primary actions.",
+      structure: "Start with Scaffold as the base, add AppBar for navigation, use body for main content.",
+      nesting: "Widgets can be nested - put Text inside Buttons, Buttons inside Rows, etc."
+    }
+  };
+};
 

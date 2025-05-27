@@ -102,7 +102,7 @@ export function useWebhookEvents() {
           console.error('Heartbeat failed:', err);
         });
       }
-    }, 5000);
+    }, 60000);
 
     return () => {
       console.log('Cleaning up SSE connection');

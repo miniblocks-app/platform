@@ -1,15 +1,35 @@
 import { useAppStore } from '../../store';
 
 export const DeleteScreenDialog = () => {
-  const { showDeleteDialog, screenToDelete, setShowDeleteDialog, deleteScreen, currentProject } = useAppStore();
+  const { 
+    showDeleteDialog, 
+    screenToDelete, 
+    setShowDeleteDialog, 
+    deleteScreen, 
+    currentProject,
+    workspace
+  } = useAppStore();
   
   if (!showDeleteDialog || !screenToDelete || !currentProject) return null;
   
   const screen = currentProject.screens.find(s => s.id === screenToDelete);
   if (!screen) return null;
 
+  const handleDelete = () => {
+    // Clear the Blockly workspace
+    if (workspace) {
+      workspace.clear();
+    }
+    
+    // Delete the screen
+    deleteScreen(screenToDelete);
+    
+    // Close the dialog
+    setShowDeleteDialog(false);
+  };
+
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div className="fixed inset-0 bg-white/30 backdrop-blur-sm flex items-center justify-center z-50">
       <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
         <h2 className="text-xl font-semibold mb-4">Delete Screen</h2>
         <p className="text-gray-600 mb-6">
@@ -24,7 +44,7 @@ export const DeleteScreenDialog = () => {
           </button>
           <button
             className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600"
-            onClick={() => deleteScreen(screenToDelete)}
+            onClick={handleDelete}
           >
             Delete
           </button>

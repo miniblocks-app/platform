@@ -64,15 +64,22 @@ export const DesignWindow = () => {
         });
         // Create the corresponding Blockly block if the workspace is available
         if (workspace) {
-          if (componentType === 'button') {
+            if (componentType === 'button') {
             const buttonBlock = workspace.newBlock('flutter_raised_button');
             buttonBlock.initSvg();
             buttonBlock.render();
-          } else if (componentType === 'text') {
+            buttonBlock.moveBy(Math.random() * 300, Math.random() * 200);
+            } else if (componentType === 'text') {
             const textBlock = workspace.newBlock('flutter_text');
             textBlock.initSvg();
             textBlock.render();
-          }
+            textBlock.moveBy(Math.random() * 300, Math.random() * 200);
+            } else if (componentType === 'input') {
+            const inputBlock = workspace.newBlock('flutter_textfield');
+            inputBlock.initSvg();
+            inputBlock.render();
+            inputBlock.moveBy(Math.random() * 300, Math.random() * 200);
+            }
         } else {
           console.warn("Blockly workspace is not available in DesignWindow.");
         }

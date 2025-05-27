@@ -213,12 +213,15 @@ export const Header = () => {
               <>
                 <button
                   className={`p-2 ${
-                    advanceMode ? 'bg-blue-500 text-white' : 'bg-white text-blue-500'
+                  advanceMode ? 'bg-blue-500 text-white' : 'bg-white text-blue-500'
                   } rounded-md flex items-center space-x-2`}
-                  onClick={() => setAdvanceMode((prev) => !prev)}
+                  onClick={() => {
+                  setAdvanceMode((prev) => !prev);
+                  window.open('https://miniblocks-code-optimizer.vercel.app/', '_blank');
+                  }}
                 >
                   <CogIcon className="w-4 h-4" />
-                  <span>Advance Mode</span>
+                  <span>Optimize This!</span>
                 </button>
                 <button
                   className={`p-2 ${

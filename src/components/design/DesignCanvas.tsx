@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
 import { useDroppable } from '@dnd-kit/core';
 import { useAppStore } from '../../store';
-import { Undo2, Redo2, ZoomIn, ZoomOut, Grid, Trash2 } from 'lucide-react';
+import { Undo2, Redo2, ZoomIn, ZoomOut, Grid, Trash2, Info, Eraser, LayoutGrid } from 'lucide-react';
 import { ComponentPreview } from './ComponentPreview';
+import { ClearCanvasDialog } from './ClearCanvasDialog';
 import clsx from 'clsx';
 
 interface ComponentData {
@@ -46,12 +47,14 @@ interface AlignmentLine {
 }
 
 export const DesignCanvas = () => {
-  const { selectedScreen, selectedComponent, currentProject, updateComponent, deleteComponent, undo, redo, addComponent } = useAppStore();
+  const { selectedScreen, selectedComponent, currentProject, updateComponent, deleteComponent, undo, redo, addComponent, clearComponents } = useAppStore();
   const screen = currentProject?.screens.find((s) => s.id === selectedScreen) as Screen | undefined;
   const [zoom, setZoom] = useState(1);
   const [showGrid, setShowGrid] = useState(false);
   const [clipboard, setClipboard] = useState<ComponentData | null>(null);
   const [alignmentLines, setAlignmentLines] = useState<AlignmentLine[]>([]);
+  const [tooltipsEnabled, setTooltipsEnabled] = useState(false);
+  const [showClearDialog, setShowClearDialog] = useState(false);
   
   const { setNodeRef, isOver } = useDroppable({
     id: 'canvas',
@@ -117,6 +120,16 @@ export const DesignCanvas = () => {
           }
         }
       } else if (e.key === 'Delete' || e.key === 'Backspace') {
+        // Prevent delete/backspace if focus is in an input, textarea, or contenteditable
+        const active = document.activeElement;
+        const isInput =
+          active &&
+          (
+            active.tagName === 'INPUT' ||
+            active.tagName === 'TEXTAREA' ||
+            (active as HTMLElement).isContentEditable
+          );
+        if (isInput) return;
         if (selectedComponent) {
           e.preventDefault();
           deleteComponent(selectedScreen, selectedComponent);
@@ -368,6 +381,7 @@ export const DesignCanvas = () => {
         <ComponentPreview 
           type={component.type} 
           props={component.props}
+          tooltipsEnabled={tooltipsEnabled}
         />
       </div>
     );
@@ -420,6 +434,48 @@ export const DesignCanvas = () => {
     </div>
   );
 
+  const handleRearrange = () => {
+    if (!screen) return;
+    
+    // Get all components
+    const components = [...screen.components];
+    
+    // Sort components by their current position (top to bottom, left to right)
+    components.sort((a, b) => {
+      const aTop = parseInt(a.props.style?.top || '0');
+      const bTop = parseInt(b.props.style?.top || '0');
+      if (aTop !== bTop) return aTop - bTop;
+      return parseInt(a.props.style?.left || '0') - parseInt(b.props.style?.left || '0');
+    });
+
+    // Calculate new positions in a grid layout
+    const padding = 16; // Padding from edges
+    const spacing = 16; // Spacing between components
+    const componentWidth = 100; // Approximate width of components
+    const componentHeight = 40; // Approximate height of components
+    const maxComponentsPerRow = Math.floor((390 - 2 * padding) / (componentWidth + spacing));
+
+    // Update component positions
+    components.forEach((component, index) => {
+      const row = Math.floor(index / maxComponentsPerRow);
+      const col = index % maxComponentsPerRow;
+      
+      const newLeft = padding + col * (componentWidth + spacing);
+      const newTop = padding + row * (componentHeight + spacing);
+
+      updateComponent(screen.id, component.id, {
+        props: {
+          ...component.props,
+          style: {
+            ...(component.props.style || {}),
+            left: `${newLeft}px`,
+            top: `${newTop}px`,
+          }
+        }
+      } as Partial<ComponentData>);
+    });
+  };
+
   return (
     <div className="flex-1 flex flex-col">
       {/* Canvas Toolbar */}
@@ -466,6 +522,44 @@ export const DesignCanvas = () => {
           >
             <Grid className="w-5 h-5" />
           </button>
+          <button
+            className={clsx(
+              'ml-2 px-3 py-1 rounded transition-colors flex items-center gap-1',
+              tooltipsEnabled ? 'bg-blue-100 text-blue-700' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+            )}
+            onClick={() => setTooltipsEnabled((v) => !v)}
+            title="Enable Tooltips"
+            type="button"
+          >
+            <Info className="w-4 h-4" />
+            <span className="text-xs font-medium">Enable Tooltips</span>
+          </button>
+          <button
+            className={clsx(
+              'ml-2 px-3 py-1 rounded transition-colors flex items-center gap-1',
+              'bg-gray-100 text-gray-600 hover:bg-gray-200'
+            )}
+            onClick={handleRearrange}
+            title="Rearrange Components"
+            type="button"
+            disabled={!selectedScreen || !screen?.components.length}
+          >
+            <LayoutGrid className="w-4 h-4" />
+            <span className="text-xs font-medium">Rearrange</span>
+          </button>
+          <button
+            className={clsx(
+              'ml-2 px-3 py-1 rounded transition-colors flex items-center gap-1',
+              'bg-gray-100 text-gray-600 hover:bg-gray-200'
+            )}
+            onClick={() => setShowClearDialog(true)}
+            title="Clear Canvas"
+            type="button"
+            disabled={!selectedScreen || !screen?.components.length}
+          >
+            <Eraser className="w-4 h-4" />
+            <span className="text-xs font-medium">Clear Canvas</span>
+          </button>
         </div>
         <button 
           className={clsx(
@@ -492,6 +586,16 @@ export const DesignCanvas = () => {
           {renderMobileFrame()}
         </div>
       </div>
+
+      <ClearCanvasDialog
+        isOpen={showClearDialog}
+        onClose={() => setShowClearDialog(false)}
+        onConfirm={() => {
+          if (selectedScreen) {
+            clearComponents(selectedScreen);
+          }
+        }}
+      />
     </div>
   );
 };
