@@ -1,98 +1,15 @@
 import * as Blockly from "blockly";
 
-// TODO: Deprecated blocks, remove in future versions
-// Blockly.Blocks['flutter_import_material'] = {
-//     init: function() {
-//         this.appendDummyInput()
-//             .appendField("import 'package:flutter/material.dart';");
-//         this.setOutput(true, "Import");
-//         this.setPreviousStatement(false, null);
-//         this.setNextStatement(false, null);
-//         this.setColour(510);
-//         this.setTooltip("Import Flutter Material package");
-//         this.setHelpUrl("https://api.flutter.dev/flutter/material/material-library.html");
-//     }
-// };
-// Blockly.Blocks['flutter_main'] = {
-//     init() {
-//         this.appendDummyInput().appendField("main()");
-//         this.appendStatementInput("body")
-//             .setCheck(null)
-//             .appendField("body");
-//         this.setColour(290);
-//         this.setTooltip("Dart entry point");
-//         this.setHelpUrl("https://dart.dev/guides/language/language-tour#functions");
-//     }
-// };
-// Blockly.Blocks['runApp'] = {
-//     init: function() {
-//         this.appendValueInput("NAME")
-//             .setCheck("Widget")
-//             .appendField("RunApp");
-//         this.setColour(230);
-//         this.setPreviousStatement(true, null);
-//         this.setNextStatement(false, null);
-//         this.setTooltip("");
-//         this.setHelpUrl("https://api.flutter.dev/flutter/widgets/runApp.html");
-//     }
-// };
-// Blockly.Blocks['app'] = {
-//     init: function() {
-//         this.appendDummyInput()
-//             .appendField("App of type")
-//             .appendField(new Blockly.FieldDropdown([["material","MATERIAL"], ["cupertino","CUPERTINO"]]), "type");
-//         this.appendValueInput("title")
-//             .setCheck("String")
-//             .setAlign(Blockly.ALIGN_RIGHT)
-//             .appendField("title");
-//         this.appendValueInput("home")
-//             .setCheck(null)
-//             .setAlign(Blockly.ALIGN_RIGHT)
-//             .appendField("home");
-//         this.setOutput(true, ["Widget", "MaterialApp"]);
-//         this.setColour(230);
-//         this.setTooltip("");
-//         this.setHelpUrl("https://api.flutter.dev/flutter/material/MaterialApp-class.html");
-//     }
-// };
-//
-// -- STATELESS WIDGET BLOCK --
-// Blockly.Blocks['flutter_stateless_widget'] = {
-//     init: function() {
-//         this.appendDummyInput()
-//             .appendField(new Blockly.FieldTextInput("MyWidget"), "classname")
-//             .appendField("StatelessWidget");
-//         this.appendValueInput("content")
-//             .setCheck("Widget")
-//             .appendField("build(BuildContext context)");
-//         this.setColour(120);
-//         this.setTooltip("");
-//         this.setHelpUrl("https://api.flutter.dev/flutter/widgets/StatelessWidget-class.html");
-//     }
-// };
-
-
-Blockly.Blocks['flutter_string'] = {
-    init: function() {
-        this.appendDummyInput()
-            .appendField("Value")
-            .appendField(new Blockly.FieldTextInput("Hello World"), "fluString");
-        this.setOutput(true, null);
+// All existing block definitions
+Blockly.Blocks['flutter_center'] = {
+    init() {
+        this.appendValueInput("child")
+            .setCheck("Widget")
+            .appendField("Center child");
+        this.setOutput(true, ["Widget", "Center"]);
         this.setColour(230);
-        this.setTooltip("String value to feed to the Text widget");
-        this.setHelpUrl("");
-    }
-};
-
-Blockly.Blocks['flutter_text_variable'] = {
-    init: function() {
-        this.appendValueInput("data")
-            .setCheck(null)  // Accept any type
-            .appendField("Text Variable");
-        this.setColour(230);
-        this.setOutput(true, ["Widget", "Text"]);
-        this.setTooltip("Text widget that can display variables");
-        this.setHelpUrl("https://api.flutter.dev/flutter/widgets/Text-class.html");
+        this.setTooltip("Centers its child");
+        this.setHelpUrl("https://api.flutter.dev/flutter/widgets/Center-class.html");
     }
 };
 
@@ -100,11 +17,11 @@ Blockly.Blocks['scaffold'] = {
     init: function() {
         this.appendDummyInput()
             .setAlign(Blockly.ALIGN_CENTRE)
-            .appendField("App with a bottom sheet:");
+            .appendField("Scaffold");
         this.appendValueInput("appBar")
             .setCheck("AppBar")
             .setAlign(Blockly.ALIGN_RIGHT)
-            .appendField("Add App Title:");
+            .appendField("appBar");
         this.appendValueInput("body")
             .setCheck("Widget")
             .setAlign(Blockly.ALIGN_RIGHT)
@@ -115,21 +32,20 @@ Blockly.Blocks['scaffold'] = {
             .appendField("floatingActionButton");
         this.setOutput(true, ["Widget", "Scaffold"]);
         this.setColour(165);
-        this.setTooltip("A Scaffold is a top-level container that holds the structure of the app, including the AppBar, body, and FloatingActionButton.");
-        this.setHelpUrl("https://api.flutter.dev/flutter/material/Scaffold-class.html");
+        this.setTooltip("Hi");
+        this.setHelpUrl("https://api.flutter.dev/flutter/material/Scaffold-class");
     }
 };
 
 Blockly.Blocks['appBar'] = {
     init: function() {
         this.appendDummyInput()
-            .appendField("App Title");
+            .appendField("appBar");
         this.appendValueInput("title")
             .setAlign(Blockly.ALIGN_RIGHT)
-            .appendField("title")
+            .appendField("title").setCheck("flutter_text");
         this.setOutput(true, ["Widget", "AppBar"]);
         this.setColour(165);
-
         this.setTooltip("");
         this.setHelpUrl("https://api.flutter.dev/flutter/material/AppBar-class.html");
     }
@@ -188,7 +104,6 @@ Blockly.Blocks['flutter_listview'] = {
         this.setHelpUrl("https://api.flutter.dev/flutter/widgets/ListView-class.html");
     }
 };
-
 
 Blockly.Blocks['flutter_icon'] = {
     init: function() {
@@ -276,24 +191,21 @@ Blockly.Blocks['flutter_fab'] = {
     }
 };
 
-
 Blockly.Blocks['flutter_stateful_widget'] = {
     init: function() {
         this.appendDummyInput()
             .appendField(new Blockly.FieldTextInput("App"), "classname")
-            .appendField("Let's Build Something Awesome!");
-        this.appendStatementInput("First")
+            .appendField("MainWidget");
+        this.appendStatementInput("Variables")
             .setCheck(null)
-            .appendField("Make");
+            .appendField("Variables");
         this.appendValueInput("content")
             .setCheck("Widget")
-            .appendField("View");
         this.setColour(250);
-        this.setTooltip("MainWidget is a StatefulWidget that can hold state and rebuild when the state changes. Use the Process sections to define anything you want. The display section will display it's body.");
+        this.setTooltip("MainWidget is a StatefulWidget that can hold state and rebuild when the state changes.");
         this.setHelpUrl("https://api.flutter.dev/flutter/widgets/StatefulWidget-class.html");
     }
 };
-
 
 Blockly.Blocks['flutter_create_instance'] = {
     init: function() {
@@ -306,7 +218,6 @@ Blockly.Blocks['flutter_create_instance'] = {
         this.setHelpUrl("");
     }
 };
-
 
 Blockly.Blocks['flutter_container'] = {
     init: function() {
@@ -331,14 +242,13 @@ Blockly.Blocks['flutter_container'] = {
     }
 };
 
-
 Blockly.Blocks['flutter_set_state_call'] = {
     init: function() {
         this.appendDummyInput()
-            .appendField("Change Something");
+            .appendField("setState");
         this.appendStatementInput("code")
             .setCheck(null)
-            .appendField("What to change?");
+            .appendField("code to run");
         this.setPreviousStatement(true, null);
         this.setNextStatement(true, null);
         this.setColour(230);
@@ -372,29 +282,106 @@ Blockly.Blocks['flutter_raw_statement'] = {
     }
 };
 
-Blockly.Blocks['flutter_center'] = {
-    init: function() {
-        this.appendValueInput("child")
-            .setCheck("Widget")
-            .appendField("Center");
-        this.setOutput(true, ["Widget", "Center"]);
-        this.setColour(160);
-        this.setTooltip("Align child widget to the very middle");
-        this.setHelpUrl("https://api.flutter.dev/flutter/widgets/Center-class.html");
-    }
+// Export function for LLM context
+export const getFlutterBlocksInfo = () => {
+    return {
+        availableBlocks: [
+            {
+                name: "flutter_center", 
+                description: "Centers its child widget in the available space",
+                inputs: ["child (Widget)"],
+                output: "Center Widget",
+                category: "Layout"
+            },
+            {
+                name: "scaffold", 
+                description: "Provides basic material design visual layout structure with appBar, body, and floating action button",
+                inputs: ["appBar (AppBar)", "body (Widget)", "fab (FloatingActionButton)"],
+                output: "Scaffold Widget",
+                category: "Structure"
+            },
+            {
+                name: "appBar", 
+                description: "Top navigation bar that appears at the top of a Scaffold",
+                inputs: ["title (Text Widget)"],
+                output: "AppBar Widget",
+                category: "Structure"
+            },
+            {
+                name: "flutter_text", 
+                description: "Displays a string of text with single style",
+                inputs: ["data (String)"],
+                output: "Text Widget",
+                category: "Basic"
+            },
+            {
+                name: "flutter_row", 
+                description: "Displays its children in a horizontal array",
+                inputs: ["children (List of Widgets)"],
+                output: "Row Widget",
+                category: "Layout"
+            },
+            {
+                name: "flutter_column", 
+                description: "Displays its children in a vertical array",
+                inputs: ["children (List of Widgets)"],
+                output: "Column Widget",
+                category: "Layout"
+            },
+            {
+                name: "flutter_container", 
+                description: "A convenience widget that combines common painting, positioning, and sizing widgets",
+                inputs: ["width (Number)", "height (Number)", "color (Color)", "child (Widget)"],
+                output: "Container Widget",
+                category: "Layout"
+            },
+            {
+                name: "flutter_stateful_widget", 
+                description: "Creates a widget that can hold mutable state and rebuild when the state changes",
+                inputs: ["classname (String)", "Variables (Statements)", "content (Widget)"],
+                output: "StatefulWidget",
+                category: "Structure"
+            },
+            {
+                name: "flutter_raised_button", 
+                description: "A material design raised button (deprecated, use ElevatedButton instead)",
+                inputs: ["onPressed (Function)", "child (Widget)"],
+                output: "RaisedButton Widget",
+                category: "Interactive"
+            },
+            {
+                name: "flutter_fab", 
+                description: "A circular icon button that hovers over content to promote a primary action",
+                inputs: ["onPressed (Function)", "child (Widget)"],
+                output: "FloatingActionButton Widget",
+                category: "Interactive"
+            },
+            {
+                name: "flutter_icon", 
+                description: "A graphical icon widget drawn with a glyph from a font",
+                inputs: ["icon (IconData)", "color (Color)", "size (Number)"],
+                output: "Icon Widget",
+                category: "Basic"
+            },
+            {
+                name: "flutter_listview", 
+                description: "A scrollable list of widgets arranged linearly",
+                inputs: ["children (List of Widgets)"],
+                output: "ListView Widget",
+                category: "Layout"
+            }
+        ],
+        categories: {
+            "Structure": ["scaffold", "appBar", "flutter_stateful_widget"],
+            "Layout": ["flutter_center", "flutter_row", "flutter_column", "flutter_container", "flutter_listview"],
+            "Basic": ["flutter_text", "flutter_icon"],
+            "Interactive": ["flutter_raised_button", "flutter_fab"]
+        },
+        usage: {
+            basicApp: "Start with Scaffold → add AppBar and body → add content widgets",
+            layout: "Use Row/Column for linear layouts, Container for styling, Center for centering",
+            interaction: "Use buttons (RaisedButton/FAB) for user actions with onPressed events",
+            state: "Use StatefulWidget when you need to update UI based on changing data"
+        }
+    };
 };
-
-Blockly.Blocks['flutter_textfield'] = {
-    init: function() {
-        this.appendDummyInput()
-            .appendField("TextField");
-        this.appendValueInput("hintText")
-            .setCheck("String")
-            .appendField("hint");
-        this.setOutput(true, "Widget");
-        this.setColour(160);
-        this.setTooltip("Simple text input field");
-        this.setHelpUrl("https://api.flutter.dev/flutter/material/TextField-class.html");
-    }
-};
-
