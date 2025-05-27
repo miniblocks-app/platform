@@ -105,6 +105,193 @@ const ComponentSpecificProperties = ({
   onChange: (updates: any) => void;
 }) => {
   switch (type) {
+    case 'healthbar':
+      return (
+        <div className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Current Health
+            </label>
+            <input
+              type="number"
+              min="0"
+              max={props.max || 100}
+              value={props.value || 75}
+              onChange={(e) => onChange({ value: parseInt(e.target.value) || 0 })}
+              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+          
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Max Health
+            </label>
+            <input
+              type="number"
+              min="1"
+              value={props.max || 100}
+              onChange={(e) => onChange({ max: parseInt(e.target.value) || 100 })}
+              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+          
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Show Heart Icon
+            </label>
+            <input
+              type="checkbox"
+              checked={props.showIcon !== false}
+              onChange={(e) => onChange({ showIcon: e.target.checked })}
+              className="rounded focus:ring-blue-500"
+            />
+          </div>
+          
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Show HP Text
+            </label>
+            <input
+              type="checkbox"
+              checked={props.showText !== false}
+              onChange={(e) => onChange({ showText: e.target.checked })}
+              className="rounded focus:ring-blue-500"
+            />
+          </div>
+        </div>
+      );
+    
+    case 'scoreboard':{
+      const scores = props.scores || [
+        { name: 'Player 1', score: 2500 },
+        { name: 'Player 2', score: 1800 },
+        { name: 'Player 3', score: 1200 }
+      ];
+      
+      return (
+        <div className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Title
+            </label>
+            <input
+              type="text"
+              value={props.title || 'SCOREBOARD'}
+              onChange={(e) => onChange({ title: e.target.value })}
+              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+          
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Max Players
+            </label>
+            <input
+              type="number"
+              min="1"
+              max="10"
+              value={props.maxPlayers || 3}
+              onChange={(e) => onChange({ maxPlayers: parseInt(e.target.value) })}
+              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+          
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Players & Scores
+            </label>
+            {scores.slice(0, props.maxPlayers || 3).map((player, index) => (
+              <div key={index} className="mb-3 p-3 border rounded-md bg-gray-50">
+                <div className="flex items-center space-x-2 mb-2">
+                  <span className="text-xs font-bold bg-gray-200 rounded-full w-6 h-6 flex items-center justify-center">
+                    {index + 1}
+                  </span>
+                  <span className="text-sm font-medium">Player {index + 1}</span>
+                </div>
+                <div className="space-y-2">
+                  <input
+                    type="text"
+                    placeholder="Player name"
+                    value={player.name}
+                    onChange={(e) => {
+                      const newScores = [...scores];
+                      newScores[index] = { ...newScores[index], name: e.target.value };
+                      onChange({ scores: newScores });
+                    }}
+                    className="w-full px-2 py-1 text-sm border rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
+                  />
+                  <input
+                    type="number"
+                    placeholder="Score"
+                    value={player.score}
+                    onChange={(e) => {
+                      const newScores = [...scores];
+                      newScores[index] = { ...newScores[index], score: parseInt(e.target.value) || 0 };
+                      onChange({ scores: newScores });
+                    }}
+                    className="w-full px-2 py-1 text-sm border rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
+          
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Show Rankings
+            </label>
+            <input
+              type="checkbox"
+              checked={props.showRankings !== false}
+              onChange={(e) => onChange({ showRankings: e.target.checked })}
+              className="rounded focus:ring-blue-500"
+            />
+          </div>
+          
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Show Trophy Icon
+            </label>
+            <input
+              type="checkbox"
+              checked={props.showTrophy !== false}
+              onChange={(e) => onChange({ showTrophy: e.target.checked })}
+              className="rounded focus:ring-blue-500"
+            />
+          </div>
+          
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Ranking Style
+            </label>
+            <select
+              value={props.rankingStyle || 'medals'}
+              onChange={(e) => onChange({ rankingStyle: e.target.value })}
+              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="medals">Medals (1st, 2nd, 3rd)</option>
+              <option value="numbers">Numbers Only</option>
+              <option value="none">No Rankings</option>
+            </select>
+          </div>
+          
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Score Format
+            </label>
+            <select
+              value={props.scoreFormat || 'number'}
+              onChange={(e) => onChange({ scoreFormat: e.target.value })}
+              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="number">Number (1000)</option>
+              <option value="comma">Comma Separated (1,000)</option>
+              <option value="abbreviated">Abbreviated (1K)</option>
+            </select>
+          </div>
+        </div>
+      );}
+      
     case 'button':
       return (
         <div className="space-y-4">
