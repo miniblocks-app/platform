@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Type, Image, Search, Square, FileInput as InputIcon, Plus, Minus, List, CircleDot, CheckSquare, Donut, Circle, Minus as LineIcon, Box as RectangleIcon, Star, SlidersHorizontal } from 'lucide-react';
+import { Type, Image, Search, Square, FileInput as InputIcon, Plus, Minus, List, CircleDot, CheckSquare, Donut, Circle, Minus as LineIcon, Box as RectangleIcon, Star, SlidersHorizontal, Trophy, Heart, Timer, Map, Pause, BarChart3 } from 'lucide-react';
 import { useDraggable } from '@dnd-kit/core';
 import { ComponentType, ComponentSection } from '../../types';
 import clsx from 'clsx';
@@ -92,6 +92,41 @@ const COMPONENT_SECTIONS: ComponentSection[] = [
         type: 'star',
         label: 'Star',
         icon: <Star className="w-6 h-6 text-gray-600" />,
+      },
+    ],
+  },
+   {
+    title: 'Gaming Elements',
+    components: [
+      {
+        type: 'scoreboard',
+        label: 'Scoreboard',
+        icon: <Trophy className="w-6 h-6 text-gray-600" />,
+      },
+      {
+        type: 'healthbar',
+        label: 'Health Bar',
+        icon: <Heart className="w-6 h-6 text-gray-600" />,
+      },
+      {
+        type: 'timer',
+        label: 'Timer/ Countdown',
+        icon: <Timer className="w-6 h-6 text-gray-600" />,
+      },
+      {
+        type: 'minimap',
+        label: 'Mini Map',
+        icon: <Map className="w-6 h-6 text-gray-600" />,
+      },
+      {
+        type: 'pausemenu',
+        label: 'Pause Menu',
+        icon: <Pause className="w-6 h-6 text-gray-600" />,
+      },
+      {
+        type: 'levelindicator',
+        label: 'Level Indicator',
+        icon: <BarChart3 className="w-6 h-6 text-gray-600" />,
       },
     ],
   },

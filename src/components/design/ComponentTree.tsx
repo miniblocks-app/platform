@@ -95,29 +95,16 @@ export const ComponentTree: React.FC<ComponentTreeProps> = ({
     // 2) Create a new block for this screen (if workspace is ready)
     if (workspace) {
       // 1. Create the parent block
-      const parentBlock = workspace.newBlock("flutter_stateless_widget");
-      parentBlock.setFieldValue(`screen${screenCount+1}`, "classname");  // e.g. "screen1"
+      const parentBlock = workspace.newBlock("flutter_stateful_widget");
+      parentBlock.setFieldValue(`App`, "classname");  // e.g. "screen1"
 
-      // 2. Create the child block
-      const childBlock = workspace.newBlock("flutter_create_instance");
-      childBlock.setFieldValue("MyWidget", "className");  // e.g. "MyWidget"
-
-      // 3. Connect the child to the parent's "content" input
-      //    (This depends on your block definition. If your "flutter_stateless_widget"
-      //     block has an <value name="content">, then you connect childBlock's
-      //     output connection to that input's connection.)
-      const contentInput = parentBlock.getInput("content");
-      if (contentInput && contentInput.connection && childBlock.outputConnection) {
-        contentInput.connection.connect(childBlock.outputConnection);
-      }
-
-      // Finally, initialize & render both blocks
       parentBlock.initSvg();
       parentBlock.render();
 
-      childBlock.initSvg();
-      childBlock.render();
-
+      // 2. Position the block at a specific location instead of default
+      const randomX = Math.random() * 200 + 50; // Random x between 50-250
+      const randomY = Math.random() * 200 + 50; // Random y between 50-250
+      parentBlock.moveBy(randomX, randomY);
     }
   };
 
