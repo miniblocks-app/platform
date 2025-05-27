@@ -79,8 +79,8 @@ Blockly.Blocks['flutter_string'] = {
             .appendField(new Blockly.FieldTextInput("Hello World"), "fluString");
         this.setOutput(true, null);
         this.setColour(230);
-        this.setTooltip("String value to feed to the Text widget");
-        this.setHelpUrl("");
+        this.setTooltip("Create a string value that can be used in Text widgets or other places where text is needed");
+        this.setHelpUrl("https://dart.dev/language/built-in-types#strings");
     }
 };
 
@@ -91,7 +91,7 @@ Blockly.Blocks['flutter_text_variable'] = {
             .appendField("Text Variable");
         this.setColour(230);
         this.setOutput(true, ["Widget", "Text"]);
-        this.setTooltip("Text widget that can display variables");
+        this.setTooltip("Create a Text widget that can display variables or expressions. The value will be automatically converted to a string.");
         this.setHelpUrl("https://api.flutter.dev/flutter/widgets/Text-class.html");
     }
 };
@@ -115,7 +115,7 @@ Blockly.Blocks['scaffold'] = {
             .appendField("floatingActionButton");
         this.setOutput(true, ["Widget", "Scaffold"]);
         this.setColour(165);
-        this.setTooltip("A Scaffold is a top-level container that holds the structure of the app, including the AppBar, body, and FloatingActionButton.");
+        this.setTooltip("A Scaffold provides the basic material design visual layout structure. It includes an AppBar, body content, and optional floating action button.");
         this.setHelpUrl("https://api.flutter.dev/flutter/material/Scaffold-class.html");
     }
 };
@@ -129,8 +129,7 @@ Blockly.Blocks['appBar'] = {
             .appendField("title")
         this.setOutput(true, ["Widget", "AppBar"]);
         this.setColour(165);
-
-        this.setTooltip("");
+        this.setTooltip("Create an AppBar that appears at the top of the screen. It typically contains the app title and can include actions and navigation controls.");
         this.setHelpUrl("https://api.flutter.dev/flutter/material/AppBar-class.html");
     }
 };
@@ -142,7 +141,7 @@ Blockly.Blocks['flutter_text'] = {
             .appendField("Text");
         this.setColour(230);
         this.setOutput(true, ["Widget", "Text"]);
-        this.setTooltip("Text Widget");
+        this.setTooltip("Create a Text widget to display a string of text with a single style. Connect a string value to display it.");
         this.setHelpUrl("https://api.flutter.dev/flutter/widgets/Text-class.html");
     }
 };
@@ -156,7 +155,7 @@ Blockly.Blocks['flutter_row'] = {
             .setCheck(["Array", "Widget"]);
         this.setOutput(true, ["Widget","Row"]);
         this.setColour(230);
-        this.setTooltip("");
+        this.setTooltip("Create a Row widget that displays its children in a horizontal array. Children will be laid out from left to right.");
         this.setHelpUrl("https://api.flutter.dev/flutter/widgets/Row-class.html");
     }
 };
@@ -170,7 +169,7 @@ Blockly.Blocks['flutter_column'] = {
             .setCheck(["Array","Widget"]);
         this.setOutput(true, ["Widget", "Column"]);
         this.setColour(230);
-        this.setTooltip("");
+        this.setTooltip("Create a Column widget that displays its children in a vertical array. Children will be laid out from top to bottom.");
         this.setHelpUrl("https://api.flutter.dev/flutter/widgets/Column-class.html");
     }
 };
@@ -184,7 +183,7 @@ Blockly.Blocks['flutter_listview'] = {
             .setCheck(["Array","Widget"]);
         this.setOutput(true, ["Widget", "ListView"]);
         this.setColour(230);
-        this.setTooltip("");
+        this.setTooltip("Create a ListView widget that displays a scrollable list of widgets. Perfect for displaying lists of items that might not fit on the screen.");
         this.setHelpUrl("https://api.flutter.dev/flutter/widgets/ListView-class.html");
     }
 };
@@ -203,7 +202,7 @@ Blockly.Blocks['flutter_icon'] = {
             .appendField("size");
         this.setColour(230);
         this.setOutput(true, ["Widget", "Icon"]);
-        this.setTooltip("");
+        this.setTooltip("Create an Icon widget that displays a graphical icon. You can specify the icon type, color, and size.");
         this.setHelpUrl("https://api.flutter.dev/flutter/widgets/Icon-class.html");
     }
 };
@@ -215,8 +214,8 @@ Blockly.Blocks['flutter_icons'] = {
             .appendField(new Blockly.FieldTextInput("android"), "constant");
         this.setOutput(true, "IconData");
         this.setColour(230);
-        this.setTooltip("");
-        this.setHelpUrl("https://api.flutter.dev/flutter/widgets/IconData-class.html");
+        this.setTooltip("Select a Material Design icon. Type the name of the icon (e.g., 'home', 'settings', 'person') to use it in your app.");
+        this.setHelpUrl("https://api.flutter.dev/flutter/material/Icons-class.html");
     }
 };
 
@@ -237,7 +236,7 @@ Blockly.Blocks['flutter_placeholder'] = {
             .appendField(new Blockly.FieldNumber(400), "fallbackHeight");
         this.setOutput(true, ["Widget", "Placeholder"]);
         this.setColour(230);
-        this.setTooltip("A widget that draws a box that represents where other widgets will one day be added.");
+        this.setTooltip("Create a placeholder widget that shows a box where other widgets will be added. Useful for planning your layout before adding the actual content.");
         this.setHelpUrl("https://api.flutter.dev/flutter/widgets/Placeholder-class.html");
     }
 };
@@ -254,7 +253,7 @@ Blockly.Blocks['flutter_raised_button'] = {
             .appendField("child");
         this.setOutput(true, ["Widget", "RaisedButton"]);
         this.setColour(230);
-        this.setTooltip("");
+        this.setTooltip("Create a Material Design raised button. The button will appear elevated and respond to touch events. Add an onPressed handler to define what happens when the button is clicked.");
         this.setHelpUrl("https://api.flutter.dev/flutter/material/RaisedButton-class.html");
     }
 };
@@ -271,7 +270,7 @@ Blockly.Blocks['flutter_fab'] = {
             .appendField("child");
         this.setOutput(true, ["Widget", "FloatingActionButton"]);
         this.setColour(230);
-        this.setTooltip("");
+        this.setTooltip("Create a floating action button that hovers over the content. Typically used for the primary action in an app. Add an onPressed handler to define what happens when the button is clicked.");
         this.setHelpUrl("https://api.flutter.dev/flutter/material/FloatingActionButton-class.html");
     }
 };
@@ -289,7 +288,7 @@ Blockly.Blocks['flutter_stateful_widget'] = {
             .setCheck("Widget")
             .appendField("View");
         this.setColour(250);
-        this.setTooltip("MainWidget is a StatefulWidget that can hold state and rebuild when the state changes. Use the Process sections to define anything you want. The display section will display it's body.");
+        this.setTooltip("Create a StatefulWidget that can maintain state and rebuild when the state changes. Use the 'Make' section to define variables and state, and the 'View' section to define what to display.");
         this.setHelpUrl("https://api.flutter.dev/flutter/widgets/StatefulWidget-class.html");
     }
 };
@@ -302,8 +301,8 @@ Blockly.Blocks['flutter_create_instance'] = {
             .appendField(new Blockly.FieldTextInput("MyWidget"), "className");
         this.setOutput(true, "Widget");
         this.setColour(230);
-        this.setTooltip("");
-        this.setHelpUrl("");
+        this.setTooltip("Create an instance of a custom widget. Enter the name of the widget class you want to instantiate.");
+        this.setHelpUrl("https://dart.dev/language/classes#using-constructors");
     }
 };
 
@@ -326,8 +325,8 @@ Blockly.Blocks['flutter_container'] = {
             .appendField("child");
         this.setOutput(true, ["Widget", "Container"]);
         this.setColour(230);
-        this.setTooltip("");
-        this.setHelpUrl("https://api.flutter.dev/flutter/widgets/Container/Container.html");
+        this.setTooltip("Create a Container widget that can be customized with width, height, color, and a child widget. Useful for creating boxes with specific dimensions and styling.");
+        this.setHelpUrl("https://api.flutter.dev/flutter/widgets/Container-class.html");
     }
 };
 
@@ -342,7 +341,7 @@ Blockly.Blocks['flutter_set_state_call'] = {
         this.setPreviousStatement(true, null);
         this.setNextStatement(true, null);
         this.setColour(230);
-        this.setTooltip("");
+        this.setTooltip("Use this block inside a StatefulWidget to update the state and trigger a rebuild of the widget. Add the code that changes the state variables.");
         this.setHelpUrl("https://api.flutter.dev/flutter/widgets/State/setState.html");
     }
 };
@@ -354,7 +353,7 @@ Blockly.Blocks['flutter_raw_input'] = {
             .appendField(new Blockly.FieldTextInput("default"), "code");
         this.setOutput(true, null);
         this.setColour(230);
-        this.setTooltip("");
+        this.setTooltip("Enter raw Dart code that will be used as a value. Use this for advanced cases where the block system doesn't provide what you need.");
         this.setHelpUrl("");
     }
 };
@@ -367,7 +366,7 @@ Blockly.Blocks['flutter_raw_statement'] = {
         this.setPreviousStatement(true, null);
         this.setNextStatement(true, null);
         this.setColour(230);
-        this.setTooltip("");
+        this.setTooltip("Enter raw Dart code statements. Use this for advanced cases where the block system doesn't provide what you need.");
         this.setHelpUrl("");
     }
 };
@@ -379,7 +378,7 @@ Blockly.Blocks['flutter_center'] = {
             .appendField("Center");
         this.setOutput(true, ["Widget", "Center"]);
         this.setColour(160);
-        this.setTooltip("Align child widget to the very middle");
+        this.setTooltip("Create a Center widget that aligns its child widget to the middle of the available space, both horizontally and vertically.");
         this.setHelpUrl("https://api.flutter.dev/flutter/widgets/Center-class.html");
     }
 };
