@@ -14,10 +14,10 @@ export default function Login() {
     e.preventDefault();
     try {
       await authService.login(credentials);
-      navigate('/profile');
-  } catch {
-    setError('Invalid email or password');
-  }
+      navigate('/');
+    } catch {
+      setError('Invalid email or password');
+    }
   };
 
   return (
